@@ -10,9 +10,6 @@ ITCT Visualization 2016
 ---
   - 비주얼라이제이션
 
-학점
----
-  - 3학점
 
 담당교수
 ---
@@ -22,8 +19,9 @@ ITCT Visualization 2016
 
 수업 관련 정보
 ---
- - 깃허브 : 해당 페이지에 강의 자료 등이 공유됩니다. https://github.com/wonderino/itct-visualization-2016
- - 슬랙 : 슬랙 메신져를 활용하여 수강생간의 소통이 이루어질 예정입니다(추후 공지)
+ - 깃허브 : 해당 페이지에 강의 자료 등이 공유됩니다.
+ https://github.com/itct-visualization/itct-visualization-2016
+ - 슬랙 : 슬랙 메신져를 활용하여 수강생간의 소통이 이루어질 예정입니다.
 
 선이수교과목
 ---
@@ -39,7 +37,7 @@ ITCT Visualization 2016
 
 교재 및 참고문헌
 ---
- - 별도의 주교재 없이 강의자료를 바탕으로 진행. 아래의 참고문헌을 활용
+ - 별도의 주교재 없이 강의자료를 바탕으로 진행합니다. 아래의 참고문헌을 활용합니다.
  - Visualisation Analysis and Design, Tamara Munster, 2014
  - The Visual Display of Quantitative Information, Edward Tufte, 1983
  - Semiology of Graphics, Jacque Bertin, 1967
@@ -50,36 +48,53 @@ ITCT Visualization 2016
 
 평가방법
 ---
- 출석 10%, 과제 40%, 기말 45%, 기타 참여 5%
+ 출석 10%, 과제 45%, 기말 프로젝트 40%, 기타 참여 5%
+
+
+출석
+---
+ - 결석 3회 이상은 낙제 입니다.
+ - 지각 2회 당 결석 1회로 처리합니다.
+ - 피치못할 사정이 있는 경우 미리 연락 부탁드립니다.
+
+과제
+---
+ - 매주 실습 과제가 주어집니다.
+ - 과제는 드랍박스 과제 제출함에 제출합니다. 자세한 사항은 매 과제별로 설명하겠습니다.
+ - 제출 기한을 지난 과제물은 받지 않습니다.
+
+기말과제
+---
+ - 주어진 데이터셋을 가지고 직접 시각화 작업물을 제작합니다.
+ - 대상 데이터셋과 자세한 사항은 추후 재공지 하겠습니다.
+
+기타 참여
+---
+ - 슬랙을 통해 질문과 답변을 공유합니다.
+ - 수업 및 과제에 도움이 되는 정보를 공유합니다.
+
 
 강의계획(주차별)
 ---
 
-### 1주차 : 강의 소개 및 시각화 맛보기
+### [1주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/01) : 강의 소개 및 시각화 맛보기
   - 강의소개
   - 구글 시트로 간단히 시각화 만들어보기
-  - 스팟파이어로 시각화 만들어보기
-  - 데이터 다루기
-  - (과제 1) : HTML/CSS
+  - HTML 기초
+  - (과제 1) : 시각화 && HTML 맛보기
 
-https://www.codecademy.com/learn/make-a-website
-
- ### 2주차 : 데이터의 이해
+### 2주차 : 데이터의 이해
   - 데이터의 구조 이해
-     - 어트리뷰트 타입, 채널 배우기
-     - 마크-채널
-     - 테이블 응용하기
   - 올바른 데이터 구조 만들기
-  - 기본적인 챠트 구조에 맞도록 데이터 변형하기
-  -  HTML과 CSS 기본
-  - (과제 2) : Javascript 예습1 https://www.codecademy.com/learn/javascript
+  - HTML과 CSS 기본
+  - (과제 2) : Javascript 예습
 
 ### 3주차 : 시각화의 기본 원리 이해
   - 시각화 기본 원리 익히기
   - 기본적인 챠트의 원리 적용해보기
   - Javascript 기본
   - jQuery 간단히 써보고 d3.js 기본 세팅 및 간단한 원리 배우기
-  - (과제 3) : Javascript 예습2 https://www.codecademy.com/learn/javascript
+  - (과제 3)
 
 ### 4주차 : d3의 기본적인 사용
   - d3.js의 Selection에 대한 기본 설명
@@ -160,12 +175,6 @@ https://www.codecademy.com/learn/make-a-website
 ### 15주차 : 기말 발표
    - 기말 프로젝트 발표
 
-과제
----
- -
-
-기말 프로젝트
----
 
 
 참고사항

@@ -28,7 +28,7 @@ WEB 이란 ?
 HTML
 ---
 ### HTML 이란
--  __H__yper __T__ext __M__arkup __L__anguage
+-  *H* yper *T*ext *M* arkup *L* anguage
 - 마크업 언어 O / 프로그래밍 언어 X => 내용과 구조를 동시에 표현
 - HTML 태그tag로 HTML 문서를 표현
 
@@ -43,6 +43,7 @@ HTML
 <html>
 	<head>
 		<title>Page Title</title>
+		<meta charset="UTF-8">
 	</head>
 	<body>
 		<h1>My First Heading</h1>
@@ -50,6 +51,7 @@ HTML
 	</body>
 </html>
 ```
+
 - 일부 태그를 제외하고는 열고 닫는다. 열고 닫을 수 있는 태그는 사이에 다른 태그나 텍스트를 삽입 가능하다.
 - 위계 구조를 만들 수 있다.
 - 서로 다른 태그는 서로 다른 콘텐트를 가진다.
@@ -59,7 +61,7 @@ HTML
 
 - HTML `html` : 문서의 시작과 끝 알린다.
 - 헤드 `head` : 문서와 관련된 메타데이터
-- 제목 'title' : 문서의 제목, 브라우져 상단에 표시
+- 제목 `title` : 문서의 제목, 브라우져 상단에 표시
 - 본문 `body` : 헤드 이외의 모든 부분
 - 헤딩 `h1–h6` : 헤를 단계별로 설정
 ```

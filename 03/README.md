@@ -4,7 +4,7 @@
 1. [마크와 채널1](./01_marksAndChannels.md), [마크와 채널2](./01-1_marksAndChannels.md)
 2. [Javascript](./02_javascript.md)
 3. [CSS 2](./03_CSS2.md)
-4. [SVG](./04 svg.md)
+4. [SVG](./04_svg.md)
 
 
 ## 과제03 SVG를 만들고 Javascript로 스타일 및 속성 통제 해보기

@@ -83,19 +83,18 @@ ITCT Visualization 2016
   - HTML 기초
   - (과제 1) : 시각화 && HTML 맛보기
 
-### [2주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/01) : 데이터의 이해 (9/10)
+### [2주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/02) : 데이터의 이해 (9/10)
   - 데이터 추상화
   - 올바른 데이터 구조 만들기
   - HTML과 CSS 기본
   - (과제 2) : Javascript 예습
 
-### 3주차 : 시각화의 기본 원리 이해 (9/24)
-  - 시각화 기본 원리 익히기
-  - 기본적인 챠트의 원리 적용해보기
+### [3주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/03) : 데이터 인코딩 : 마크와 채널 (9/24)
+  - 데이터 인코딩 : 마크와 채널
   - CSS 기본2
-  - Javascript 기본
-  - jQuery 간단히 써보고 d3.js 기본 세팅 및 간단한 원리 배우기
-  - (과제 3)
+  - Javascript 기타 등등
+  - SVG 기본
+  - (과제 3) : 과제03 SVG를 만들고 Javascript로 스타일 및 속성 통제 해보기
 
 ### 4주차 : d3의 기본적인 사용 (10/1)
   - d3.js의 Selection에 대한 기본 설명

@@ -1,6 +1,5 @@
 CSS
 ===
-
 박스 모델 Box Model
 ----
 ![boxmodel](https://cloud.githubusercontent.com/assets/253408/18385546/432eee7e-76cc-11e6-882b-0fee9fa5cf0d.png)

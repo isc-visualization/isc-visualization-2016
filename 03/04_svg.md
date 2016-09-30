@@ -41,9 +41,9 @@ Simple Shapes
 
 ### 텍스트 Text
 ```xml
-<line x="250" y="100">SVG Text</text>
-<line x="250" y="100" font-size="24" fill="steelblue">SVG Text</text>
-<line x="250" y="100" font-size="24" fill="orange" text-anchor="middle" dy=".35em">SVG Text</text>
+<text x="250" y="100">SVG Text</text>
+<text x="250" y="100" font-size="24" fill="steelblue">SVG Text</text>
+<text x="250" y="100" font-size="24" fill="orange" text-anchor="middle" dy=".35em">SVG Text</text>
 ```
 http://www.w3schools.com/cssref/css_units.asp
 

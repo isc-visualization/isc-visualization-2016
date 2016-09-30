@@ -21,7 +21,7 @@ Closure Quiz
 var add_handlers = function(nodes) {
   var i = 0;
   for(i=0; i < nodes.length ; i++) {
-    nodes[i].click = function(e) {
+    nodes[i].onclick = function(e) {
       alert(i);
     }
   }

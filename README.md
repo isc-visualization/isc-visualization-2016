@@ -90,19 +90,17 @@ ITCT Visualization 2016
   - (과제 2) : Javascript 예습
 
 ### [3주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/03) : 데이터 인코딩 : 마크와 채널 (9/24)
-  - 데이터 인코딩 : 마크와 채널
+
   - CSS 기본2
   - Javascript 기타 등등
   - SVG 기본
   - (과제 3) : 과제03 SVG를 만들고 Javascript로 스타일 및 속성 통제 해보기
 
-### 4주차 : d3의 기본적인 사용 (10/1)
-  - d3.js의 Selection에 대한 기본 설명
-    - DOM 이해하기
-  - d3에서 데이터 불러오기
-  - 바챠트, 히스토그램 그려보기
-  - SVG의 기본 이해
-  - (과제 4)
+### [4주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/04) : d3의 기본적인 사용 (10/1)
+  - 데이터 인코딩 : 마크와 채널
+  - D3 세팅
+  - D3 데이터 연결
+  - (과제 4) : D3로 svg 없이 막대 챠트 만들어보기
 
 ### 5주차 : d3로 챠트 완성하기 (10/8)
    - d3의 Scale에 대해 이해하기

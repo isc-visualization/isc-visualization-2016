@@ -1,4 +1,4 @@
-3주차
+4주차
 ===
 
 1. [마크와 채널1](./01_marksAndChannels.md), [마크와 채널2](./01-1_marksAndChannels.md)
@@ -22,8 +22,8 @@
 - 제출마감 : `2016-10-07 (금) 18:00`
 - 제출방법
  - [제출 폴더](https://www.dropbox.com/request/hepiHT9ZyBaV43ck3CZE)
- - 제출명 : 폴더명 `이름-학번` (예: honggildong-2013)
+ - 제출명 : 폴더명 `이름-학번` (예: honggildong-2013.zip)
  - 제출물 :
    - 결과물은 index.html 하나에 모두 작성합니다.
-   - 결과물 파일은 모두 `honggildong-2013` 폴더에 넣은 후 압축 없이 폴더 전체를 업로드 합니다.
+   - 결과물 파일은 모두 `honggildong-2013` 폴더에 넣은 후 압축 하여 업로드합니다.
    - d3 이외의 외부 라이브러리의 사용은 금합니다.

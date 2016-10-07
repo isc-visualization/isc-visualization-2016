@@ -3,8 +3,8 @@
 
 1. [외부 데이터 연결](./01_loadExternalData.md)
 2. [DIV로 바챠트 그리기](./02_bar-div.md)
-3. [SVG로 바챠트 그리기](./03_bar-svg.md)
-4. [D3의 스케일 사용하기](./04_scames.md)
+3. [SVG로 바챠트 그리기](./03_bar-SVG.md)
+4. [D3의 스케일 사용하기](./04_scales.md)
 
 ## 과제05 D3로 스캐터플롯 그려보기
 <img width="432"  src="https://cloud.githubusercontent.com/assets/253408/19190504/d8f37f8e-8cd8-11e6-8eb7-072b1d3b008b.png">
@@ -29,5 +29,5 @@
  - 제출명 : 폴더명 `이름-학번` (예: honggildong-2013)
  - 제출물 :
    - 결과물은 `index.html` 하나에 모두 작성합니다.
-   - 결과물 파일은 모두 `honggildong-2013` 폴더에 넣은 후 압축 없이 폴더 전체를 업로드 합니다.
+   - 결과물 파일(`index.html`, `assignment.json`)은 모두 `honggildong-2013` 폴더에 넣은 후 압축하여 업로드 합니다.
    - d3 이외의 외부 라이브러리의 사용은 금합니다.

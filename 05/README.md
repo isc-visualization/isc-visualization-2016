@@ -26,7 +26,7 @@
 - 제출마감 : `2016-10-14 (금) 18:00`
 - 제출방법
  - [제출 폴더](https://www.dropbox.com/request/iYsdP82quiYyxj50mZZc)
- - 제출명 : 폴더명 `이름-학번` (예: honggildong-2013)
+ - 제출명 : 파일명 `이름-학번.zip` (예: honggildong-2013.zip)
  - 제출물 :
    - 결과물은 `index.html` 하나에 모두 작성합니다.
    - 결과물 파일(`index.html`, `assignment.json`)은 모두 `honggildong-2013` 폴더에 넣은 후 압축하여 업로드 합니다.

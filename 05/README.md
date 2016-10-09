@@ -10,7 +10,7 @@
 <img width="432"  src="https://cloud.githubusercontent.com/assets/253408/19190504/d8f37f8e-8cd8-11e6-8eb7-072b1d3b008b.png">
 
 1. 너비와 높이가 `400X400px`인 SVG를 세팅합니다.
-2. [샘플 JSON 파일](sample/assignment.json)을 불러옵니다.
+2. [샘플 JSON 파일](https://raw.githubusercontent.com/itct-visualization/itct-visualization-2016/master/05/sample/assignment.json)을 불러옵니다.
 3. 원을 데이터의 `sales` 속성은 수평, `margin` 속성은 수직 방향으로 적절히 위치시킵니다.(위치가 예시와 정확히 같을 필요는 없지만, 순서는 동일하게 배치되어야 합니다. 또한, 원이 영역을 벗어나지 않도록 적절히 범위를 결정합니다.)
 4. 원의 반지름 값은 `2px`입니다.
 5. 개별 원의 `category` 속성 값을 각각의 우측 상단에 위치시킵니다.

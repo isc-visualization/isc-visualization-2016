@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+        <meta charset="utf-8">
+        <title>D3 페이지 템플릿</title>
+        <script type="text/javascript" src="d3/d3.js"></script>
+        <style>
+        .bar {
+        }
+
+        #vertical {
+          margin : 0 auto;
+        }
+        </style>
+    </head>
+    <body>
+
+    <div id="vertical"></div>
+    <script type="text/javascript">
+    var w = 120;
+    var h = 200;
+    var dataset = [
+      {product:'A', sales:200},
+      {product:'B', sales:300},
+      {product:'C', sales:400},
+      {product:'D', sales:500},
+      {product:'E', sales:100}
+    ];
+    var xDomain = dataset.map(function(d){return d.product;})
+    var xRange = [0, w];
+    var x = d3.scaleBand()
+      .domain(xDomain)
+      .rangeRound(xRange)
+      .padding(0.1);
+
+    var yDomain = d3.extent(dataset, function(d){return d.sales});
+    yDomain[0] = 0;
+    var y = d3.scaleLinear()
+      .domain(yDomain)
+      .rangeRound([h,20])
+    var color = d3.scaleLinear()
+      .domain(yDomain)
+      .rangeRound([0, 255]);
+
+    var svg = d3.select('#vertical')
+            .append('svg')
+            .attr('width', w)
+            .attr('height', h);
+    svg.selectAll('rect')
+      .data(dataset)
+      .enter().append('rect')
+        .attr('x', function(d){ return x(d.product);})
+        .attr('y', function(d){return y(d.sales)})
+        .attr('width', x.bandwidth())
+        .attr('height', function(d){return h - y(d.sales)})
+        .style('fill', function(d){return 'rgb(0, 0, ' + color(d.sales) +')'});
+
+    svg.selectAll('text')
+      .data(dataset)
+      .enter().append('text')
+        .attr('x', function(d){ return x(d.product) ;})
+        .attr('y', function(d){return y(d.sales)})
+        .attr('dx', x.bandwidth()*0.5)
+        .attr('dy', function(d) {return '1em';})
+        .attr('text-anchor', 'middle')
+        .style('fill', 'white')
+        .text(function(d){return d.product});
+  </script>
+    </body>
+</html>

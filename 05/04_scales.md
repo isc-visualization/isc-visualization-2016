@@ -79,7 +79,7 @@ x.padding(0.2) //padding
  - categorical type의 attribute를 scatterplot으로 표현하고 싶을 때 사용
 
 ```javascript
-var x = d3.v()
+var x = d3.scaleLinear()
   .domain(domain)
   .range([0, w]);
 

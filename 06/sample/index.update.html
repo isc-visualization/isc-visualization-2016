@@ -137,17 +137,13 @@
           .delay(function(d,i) {
             return i*200;
           })
-        .attr('transform', function(d){
-          return 'translate('+ xyc.get(this).x + ',' + xyc.get(this).y + ')'
-        })
+        .call(translateBar);
       bar.select('rect')
         .transition(t)
           .delay(function(d,i) {
             return i*200;
           })
-        .attr('height', function(d){return innerH - xyc.get(this).y})
-        .style('fill', function(d){return 'rgb(0, 0, ' + xyc.get(this).c +')'});
-      /*바 챠트를 업데이트를 시킬 예정*/
+        .call(updateRect)
     })
     function updateBar(selection) {
       selection.each(function(d) {

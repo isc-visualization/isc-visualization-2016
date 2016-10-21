@@ -111,14 +111,12 @@ ITCT Visualization 2016
   - d3의 업데이트 기능 이해하기
   - d3의 Transition 기능 이해
   - SVG의 transform 이해
-  - (과제 6) 버블플롯 업데이트 
+  - (과제 6) 버블플롯 업데이트
 
-### 7주차 : 애니메이션과 인터액션 (10/22)
+### [7주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/05) : 애니메이션과 인터액션 (10/22)
    - d3의 update 기능 추가 이해
-   - d3의 Selection 기능에 대한 심화 이해
-   - 툴팁, 레젼드 등 만들어보기
-   - 애니메이션과 인터액션 관련 이론
-   - (과제 7)
+   - d3의 nested Selection 기능에 대한 심화 이해
+   - (과제 7) 스몰 멀티플즈 Small multiples
 
 ### 8주차 : d3로 다양한 기본 챠트 유형 그려보기 (10/29)
  - d3로 선, 영역, 파이 챠트 그려보기

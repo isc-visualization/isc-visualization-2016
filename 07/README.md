@@ -7,7 +7,7 @@
 4. [중첩 셀렉션 2](./04_nested2.md)
 
 
-## 과제06 버블 플롯 업데이트
+## 과제06 스몰 멀티플즈 Small multiples 
 
 <img style="-webkit-user-select: none" src="https://cloud.githubusercontent.com/assets/253408/19599077/919ed672-97d9-11e6-9a8d-f478d49c7ebe.gif">
 

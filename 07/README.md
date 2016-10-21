@@ -7,11 +7,11 @@
 4. [중첩 셀렉션 2](./04_nested2.md)
 
 
-## 과제06 스몰 멀티플즈 Small multiples 
+## 과제06 스몰 멀티플즈 Small multiples
 
 <img style="-webkit-user-select: none" src="https://cloud.githubusercontent.com/assets/253408/19599077/919ed672-97d9-11e6-9a8d-f478d49c7ebe.gif">
 
-1. [샘플 JSON 파일](./sample/nested.sample2.json)을 이용하여, 너비와 높이가 각각 `160X80px`인 스캐터플롯을 그립니다.(내부 여백은 임의로 적당히 설정하세요)
+1. [샘플 JSON 파일](https://raw.githubusercontent.com/itct-visualization/itct-visualization-2016/master/07/sample/nested.sample2.json)을 이용하여, 너비와 높이가 각각 `160X80px`인 스캐터플롯을 그립니다.(내부 여백은 임의로 적당히 설정하세요)
 2. 데이터는 `position` 속성 값을 `key`로 그룹지어져있습니다. 그룹별로 스캐터플롯을 그리고 차례로 배열합니다.
 3. 개별 스캐터 플롯의 가로축 위치는 `category` 순서대로, 세로축 위치는 `value` 값을 이용하여 결정합니다. 세로축의 범위`domain`는 개별 그룹의 `values`에 속하는 `value`값들의 최대-최소 범위로 설정합니다.
 4. 개별 스캐터 플롯의 원은 반지름은 `5px`, 선 두께는 `2px`로 통일하고, 선 색상은 `key`값에 따라 구분합니다.(색상은 임의로 정하셔도 됩니다)

@@ -107,13 +107,13 @@ ITCT Visualization 2016
    - d3의 Scale에 대해 이해하기
    - (과제 5) 스캐터플롯 그려보기
 
-### [6주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/05) : d3에서 데이터의 업데이트 (10/15)
+### [6주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/06) : d3에서 데이터의 업데이트 (10/15)
   - d3의 업데이트 기능 이해하기
   - d3의 Transition 기능 이해
   - SVG의 transform 이해
   - (과제 6) 버블플롯 업데이트
 
-### [7주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/05) : 애니메이션과 인터액션 (10/22)
+### [7주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/07) : 애니메이션과 인터액션 (10/22)
    - d3의 update 기능 추가 이해
    - d3의 nested Selection 기능에 대한 심화 이해
    - (과제 7) 스몰 멀티플즈 Small multiples

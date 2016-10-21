@@ -1,7 +1,7 @@
 중첩 셀렉션 2
 ===
 
-([샘플](sample/nested.sample.json)) JSON 형태로 nested 된 데이터
+([샘플](https://raw.githubusercontent.com/itct-visualization/itct-visualization-2016/master/07/sample/nested.sample.json)) JSON 형태로 nested 된 데이터
  - `category` 값을 기준으로 묶여있음
  - `key`는 `category`의 값, `values`는 개별 `item`
 

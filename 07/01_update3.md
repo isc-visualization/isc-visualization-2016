@@ -106,7 +106,7 @@ barEnter.append('text')
 ```javascript
 bar = barEnter.merge(bar)
 
-bar.transition(t)
+bar.call(updateBar).transition(t)
   .call(translateBar);
 ```
 

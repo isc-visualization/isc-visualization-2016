@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+        <meta charset="utf-8">
+        <title>D3 페이지 템플릿</title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <style>
+        .bar {
+        }
+
+        #vertical {
+          margin : 0 auto;
+        }
+        .axis path.domain {
+          stroke : none;
+        }
+
+        .y.axis .tick:nth-child(2n+1) line {
+          opacity : .25;
+        }
+        svg {
+          cursor: pointer;
+          pointer-events: bounding-box;
+        }
+
+
+        </style>
+    </head>
+    <body>
+
+    <div id="vertical"></div>
+    <script type="text/javascript" src="index.js"></script>
+    </body>
+</html>

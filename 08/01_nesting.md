@@ -44,21 +44,21 @@ var entries = d3.nest()
  ```
 
 
- 1-level
- ---
- - [샘플 파일](./sample/sample.nest.json)
- - `nest.key` 통해 그룹-키group-key를 설정하고 `nest.entries`에 데이터셋을 전달하여 실행
- - 결과는 `key`와 `values`로 나뉘어 저장
+1-level
+---
+- [샘플 파일](./sample/sample.nest.json)
+- `nest.key` 통해 그룹-키group-key를 설정하고 `nest.entries`에 데이터셋을 전달하여 실행
+- 결과는 `key`와 `values`로 나뉘어 저장
 
 
- ```javascript
- d3.json('sample/sample.nest.json', function(dataset) {
-   var entries = d3.nest()
-    .key(function(d){return d.category})
-    .entries(dataset);
-   console.log(entries);
- });
- ```
+```javascript
+d3.json('sample/sample.nest.json', function(dataset) {
+ var entries = d3.nest()
+  .key(function(d){return d.category})
+  .entries(dataset);
+ console.log(entries);
+});
+```
 
 2-level
 ---

@@ -7,7 +7,7 @@
 4. [범례와 툴팁](./04_legend_tooltip.md)
 
 
-## 과제08 스몰 멀티플즈 Small multiples
+## 과제08 스몰 멀티플즈2 Small multiples
 ![oct-28-2016 21-46-21](https://cloud.githubusercontent.com/assets/253408/19806846/3eadf0ea-9d58-11e6-9862-53c528c45aa4.gif)
 
 1. [샘플 JSON 파일](https://raw.githubusercontent.com/itct-visualization/itct-visualization-2016/master/08/sample/sample.line2.json)을 이용하여, 너비와 높이가 각각 `240X120px`인 라인 챠트를 그립니다.(내부 여백은 임의로 적당히 설정하세요)

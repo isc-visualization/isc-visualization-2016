@@ -77,6 +77,8 @@ var point = series.selectAll('circle')
   .data(function(d){return d.values}, function(d){return d.x})
   .enter().append('circle')
   .style('cursor', 'pointer')
+  .attr('cx', function(d){return x(d.x)})
+  .attr('cy', function(d){return y(d.y)})
   .attr('r', 4);
 ```
 

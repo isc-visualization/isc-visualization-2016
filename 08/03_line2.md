@@ -63,6 +63,16 @@ series.append('path')
   .attr('d', line)
 ```
 
+- 아래와 같이 구현할 수 있다.
+```
+svg.selectAll('path')
+      .data(nest.map(function(d){return d.values}))
+      .enter().append('path')
+      .style('stroke', function(d){return c(d[0].c)})
+      .style('fill', 'none')
+      .attr('d', line)
+```
+
 (실습) 축을 추가해보자
 
 

@@ -96,6 +96,7 @@ var y = d3.scaleLinear()
 var line = d3.line()
 
 svg.append('path')
+  .datum(dataset)
   .attr('class', 'line')
   .style('fill', 'none')
   .style('stroke', 'steelblue')

@@ -96,7 +96,8 @@ var y = d3.scaleLinear()
 var line = d3.line()
 
 svg.append('path')
-  .datum(dataset)
+  .datum(dataset) //전체 배열이 연결 
+  // 위는 svg.selectAll('path').data([dataset]).enter().append('path') 와 동일 
   .attr('class', 'line')
   .style('fill', 'none')
   .style('stroke', 'steelblue')

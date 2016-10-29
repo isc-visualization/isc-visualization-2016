@@ -23,7 +23,7 @@ var nest = d3.nest()
 - 색상 스케일도 추가한다.
 
 ```javascript
-var x = d3.scaleLinear().domain([0, 20]).range([0, innerW]);
+var x = d3.scalePoint().domain(d3.range(1, 21)).range([0, innerW]);
 var y = d3.scaleLinear().domain([0, 100]).range([innerH, 0]);
 var c = d3.scaleOrdinal().domain(nest.map(function(d){return d.key}))
   .range(d3.schemeCategory10);

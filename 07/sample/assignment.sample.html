@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+    <title>D3 페이지 템플릿</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    .region {
+      pointer-events: bounding-box;
+    }
+    .point {
+      fill : #fff;
+      stroke-width : 2px;
+
+    }
+
+    .y.axis .domain {
+      /*stroke : none;*/
+    }
+    </style>
+</head>
+<body>
+
+  <script type="text/javascript">
+  d3.json('nested.sample2.json', function(err, data) {
+    if(err) throw err;
+    var w = 160, h = 80, r = 5;
+    var margin = {top:10, right:10, bottom: 20, left: 20};
+    var innerW = w - margin.right - margin.left,
+      innerH = h - margin.top - margin.bottom;
+
+    var positionDomain = data.map(function(d){return d.key});
+
+    var positionRange = [0, h*positionDomain.length];
+    var position = d3.scaleBand()
+      .domain(positionDomain).range(positionRange);
+
+    var categoryDomain = data[0].values.map(function(d){return d.category});
+    var categoryRange = [0, innerW];
+    var category = d3.scalePoint()
+      .domain(categoryDomain).range(categoryRange).padding(.2);
+      var color = d3.scaleOrdinal()
+        .domain(positionDomain).range(d3.schemeCategory10);
+
+    var asciiRange = [65, 90],
+    curAscii = asciiRange[0] + categoryDomain.length;
+
+
+    var svg = d3.select('body').append('svg')
+         .attr('width', w)
+         .attr('height', h*positionDomain.length);
+    var xAxis = d3.axisBottom(category)
+      .tickSize(0)
+    var value = d3.local(),
+      yAxis = d3.local();
+
+    var region = svg.selectAll('.region')
+      .data(data, function(d){return d.key})
+      .enter().append('g')
+        .attr('class', 'region')
+        .attr('transform', function(d){return 'translate(' + [margin.left, margin.top+position(d.key)] + ')';})
+        .call(updateRegion);
+
+    region.append('g')
+      .attr('class', 'y axis')
+      .call(updateYAxis);
+
+    region.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate('+ [0, innerH]+ ')')
+      .call(xAxis);
+
+    var point = region.selectAll('.point')
+      .data(function(d){return d.values}, function(d){return d.category})
+        .enter().append('circle')
+      .attr('class', 'point')
+      .attr('cx', function(d){return category(d.category);})
+      .attr('cy', function(d){return value.get(this)(d.value);})
+      .attr('r', r)
+      .style('stroke', function(d){return color(d.position)})
+
+    region.on('click', function(d) {
+      var t = d3.transition().duration(400);
+
+      if(curAscii <= asciiRange[1]) {
+        region.each(function(d) {
+          var newVal = {category: String.fromCharCode(curAscii)
+            , value :Math.random(), position:d.key};
+            d.values.push(newVal);
+            d.values.shift();
+        });
+        curAscii += 1;
+      }
+      region.call(updateRegion);
+
+      category.domain(d.values.map(function(v){return v.category}));
+      region.select('.x.axis')
+        .transition(t)
+        .call(xAxis)
+      region.select('.y.axis')
+        .call(updateYAxis, t);
+
+      point = region.selectAll('.point')
+        .data(function(d){return d.values}, function(d){return d.category});
+      point.exit().transition(t)
+        .attr('cx', -r*2).style('opacity', 0)
+        .remove();
+      point.enter().append('circle')
+        .attr('class', 'point')
+        .attr('r', r)
+        .attr('cx', innerW + r*2)
+        .attr('cy', function(d){return value.get(this)(d.value);})
+        .style('stroke', function(d){return color(d.position)})
+        .style('opacity', 0)
+        .merge(point)
+          .transition(t).style('opacity', 1)
+          .attr('cx', function(d){return category(d.category);});
+
+    })
+    function updateYAxis(selection, t) {
+      selection.each(function(d) {
+        var y = yAxis.get(this);
+        if (t) d3.select(this).transition(t).call(y);
+        else d3.select(this).call(y);
+      })
+    }
+    function updateRegion(selection) {
+      selection.each(function(d) {
+        var max = d3.max(d.values, function(d) {return d.value});
+        var v = d3.scaleLinear()
+          .domain([0,max]).range([innerH-r, r])
+        value.set(this, v);
+        var y = d3.axisLeft()
+          .scale(v)
+          .ticks(3)
+          .tickSize(0)
+        yAxis.set(this, y);
+      });
+      return selection;
+    }
+  })
+
+  </script>
+</body>
+</html>

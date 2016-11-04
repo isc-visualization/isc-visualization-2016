@@ -124,7 +124,7 @@ ITCT Visualization 2016
  - 챠트간 상호 연동하기
  - (과제 8) 스몰 멀티플즈2
 
-### 9주차 : 특강
+### [9주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/09)  : 특강
 
 ### 10주차 : 위계 정보 시각화 (11/12)
    - 위계정보 다루기

@@ -30,7 +30,7 @@
 
 - https://www.oecd.org/gender/data/ OECD의 젠더 관련 지표
 - Employment/Education/Entrepreneurship/Health/Development 4가지 영역으로 지표가 구분되어있음
-- 지표의 수가 많고 구조가 복잡한 경우가 많으므로, 관심있는 지표를 선정하는 작업이 필요
+- 지표의 수가 많고 구조가 복잡한 경우가 많으므로, 관심있는 지표를 선정하고 다운로드받아 정리하는 작업이 필요
 
 
 
@@ -47,6 +47,7 @@
 - http://kbo-history.jaryogujo.io/
 - https://oecdregionalwellbeing.org/
 - http://www.nytimes.com/interactive/2014/06/05/upshot/how-the-recession-reshaped-the-economy-in-255-charts.html
+- http://mbtaviz.github.io/
 
 
 결과물은 반드시 HTML을 이용한 웹페이지 형태로 제작되어야 하며, 추가적인 데이터나 라이브러리의 활용이 가능합니다.(단, d3.js의 사용은 필수입니다.)
@@ -61,6 +62,9 @@
 - 선택한 데이터셋에서 실제로 사용할 데이터의 속성과 범위를 구체화해봅니다.
 - 참고 사례를 조사합니다.
 - 간단한 과제 아이디어를 정리합니다.(스케치도 가능)
+ - 목적이나 방향, 효과 등
+ - 콘텐츠 전체의 포맷, 시각화 기법, 대상 독자나 사용자 등
+
 
 위의 4가지 사항을 구글닥스에 자유양식으로 적어 [해당 폴더](https://drive.google.com/drive/folders/0B6tl9QHjJ5E5alpBay10cGUyYlE?usp=sharing)에 공유합니다. 분량은 1–2페이지 정도로 간략히 작성합니다. 파일명은 작성자 *이름* 만 적어 제출합니다.
 

@@ -22,7 +22,7 @@
 ### 2. KBO 2013-2016 선수 기록
 
 - http://www.kbreport.com/leader/main
-- [해당 폴더](https://docs.google.com/spreadsheets/d/1gHzMSI6uhW8EqmGSLmcwIiV9klWTgO7eoS8einIscLs/edit?usp=sharing)에 타격/투구를 기준으로 정리해두었음
+- [해당 폴더](https://drive.google.com/drive/folders/0B6tl9QHjJ5E5dVdZZVk2TTdKMW8?usp=sharing)에 타격/투구를 기준으로 정리해두었음
 - 해당 정보는 연도별 정규시즌 자료임
 
 

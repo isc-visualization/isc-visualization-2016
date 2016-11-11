@@ -126,18 +126,16 @@ ITCT Visualization 2016
 
 ### [9주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/09)  : 특강
 
-### 10주차 : 위계 정보 시각화 (11/12)
-   - 위계정보 다루기
-   - 위계정보 시각화 기법 Tree와 Treemap
-    - d3로 Tree와 Treemap 만들기
-   - (과제 10)
+### [10주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/10)  : 시계열 데이터 다루기, 중첩 챠트 (11/12)
+   - 시계열 데이터 다루기
+   - 중첩 영역 챠트 그리기
+   - (과제 10) 중첩 영역챠트
 
-### 11주차 : 지리 정보 시각화 1 (11/19)
-   - 지리 데이터 구조 이해 및 활용하기
-   - 지리 정보 시각화 기법
-   - d3로 지리정보 활용하기
-     - projection 이해하기
-   - (과제 11)
+### 11주차 : 위계 정보 다루기 (11/19)
+  - 위계정보 다루기
+  - 위계정보 시각화 기법 Tree와 Treemap
+   - d3로 Tree와 Treemap 만들기
+  - (과제 10)
 
 ### 12주차 : 색상과 문자, UI (11/26)
    - SVG와 CSS 에서 색상과 다루기

@@ -102,8 +102,7 @@ var series = svg.selectAll('.series')
   .data(entries, function(d){return d.key})
     .enter().append('g')
   .attr('class', 'series')
-  .each(function(d) {
-  }).style('fill', 'none')
+  .style('fill', 'none')
   .style('stroke', function(d){return c(d.key)})
 
 series.append('path')

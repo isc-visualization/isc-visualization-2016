@@ -36,6 +36,8 @@ d3.csv('sample.time.csv')
 
 - 개별 행의 속성attribute를 알맞은 타입type으로 변환하는 행 변환 함수를 설정
 ```javascript
+var parse = d3.timeParse('%Y-%m-%d');
+
 function row(d) {
   d.date = parse(d.date);
   d.A = +d.A;
@@ -84,7 +86,7 @@ var c = d3.scaleOrdinal().domain(valueDomain).range(d3.schemeCategory10);
 ```javascript
 var entries = valueDomain.map(function(k) {
   var values = data.map(function(d){
-    return {date:d.date, value:d[k]}
+    return {date:d.date, value:d[k], key:k}
   });
   return {key:k, values:values}
 })

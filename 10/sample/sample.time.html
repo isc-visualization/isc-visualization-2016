@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3 페이지 템플릿</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+</svg>
+    <script type="text/javascript">
+    var parse = d3.timeParse('%Y-%m-%d');
+    d3.csv('sample.time.csv')
+      .row(row)
+      .get(callback);
+      function row(d) {
+          d.date = parse(d.date); //'2016-01-01'
+          d.A = +d.A;
+          d.B = +d.B;
+          d.C = +d.C;
+          return d;
+        }
+    function callback(err, data) {
+      if(err) return console.error(err);
+
+      var w = 600, h = 300;
+      var margin = {top:10, right:40, bottom: 20, left: 20};
+      var innerW = w - margin.right - margin.left,
+        innerH = h - margin.top - margin.bottom;
+
+      var svg = d3.select('body').append('svg')
+          .attr('width', w)
+          .attr('height', h)
+        .append('g')
+          .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+      var xDomain = d3.extent(data, function(d){return d.date;});
+      var x = d3.scaleTime().domain(xDomain)
+        .range([0, innerW]);
+
+      var valueDomain = data.columns.slice(1); //값을 알려주는 필드들
+      var stack = d3.stack()
+        .keys(valueDomain) //[A,B,C]
+      var entries = stack(data);
+      var yMin = d3.min(entries[0], function(d){return d[0]});
+      var yMax = d3.max(entries[valueDomain.length-1], function(d){return d[1]});
+      var y = d3.scaleTime().domain([yMin, yMax])
+        .range([innerH, 0]);
+      var c = d3.scaleOrdinal().domain(valueDomain).range(d3.schemeCategory10);
+
+
+    var line = d3.line()
+      .x(function(d){return x(d.data.date);})
+      .y(function(d){return y(d[1]);});
+    var area = d3.area()
+      .x(function(d, i) { return x(d.data.date); })
+      .y0(function(d) { return y(d[0]); })
+      .y1(function(d) { return y(d[1]); });
+      var series = svg.selectAll('.series')
+        .data(entries)
+          .enter().append('g')
+        .attr('class', 'series')
+
+      series.append('path')
+        .style('fill', function(d){return c(d.key)})
+        .style('stroke', 'none')
+        .style('fill-opacity', 0.5)
+        .attr('d', area);
+      series.append('path')
+        .style('stroke', function(d){return c(d.key)})
+        .style('fill', 'none')
+        .attr('d', line);
+
+
+    } // end of callaback
+
+
+
+    </script>
+</body>
+
+</html>

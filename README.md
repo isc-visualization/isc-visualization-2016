@@ -131,11 +131,11 @@ ITCT Visualization 2016
    - 중첩 영역 챠트 그리기
    - (과제 10) 중첩 영역챠트
 
-### 11주차 : 위계 정보 다루기 (11/19)
+### [11주차](https://github.com/itct-visualization/itct-visualization-2016/tree/master/11)  : 위계 정보 다루기 (11/19)
   - 위계정보 다루기
   - 위계정보 시각화 기법 Tree와 Treemap
-   - d3로 Tree와 Treemap 만들기
-  - (과제 10)
+   - d3로 Treemap 만들기
+  - (과제 10) 기말 과제 아이디어 발전
 
 ### 12주차 : 색상과 문자, UI (11/26)
    - SVG와 CSS 에서 색상과 다루기

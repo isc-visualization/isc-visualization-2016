@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3 페이지 템플릿</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+</svg>
+    <script type="text/javascript">
+    var parse = d3.timeParse('%Y-%m-%d');
+    d3.json('flare.json', callback)
+    function callback(err, data) {
+      if(err) return console.error(err);
+      var hierarchy = d3.hierarchy(data, function(d){return d.children});
+      hierarchy.sum(function(d){return d.size})
+        .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+      var w = 600, h = 300;
+      var margin = {top:10, right:10, bottom: 10, left: 10};
+      var innerW = w - margin.right - margin.left,
+        innerH = h - margin.top - margin.bottom;
+
+      var svg = d3.select('body').append('svg')
+          .attr('width', w)
+          .attr('height', h)
+        .append('g')
+          .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+      var opacityDomain = d3.extent(hierarchy.leaves(), function(d){return d.value;});
+      var opacity = d3.scaleLinear().domain(opacityDomain).range([0.4, 1.0]);
+      var colorDomain = hierarchy.children.map(function(d){return d.data.name});
+      var color = d3.scaleOrdinal().domain(colorDomain).range(d3.schemeCategory10);
+      var paddingTop = 20;
+      var treemap = d3.treemap()
+        .size([innerW, innerH])
+        .paddingTop(paddingTop);
+
+      hierarchy = treemap(hierarchy);
+      var nodes = hierarchy.descendants();
+
+      var leaf = svg.selectAll('.leaf')
+        .data(nodes.filter(function(n){return !n.children}), function(d){return d.data.name})
+        .enter().append('rect')
+          .attr('class', 'leaf')
+        .attr('x', function(d){return d.x0})
+        .attr('y', function(d){return d.y0})
+        .attr('width', function(d){return d.x1-d.x0})
+        .attr('height', function(d){return d.y1-d.y0})
+        .style('fill', function(d){return color(findParent(d, 1).data.name)})
+        .style('fill-opacity', function(d){return opacity(d.value)});
+
+      var parent = svg.selectAll('.parent')
+        .data(nodes.filter(function(n){return n.children}), function(d){return d.data.name})
+        .enter().append('g')
+          .attr('class', 'parent')
+          .attr('transform', function(d){return 'translate(' +[d.x0, d.y0] + ')'})
+      parent.append('rect')
+        .attr('width', function(d){return d.x1-d.x0;})
+        .attr('height', function(d){return paddingTop;})
+        .style('fill', '#eee')
+        .style('stroke', '#ddd')
+      parent.append('text')
+        .text(function(d){return d.data.name})
+        .attr('dy', function(d){return '1.35em'})
+        .style('font-size', '12px')
+        .style('font-family', 'sans-serif')
+
+      function findParent(node, depth) {
+        if(node.parent) {
+          if(depth === node.parent.depth) {
+            return node.parent;
+          } else {
+            return findParent(node.parent, depth);
+          }
+        } else {
+          return null;
+        }
+      }
+    } // end of callaback
+
+
+
+    </script>
+</body>
+
+</html>

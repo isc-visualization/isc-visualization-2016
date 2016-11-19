@@ -105,16 +105,16 @@ var leaf = svg.selectAll('.leaf')
 
 ```javascript
 function findParent(node, depth) {
-  if(node.parent) {
-    if(depth === node.parent.depth) {
-      return node.parent;
-    } else {
-      return findParent(node.parent, depth); //재귀 recursion
+
+      if(node.depth < depth) {
+        return null;
+      } else if(node.depth === depth) {
+        return node;
+      }
+      if(node.parent) {
+        return findParent(node.parent, depth); //재귀 recursion
+      }
     }
-  } else {
-    return null;
-  }
-}
 ```
 
 ```javascript

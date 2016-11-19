@@ -78,6 +78,17 @@ function leaf(_selection) {
 ```
 
 
+```
+var paddingTop = 16;
+var treemap = d3.treemap()
+  .size([innerW, innerH])
+  .paddingTop(paddingTop);
+
+hierarchy = treemap(hierarchy);
+
+svg.call(node, [hierarchy]);
+```
+
 자식-리프노드를 선택하기
 ---
 - `parent` 함수에 간단한 이벤트를 추가

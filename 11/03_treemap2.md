@@ -78,7 +78,7 @@ function leaf(_selection) {
 ```
 
 
-```
+```javascript
 var paddingTop = 16;
 var treemap = d3.treemap()
   .size([innerW, innerH])

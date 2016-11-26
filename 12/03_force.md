@@ -66,8 +66,11 @@ d3.json('miserables.json', callback);
 function callback(err, data) {
   if(err) return console.error(err);
   var c = d3.scaleOrdinal()
-    .domain(data.nodes.map(function(d){return d.group;}))
-    .range(d3.schemeCategory10);
+        .domain(d3.set(
+            data.nodes.map(function(d){return d.group;})
+          ).values().sort(function(a,b){return a-b;})
+        )
+        .range(d3.schemeCategory20);
   var link = svg.append("g")
      .attr('class', 'links')
    .selectAll('line')

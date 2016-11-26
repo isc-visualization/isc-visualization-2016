@@ -151,6 +151,7 @@ function dragEnded(d) {
 - `dragStarted` 에 선택한 노드의 링크와 연결된 노드들을 변화 시킴
 
 ```javascript
+var linked = [];
 svg.select('.links').selectAll('line').filter(function(l) {
   if (l.source === d) {
     if(linked.indexOf(l.target)<0) linked.push(l.target);

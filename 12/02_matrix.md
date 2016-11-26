@@ -36,8 +36,11 @@ function callback(err, data) {
 
 ```javascript
 var c = d3.scaleOrdinal()
-  .domain(data.nodes.map(function(d){return d.group;}))
-  .range(d3.schemeCategory20);
+    .domain(d3.set(
+        data.nodes.map(function(d){return d.group;})
+      ).values().sort(function(a,b){return a-b;})
+    )
+    .range(d3.schemeCategory20);
 var x = d3.scaleBand()
   .domain(data.nodes.map(function(d){return d.id;}))
   .range([0, innerW]);

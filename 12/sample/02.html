@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3 페이지 템플릿</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    .links line {
+      stroke: #aaa;
+    }
+    .links line.linked {
+      stroke-width : 2px;
+    }
+
+
+    .nodes circle {
+      pointer-events: all;
+      stroke: #eee;
+      stroke-width: 2px;
+    }
+
+    .nodes circle.linked {
+      stroke: blue;
+    }
+    </style>
+</head>
+
+<body>
+</svg>
+    <script type="text/javascript">
+    var w = 800, h = 600;
+    var margin = {top:10, right:10, bottom: 10, left: 10};
+    var innerW = w - margin.right - margin.left,
+      innerH = h - margin.top - margin.bottom;
+
+    var svg = d3.select('body').append('svg')
+        .attr('width', w)
+        .attr('height', h)
+      .append('g')
+        .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+    var simulation = d3.forceSimulation()
+      .force('link', d3.forceLink().id(function(d) { return d.id; }))
+      .force('charge', d3.forceManyBody())
+      .force('center', d3.forceCenter(innerW / 2, innerH / 2));
+    var drag = d3.drag().on('start', dragStrated)
+      .on('drag', dragged)
+      .on('end', dragEnded);
+    d3.json('miserables.json', callback);
+    function callback(err, data) {
+      if(err) return console.error(err);
+      var c = d3.scaleOrdinal()
+       .domain(d3.set(
+           data.nodes.map(function(d){return d.group;})
+         ).values().sort(function(a,b){return a-b;})
+       )
+       .range(d3.schemeCategory20);
+
+     var link = svg.append("g")
+        .attr('class', 'links')
+      .selectAll('line')
+         .data(data.links)
+      .enter().append('line');
+
+     var node = svg.append('g')
+         .attr('class', 'nodes')
+       .selectAll('circle')
+         .data(data.nodes)
+       .enter().append('circle')
+         .attr('r', 4)
+         .style('fill', function(d){return c(d.group)})
+         .call(drag);
+
+      var begin = Date.now();
+      simulation.nodes(data.nodes)
+       .on('tick', function() {
+         link.attr('x1', function(d){return d.source.x;})
+           .attr('y1', function(d){return d.source.y;})
+           .attr('x2', function(d){return d.target.x;})
+           .attr('y2', function(d){return d.target.y;});
+         node.attr('cx', function(d){return d.x;})
+           .attr('cy', function(d){return d.y;});
+       }).on('end', function() {
+         console.log(Date.now()-begin);
+       })
+      simulation.force('link')
+        .links(data.links)
+
+    }
+    function dragStrated(d) {
+      if(!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+      var linked = [];
+      svg.select('.links').selectAll('line').filter(function(l) {
+        if (l.source === d) {
+          if(linked.indexOf(l.target)<0) linked.push(l.target);
+          return true;
+        } else if( l.target === d) {
+          if(linked.indexOf(l.source)<0) linked.push(l.source);
+          return true;
+        }
+        return false;
+      }).classed('linked', true);
+      svg.select('.nodes').selectAll('circle').filter(function(n) {
+        return linked.indexOf(n) >= 0;
+      }).classed('linked', true);
+    }
+    function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+    function dragEnded(d) {
+      if(!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+      svg.selectAll('.linked').classed('linked', false);
+    }
+
+
+
+
+
+    </script>
+</body>
+
+</html>

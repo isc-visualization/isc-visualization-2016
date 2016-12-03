@@ -61,7 +61,15 @@ var svg = d3.select('body').append('svg')
 
 - 헤더 정보에 해당 값의 범위domain을 계산하여 미리 저장
 ```javascript
-d3.csv('flower.csv', callback);
+d3.csv('flower.csv', row, callback);
+
+function row(d) {
+  for(var k in d) {
+    if(d.hasOwnProperty(k) && k !== 'species') d[k] = + d[k];
+  }
+  return d;
+}
+
 function callback(err, data) {
   if(err) return console.error(err);
   var headers = data.columns.slice(0,4);

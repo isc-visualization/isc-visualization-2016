@@ -67,6 +67,7 @@ function brushStarted(d) {
 
 ```javascript
 function brushed(d) {
+  if(d3.event.selection === null) return;
   var xName = d.x.name, yName = d.y.name;
   var scale = scales.get(this);
   var domain = d3.event.selection.map(function(d) {

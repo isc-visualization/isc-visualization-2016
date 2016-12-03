@@ -138,6 +138,11 @@ svg.append('g')
 brush = brush.extent([[-12, 0], [12, innerH]])
   .on('brush', brushed)
   .on('end', brushEnded);
+  
+svg.selectAll('.y.axis')
+        .append('g')
+        .attr('class', 'brush')
+        .call(brush);
 ```
 
 - 브러쉬가 진행되면 축마다 선택된 영역을 저장하고, 선택되지 않은 아이템을 `.hidden`설정

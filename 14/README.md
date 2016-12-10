@@ -6,7 +6,7 @@
 
 
 
-## 과제 13 기말 과제 제출
+## 기말 과제 제출
 
 - 기말 과제 제목, 설명 제출 (기한 : 12월 12일 월 18:00)
 https://docs.google.com/spreadsheets/d/1h18JHUHCoaq3g5_SOpY73L-QPv-NqHBfSz3LRsd0QrE/edit#gid=0

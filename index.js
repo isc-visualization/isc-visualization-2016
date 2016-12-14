@@ -1,10 +1,14 @@
 d3.json('list.json', callback);
 var width, height;
-var initTransition = d3.transition().delay(600)
+var initTransition = d3.transition().delay(800)
   .duration(1000);
 var colorMap = {'KBO' : '#DC143C', 'GENDER': '#3D9140', 'MQs':'#1E90FF'};
 function callback(err, data) {
   if(err) throw err;
+  render(data);
+}
+
+function render(data) {
   var nest = d3.nest().key(function(d){return d.category;})
     .entries(data);
 
@@ -54,7 +58,12 @@ function callback(err, data) {
     .attr('clip-path', function(d){return 'url(#clip-'+ d.name_en + ')';});
   svg.append('g')
     .attr('class', 'foreground').call(appendText, true);
+
+  d3.select('#container').transition()
+      .duration(800)
+      .style('opacity', 1);
 }
+
 function appendClip(selection) {
   var clipType = ['area', 'circle'];
   var area = d3.area()

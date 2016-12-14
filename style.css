@@ -1,10 +1,12 @@
 body {
   background : #ededed;
+
 }
 #container {
   max-width : 1600px;
   margin : 0 auto;
   font-family: "Apple SD Gothic Neo", sans-serif;
+  opacity : 0;
 }
 a {
   text-decoration: none;

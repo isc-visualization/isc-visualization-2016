@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+        <title>Final - 2012-13369</title>
+        <script type="text/javascript" src="d3.js"></script>
+        <script type="text/javascript" src="jquery-latest.min.js"></script>
+        <style>
+			circle {
+				cursor: pointer;
+			}
+			text{
+				cursor:default;
+				stroke-width:1px;
+			}
+			svg {
+				cursor: pointer;
+				pointer-events: bounding-box;
+			}
+          body{
+            text-align: center;
+            font-family:Courier New;
+          }
+          .divTable{
+            overflow: hidden;
+            margin:0 auto;
+            width:910px;
+          }
+          .yearSpan{
+            display: inline-block;  
+            width:290px;
+            text-align: center;
+          }
+          .catSpan{
+            font-weight: bold;
+/*            border-bottom: black;*/
+/*            border-bottom-style: dashed;*/
+            text-align: left;
+            display: inline-block;  
+            width:260px;
+            margin:3px 15px;
+          }
+          .catSpan span{
+            display: inline-block;
+          }
+          .catSpanSel{
+            border-bottom-style: solid !important;;
+          }
+          .fatiSpan{
+            margin-left:75px;
+            border-bottom: red;
+            cursor: pointer;
+            pointer-events: bounding-box;
+          }
+          .warSpan{
+            border-bottom: blue;
+            margin-left:17px;
+            cursor: pointer;
+            pointer-events: bounding-box;
+          }
+          .divYear{
+            float:left;
+            margin:0 15px;
+          }
+          .divYearSel{
+            float:left;
+            margin:0 15px;
+          }
+          .divPlayer{
+            width:260px;
+            overflow:hidden;
+            padding: 0 5px;
+            margin: 1px 0;
+            line-height: 0.9;
+/*            border: 1px solid black;*/
+            cursor: pointer;
+            pointer-events: bounding-box;
+          }
+          .divPlayerSel{
+            background-color: rgba(255,150,0,0.3);
+          }
+          .divName{
+            font-family: Arial, Dotum, "돋움", sans-serif;
+            float:left;
+            width:100px;
+            text-align: center;
+            padding: 2px 0 0 0;
+            margin: 0 5px;
+          }
+          .divValues{
+            float:right;
+            width:50px;
+            text-align: center;
+            padding: 2px 0 0 0;
+            margin: 0px 5px;
+            
+          }
+          .lineSpan{
+            display:inline-block;height:2px;width:20px;margin-bottom:4px;
+          }
+          #fati-btn, #l-title, #g-title{
+            cursor: pointer;
+		    pointer-events: bounding-box;
+          }
+          .mouseSpot{
+            fill : red !important;
+          }
+          .remoteControll{
+            border: 1px solid black;
+            width:145px;
+            position:fixed;
+            right:20px;
+            top:200px;
+            padding-bottom: 15px;
+          }
+          #remoteMove{
+            width:100%;
+            cursor: pointer;
+            padding: 5px 0 10px 0;
+		    pointer-events: bounding-box;
+          }
+          #remoteMove div{
+            width:100px;
+            height:5px;
+            margin:auto;
+            border-top: 1px solid;
+            border-bottom: 1px solid;
+          }
+          #s-title{
+            margin: 0 15px 0 15px;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom:20px;
+          }
+          .remoteControll a{
+            text-align: left;
+            display: block;
+            text-decoration: none;
+            color:black ;
+/*            border: 1px solid black;*/
+            margin:auto;
+            margin-bottom: 0px;
+            padding: 3px 0;
+            width:110px;
+            cursor: pointer;
+		    pointer-events: bounding-box;
+          }
+          .divTable a{
+            text-decoration: none;
+            font-size:13px;
+            position:relative;
+            top:-5px;
+          }
+          .playerLookUp{
+            font-weight: bold;
+            font-size:18px;
+            cursor: pointer;
+		    pointer-events: bounding-box;
+          }
+/*
+          .keySpot{
+            fill : orange !important;
+          }
+*/
+        </style>
+    </head>
+    <body>
+      <a id="anc0"></a>
+      <img src = "visual_v2_0.png"/>
+      <div class="divTable" style="text-align:left;margin:0 auto 20px auto;">
+        <h2>프로야구 선수혹사 그 실체에 대해 알아보자</h2>
+        <p><span style="color:red;font-weight: bold;">혹사지수</span> : 혹사지수는 Closer Fatigue를 투구수 기반으로 바꾸어 연투시 가중치를 주어 투수혹사정도를 추정하는 방법이다.   공식적으로 사용되는 지표는 아니므로 주의를 요한다. 계산방법은 아래와 같다.<br/>
+          &nbsp; &nbsp;휴식일 없이 등판 : 투구수×4<br/>
+          &nbsp; &nbsp;1일 휴식후 등판 : 투구수×3<br/>
+          &nbsp; &nbsp;2일 휴식후 등판 : 투구수×2<br/>
+          &nbsp; &nbsp;3일 휴식후 등판 : 투구수×1.5<br/>
+          &nbsp; &nbsp;4일 이상 휴식후 등판 : 투구수×1(=가중치 없음)<br/>
+          일반적으로 이렇게 구해진 값을 시즌별로 누적하여 사용한다.</p>
+        <p><span style="color:blue;font-weight: bold;">WAR</span> : Wins Above Replacement, 대체 선수에 비해 몇 승을 더 기여했는지를 나타낸 것으로, 선수가 팀 승리에 얼마나 기여했는가를 표현하는 종합적인 성격의 스탯이다. <u>한 시즌에서의 선수의 기량을 보기 위해서 사용하였다.</u></p>
+        <p><span style="color:green;font-weight: bold;">WHIP</span> : Walks Plus Hits Divided by Innings Pitched, 이닝당 안타 볼넷 허용률로, 한 이닝에 몇 명의 주자를 내보냈는지 나타낸다. <u>한 경기에서의 선수의 기량을 보기 위해서 사용하였다.</u></p>
+        <p style="text-align:right">*자료는 모두 www.statiz.co.kr에서 제공되는 값을 사용하였다.<br>*선수는 2014,2015,2016년에 경기를 많이 나온 순서로 선별하였다.</p>
+      </div>
+      <a id="anc1"></a>
+      <div class="divTable">
+        <p style="margin:0;font-size:20px;font-weight: bold;">
+          <span class ="yearSpan">2014</span>
+          <span class ="yearSpan">2015</span>
+          <span class ="yearSpan">2016</span>
+        </p>
+        <p style="margin:0;font-size:16px;">
+          <span class ="catSpan"><span style="margin-left:35px">이름</span><span class="fatiSpan catSpanSel" id="fati2014" >혹사지수</span><span class="warSpan" id="war2014">WAR</span></span>
+          <span class ="catSpan"><span style="margin-left:35px">이름</span><span class="fatiSpan catSpanSel" id="fati2015">혹사지수</span><span class="warSpan" id="war2015">WAR</span></span>
+          <span class ="catSpan"><span style="margin-left:35px">이름</span><span class="fatiSpan catSpanSel" id="fati2016">혹사지수</span><span   class="warSpan" id="war2016">WAR</span></span>
+        </p>
+        <div id= "div2014" class = "divYear"></div>
+        <div id= "div2015" class = "divYear"></div>
+        <div id= "div2016" class = "divYear"></div>
+      </div>
+      <a id="anc2"></a>
+      <div class = "divTable" style="margin:20px auto 0px auto;">
+        <p style="margin:0;font-size:20px;font-weight: bold;">
+          <span class ="yearSpan">2014</span>
+          <span class ="yearSpan">2015</span>
+          <span class ="yearSpan">2016</span>
+        </p>
+        <div id= "divsel2014" class = "divYearSel"></div>
+        <div id= "divsel2015" class = "divYearSel"></div>
+        <div id= "divsel2016" class = "divYearSel"></div>
+      </div>
+<!--
+      <div style="width:1000px;text-align:center;font-size:20px;margin:auto;">
+        <span id="l-title">&lt;</span>
+        <span id="s-title" style=" " value = "0">2014 - 전유수</span>
+        <span id="g-title">&gt;</span>
+      </div>
+-->
+      <div style="width:1000px;height:15px;text-align:center;font-size:14px;margin:auto;position:relative;">
+        <span style="position:absolute; right:50px;">
+          <span style="color:red;"><span style="background:red;" class="lineSpan"></span>&nbsp;<span id="fatititle">혹사지수</span></span>
+          <span style="color:green;"><span style="background:green;" class="lineSpan"></span>&nbsp;WHIP</span>
+        </span>
+        <button id ="fati-btn" style="position:absolute;right:0" value="0">누적</button>
+      </div>
+      <div id="sdiv"></div>
+      <a id="anc3"></a>
+      <div style="margin-top:80px;">
+        <h2>혹사지수-다음시즌war 분포도</h2>
+        <div style="position:relative; left:170px;">
+          <span style="color:red;"><span style="background:red;" class="lineSpan"></span>&nbsp;혹사지수</span>
+          <span style="color:blue;"><span style="background:blue" class="lineSpan"></span>&nbsp;WAR</span>
+        </div>
+      </div>
+      <div id="rankdiv"></div>
+      <a id="anc4"></a>
+      <div class="divTable" style="text-align:left;margin:0 auto 20px auto;">
+        <h2>들여다보기</h2>
+        <p>- <span style="color:#ff6600" class="playerLookUp">권혁</span>선수는 2014년에 혹사지수가 낮음에도 다음시즌인 2015년의 WAR역시 낮고, 2015년 혹사지수가 1등임에도 다음시즌인  2016년의 WAR가 3등으로, 던질수록 잘던지는 선수의 모습을 보여준다. 하지만, 권혁이 팔꿈치 통증으로 16년 8월 24일에 엔트리 말소가 되었다는 것은 알아두자<a href="http://sports.donga.com/3/01/20160824/79958364/3" target="_blank">[1]</a></p>
+        <p>- <span style="color:#ff6600" class="playerLookUp">송창식</span>선수는 버거씨병을 딛고 2011시즌에 다시 복귀하면서 인간승리를 보여준 선수이지만, 그가 유명한 또 다른 이유는 16년 4월 14일 일어난 벌투논란때문이다. 당시 그는 휴식일없이 구원등판하여 90구를 던졌는데, 8월 24일 이후에 경기에 나오지 못했음에도 당당히 16년 혹사지수1위에 랭크되어있는것을 알 수 있다.<a href="http://sports.news.naver.com/kbaseball/news/read.nhn?oid=529&aid=0000003968" target="_blank">[2]</a> 그가 결국 팔꿈치수술을 받게된것은 놀랍지 않다.<a href="http://www.mbcsportsplus.com/kbo/news/?mode=view&cate=1&b_idx=99972865.000" target="_blank">[3]</a></p>
+        <p>- <span style="color:#820024" class="playerLookUp">조상우</span>선수는 표에 있는 선수들중, 가장 높은 WAR를 가진 선수인데, 2014년 혹사지수 3위임에도 다음년도에 WAR 1등을 하면서 혹사란것은 없다는 것을 보여주는듯 했지만, 결국 2016년에 시즌아웃되고 만다. 넥센의 염경엽 감독은 인터뷰에서 이에 대해 후회한다고 밝힌바 있다.<a href="http://www.yonhapnews.co.kr/bulletin/2016/03/09/0200000000AKR20160309074351007.HTML" target="_blank">[4]</a></p>
+        <p>- <span style="color:#ff6600" class="playerLookUp">안영명</span>선수는 표에 있는 선수들중 2014년 WAR 4위의 준수한 선수였지만, 거듭된 투구의 문제였는지 2015시즌의 경우 순위의 중반에 머물다가, 2016시즌이 되서는 1군에서 찾아보기 힘든 선수가 되었다. 결국 그는 7월 19일에 우측 어깨 관절 클리닉을 받기위해 수술대에 올랐다.<a href="http://news.jtbc.joins.com/article/article.aspx?news_id=NB11276625" target="_blank">[5]</a></p>
+        
+      </div>
+      <div class="remoteControll">
+        <div id="remoteMove"><div></div></div>
+        <div id="s-title" style=" " value = "0">2014-전유수</div>
+        <a onclick="anchor(0)">- 투수혹사란?</a>
+        <a onclick="anchor(1)">- 전체 테이블</a>
+        <a onclick="anchor(2)">- 세부 차트</a>
+        <a onclick="anchor(3)">- 분포도</a>
+        <a onclick="anchor(4)">- 들여다보기</a>
+      </div>
+      <br>
+        <script>
+//radio Anchor
+          function anchor(id){
+            console.log($("#anc"+id).offset().top);
+            window.scrollTo(0,$("#anc"+id).offset().top-50);
+          }
+          
+          var remoteDragging = false;
+          $("#remoteMove").mousedown(function() {
+            remoteDragging = true;
+          })
+          $("body").mousemove(function(e) {
+            e.preventDefault();
+            if(remoteDragging == true){
+              console.log(e);
+              $(".remoteControll").css("top",(e.clientY-10)+"px");
+            }
+          });
+          $("body").mouseup(function() {
+              remoteDragging = false;
+          });
+/*
+ *  x축에는 fati값을, y축에는 다음시즌 era인 차트를 그려 이름들을 그 차원에 뿌린다.
+ *  처음에 era를 사용하고있지만, 좀더 상황보다 투수 자체의 능력에 영향을 받는 WHIP를 사용하기로 했다.
+ *  data는 statiz사이트에 날짜별 경기데이터가 2014,2015,2016밖에 없었기 때문에, 3개의 년도의 데이터를 사용했고, 이때, 3개년도에서 경기수 순위로  받아왔다.
+ *  표 밑에도 기록
+
+    그래프도 년도 모두 다같이
+    diff chart
+ *
+ *  소속팀을 띄울것인가?
+ */
+          var koKR = {
+            "dateTime": "%Y/%m/%d %a %X",
+            "date": "%Y/%m/%d",
+            "time": "%H:%M:%S",
+            "periods": ["오전", "오후"],
+            "days": ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+            "shortDays": ["일", "월", "화", "수", "목", "금", "토"],
+            "months": ["01월", "02월", "03월", "04월", "05월", "06월", "07월", "08월", "09월", "10월", "11월", "12월"],
+            "shortMonths": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+          };
+          var parse = d3.timeParse('%Y-%m-%d');
+          d3.timeFormatDefaultLocale(koKR);
+          var formatTime = d3.timeFormatLocale(koKR).format("%B %d일");
+          function divide(a,b){ //a/b, 0으로 나누는 경우를 대비
+            if(b != 0){
+              return a/b;
+            }
+            if(a == 0){
+              return 0;
+            }
+            return 99.9;
+          }
+          d3.csv('parsed-war.csv')
+		    .row(row_war)
+            .get(callback_war);
+          function row_war(d) {
+            d.name = d.name;
+            d.year = d.year;
+            d.war = +d.war;
+            return d;
+          }
+          function callback_war(err, data_war) {
+            if(err) return console.error(err);
+            console.log(data_war);
+            
+            d3.csv('parsed.csv')
+              .row(row)
+              .get(callback);
+
+            function row(d) {
+              d.name = d.name;
+              d.year = d.year;
+              d.date = parse(d.year+'-'+d.date);
+              d.pitch = +d.pitch;
+              d.whipCal = +d.whip;
+              d.inning = +d.inning;
+              d.inning = (d.inning-parseInt(d.inning)*0.7)*10/3;
+              d.whip = divide(d.whipCal,d.inning);
+              if(d.whip>10){d.whip = 10;} //너무 큰 경우 고려
+              d.fati = +d.fati;
+              return d;
+            }
+            function callback(err, data) {
+              if(err) return console.error(err);
+  /* 데이터 처리 */
+  //이름과 년도로 nested시킨다
+              var nested_data = d3.nest().key(function(d){return d.year}) 
+                .rollup(function(values){
+                  return d3.nest().key(function(d){return d.name}).entries(values);
+                }).entries(data);
+              var yCount = nested_data.length;
+              var pCount = nested_data[0].value.length; //전체 사람수
+  //혹사지수 누적계산
+              for(var i=0;i<yCount;i++){
+                for(var j=0;j<pCount;j++){
+                  var tmp_sum = 0;
+                  for(var k=0;k<nested_data[i].value[j].values.length;k++){
+                    tmp_sum+=nested_data[i].value[j].values[k].fati;
+                    nested_data[i].value[j].values[k]["fati_add"] = tmp_sum;
+                  }
+                  for(var k=0;k<data_war.length;k++){
+                    if(nested_data[i].value[j]["key"]===data_war[k]["name"] && nested_data[i]["key"]===data_war[k]["year"]){
+                      nested_data[i].value[j]["war"] = data_war[k]["war"];
+                    }
+                  }
+                  nested_data[i].value[j]["fati_tot"] = tmp_sum;
+                }
+              }
+  //년도별 각각 fati로 sorting, rank를 저장한다.
+              for(var i =0;i<yCount;i++){
+                nested_data[i].value = nested_data[i].value.sort(function(a,b) { return (b.war!=a.war)?b.war - a.war:b.fati_tot-a.fati_tot; })
+                for(var j=0;j<pCount;j++){
+                  nested_data[i].value[j]["war_rank"] = j;
+                }
+                nested_data[i].value = nested_data[i].value.sort(function(a,b) { return b.fati_tot - a.fati_tot; })
+                for(var j=0;j<pCount;j++){
+                  nested_data[i].value[j]["fati_rank"] = j;
+                }
+              }
+              console.log(nested_data);
+
+  /*년도별 테이블*/
+              
+              function rank2alp(rank){
+                return (1-Math.sqrt(rank/(pCount-1)))+0.1;  //투명도 계산
+//                return 1-rank/(pCount-1);
+              }
+//              drawTable();
+              refreshTable(0,nested_data[0].value[0]["key"])
+              function drawTable(){
+                for(var i =0;i<yCount;i++){
+                  $("#div"+(i+2014)).empty();
+                  var keyj = 0;
+                  for(var j=0;j<pCount;j++){
+                    var appendStr = "<div class='divName'>"+nested_data[i].value[j]["key"]+"</div>\
+                        <div class='divValues' style='background:rgba(49,130,189,"+rank2alp(nested_data[i].value[j]["war_rank"])+")'>"+nested_data[i].value[j]["war"].toFixed(2)+"</div>\
+                        <div class='divValues' style='background:rgba(222,45,38,"+rank2alp(nested_data[i].value[j]["fati_rank"])+")'>"+Math.round(nested_data[i].value[j]["fati_tot"])+"</div>";
+                    var tmp = $('<div/>', {
+                      html: appendStr,
+                      class: "divPlayer"
+                    });
+                    tmp.attr("id",i*nested_data[i].value.length+j);
+                    $("#div"+(i+2014)).append(tmp);
+                  }
+                }
+//클릭
+                $(".divPlayer").click(function(e){ // 테이블 클릭하면 세부 차트 변경
+                  if(e.currentTarget.id==="-1"){return;}
+                  $(".divPlayerSel").removeClass("divPlayerSel");
+                  var i = Math.floor(e.currentTarget.id/pCount);
+                  var j = e.currentTarget.id%pCount;
+                  var keystr = nested_data[i].value[j]["key"];
+                  drawChart(i,j);
+                  pSelected(i,j);
+                  rankKeySpot();
+                });
+              }
+              function pSelected(i,j){
+                $("#s-title").html((2014+i)+"-"+nested_data[i].value[j]["key"]);
+                $("#s-title").attr("value",i*pCount+j);
+                $(".divPlayerSel").removeClass("divPlayerSel");
+                for(var k=0;k<nested_data.length;k++){
+                  $("#divsel"+(k+2014)).empty();
+                  for(var l=0;l<nested_data[k].value.length;l++){
+                    if(nested_data[i].value[j]["key"] === nested_data[k].value[l]["key"]){ 
+                      //선택된 선수를 테이블에서 하이라이트한다.
+                      $("#"+(k*pCount+l)).addClass("divPlayerSel");
+                      //테이블 아래에 선택된 선수의 정보를 따로 보여준다.
+                      var appendStr = "<div class='divName'>"+nested_data[k].value[l]["key"]+"</div>\
+                        <div class='divValues' style='background:rgba(49,130,189,"+rank2alp(nested_data[k].value[l]["war_rank"])+")'>"+nested_data[k].value[l]["war"].toFixed(2)+"</div>\
+                        <div class='divValues' style='background:rgba(222,45,38,"+rank2alp(nested_data[k].value[l]["fati_rank"])+")'>"+Math.round(nested_data[k].value[l]["fati_tot"])+"</div>";
+                      var tmp = $('<div/>', {
+                        html: appendStr,
+                        class: "divPlayer"
+                      });
+                      if(i==k){ //해당 년도에 표시
+                        tmp.attr('style','border: 1px solid orange;background:rgba(255,150,0,0.3)');
+                      }
+                      $("#divsel"+(k+2014)).append(tmp);
+                    }
+                  }
+                }
+              }
+              function refreshTable(i,keystr){
+                drawTable();
+                var j=0;
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(keystr === nested_data[i].value[j]["key"]){break;}
+                }
+                pSelected(i,j);
+              }
+//오름차순 내림차순 정렬 버튼 클릭
+              $(".fatiSpan").click(function(e){
+                var yr = (e.currentTarget.id).substr(4)-2014;
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                var keystr = nested_data[i].value[j]["key"];
+                for(var k=0;k<yCount;k++){
+                  if(k==yr){
+                    nested_data[k].value = nested_data[k].value.sort(function(a,b) { return b.fati_tot - a.fati_tot; });
+                  }
+                }
+                $("#war"+(yr+2014)).removeClass("catSpanSel");
+                $("#fati"+(yr+2014)).addClass("catSpanSel");
+                refreshTable(i,keystr);
+              });
+              $(".warSpan").click(function(e){
+                var yr = (e.currentTarget.id).substr(3)-2014;
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                var keystr = nested_data[i].value[j]["key"];
+                for(var k=0;k<yCount;k++){
+                  if(k==yr){
+                    nested_data[k].value = nested_data[k].value.sort(function(a,b) {return (b.war!=a.war)?b.war - a.war:b.fati_tot-a.fati_tot; });
+                  }
+                }
+                $("#war"+(yr+2014)).addClass("catSpanSel");
+                $("#fati"+(yr+2014)).removeClass("catSpanSel");
+                refreshTable(i,keystr)
+              });
+//년도 좌우 버튼 클릭
+              $("#l-title").click(function(e){ //년도 변경
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                if(i<=0){return;}
+                var keystr = nested_data[i].value[j]["key"];
+                console.log(keystr);
+                i--;
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(keystr === nested_data[i].value[j]["key"]){break;}
+                }
+                drawChart(i,j);
+                pSelected(i,j);
+              });
+              $("#g-title").click(function(e){ //년도 변경
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                if(i>=2){return;}
+                var keystr = nested_data[i].value[j]["key"];
+                console.log(keystr);
+                i++;
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(keystr === nested_data[i].value[j]["key"]){break;}
+                }
+                drawChart(i,j);
+                pSelected(i,j);
+              });
+//아래 sel버튼 눌리기
+              $(".divYearSel").click(function(e){
+                var yr = (e.currentTarget.id).substr(6)-2014;
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                var keystr = nested_data[i].value[j]["key"];
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(keystr === nested_data[yr].value[j]["key"]){break;}
+                }
+                drawChart(yr,j);
+                pSelected(yr,j);
+              });
+//누적 토글 버튼
+              $('#fati-btn').click(function(e){
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                if($('#fati-btn').attr("value")==0){
+                  $('#fati-btn').attr("value",1);
+                  $('#fati-btn').html("날짜별");
+                  $('#fatititle').text("누적혹사지수");
+                }else{
+                  $('#fati-btn').attr("value",0);
+                  $('#fati-btn').html("누적");
+                  $('#fatititle').text("혹사지수");
+                }
+                drawChart(i,j);
+              })
+
+/*년도별 플레이어별 세부차트*/
+//svg w,h지정
+              var w = 1000, h = 260;
+              var margin = {top: 10, right: 50, bottom:30, left:40};
+              var innerW = w - margin.left - margin.right;
+              var innerH = h - margin.top - margin.bottom;
+              var xRange = [0, innerW];
+              var yRange = [innerH, 10];
+//x,y 범위 정해주기 
+              var x = {};
+              d3.nest().key(function(d){return d.year}) 
+                .rollup(function(values){
+                  tmparr = d3.nest().key(function(d){return d.name}).entries(values);
+                  xDomain = d3.extent(values, function(d){return d.date;})
+                  x[values[0].year-2014] = d3.scaleTime().domain(xDomain).range(xRange); //x를 만든다.
+                  return tmparr;
+                }).entries(data);
+
+
+              var svg2 = d3.select('#sdiv')
+                           .append('svg')
+                           .attr('width', w)
+                           .attr('height', h)
+                           .append('g')
+                           .attr('transform','translate(' + [margin.left+","+margin.top] +')');
+
+              drawChart(0,0);
+              function drawChart(pyear,player){
+                var tmpdata = nested_data[pyear].value[player].values;
+
+                var yFDomain = d3.extent(tmpdata, function(d){return d.fati});
+                var yF = d3.scaleLinear().domain(yFDomain).rangeRound(yRange);
+                var yFADomain = d3.extent(tmpdata, function(d){return d.fati_add});
+                var yFA = d3.scaleLinear().domain(yFADomain).rangeRound(yRange);
+  //            var yWDomain = d3.extent(tmpdata, function(d){return d.whip});
+                var yWDomain = [0,10]; //WHIP도메인은 0부터 3으로 고정
+                var yW = d3.scaleLinear().domain(yWDomain).rangeRound(yRange);
+  //              console.log(yPDomain);
+  //              console.log(xDomain);
+                svg2.selectAll('.series').remove();
+                var series2 = svg2.selectAll('.series')
+                          .data([tmpdata])
+                          .enter().append('g')
+                          .style('stroke-width',1)
+                          .attr('class', 'series');
+//그래프 그리기
+                var lineF = d3.line()
+                    .x(function(d){return x[pyear](d.date);})
+                    .y(function(d){return yF(d.fati);});
+                var areaF = d3.area()
+                    .x(function(d){return x[pyear](d.date);})
+                    .y0(yFA(0))
+                    .y1(function(d){return yFA(d.fati_add);});
+                    
+                var lineW = d3.line()
+                    .x(function(d){return x[pyear](d.date);})
+                    .y(function(d){return yW(d.whip);});
+                if($('#fati-btn').attr("value")==0){             //fatigue 날짜별 그래프
+//                  var point2 = series2.selectAll('circle')
+//                            .data(tmpdata)
+//                            .enter().append('circle')
+//                            .style('cursor', 'pointer')
+//                            .style('fill', "red")
+//                            .attr('r', 2) //원반지름 2로
+//                            .attr('transform', function(d){
+//                              return 'translate('+ x[pyear](d.date) + ',' + yF(d.fati) + ')';
+//                            });
+                  series2.append('path')                        
+                      .style('stroke', "red")
+                      .style('fill', 'none')
+                      .attr('d', lineF);
+                }else{
+                  series2.append('path')                         //fatigue 누적그래프
+                      .style('stroke', "red")
+                      .style('fill', "rgba(255,0,0,0.2)")
+                      .attr('d', areaF);
+                }
+                series2.append('path')                         // war그리기
+                    .style('stroke', "green")
+                    .style('fill', 'none')
+                    .attr('d', lineW);
+//x축 그리기
+                var xAxis = d3.axisBottom(x[pyear]).tickSize(0).ticks(10);
+                var xAxisG = series2.append('g')
+                          .attr('class', 'x axis')
+                          .style('stroke', '#000000')
+                          .attr('transform','translate(' + [0+","+innerH] +')')
+                          .call(xAxis);
+//마우스 오버시 툴팁
+                svg2.on('mousemove', function() {
+                  var posX= d3.mouse(this)[0];
+                  var date = x[pyear].invert(posX);
+                  //가장 가까운 경기 구하기
+                  var minDif=Math.abs(date-tmpdata[0].date);
+                  var minInd = 0;
+                  for(var i=1;i<tmpdata.length;i++){
+                    if(minDif>Math.abs(date-tmpdata[i].date)){
+                      minDif = Math.abs(date-tmpdata[i].date);
+                      minInd = i;
+                    }
+                  }
+                  svg2.selectAll('.lines').remove();
+                  svg2.append('line').attr("class","lines")
+                    .attr('x1',x[pyear](tmpdata[minInd].date))
+                    .attr('x2',x[pyear](tmpdata[minInd].date))
+                    .attr('y1',0).attr('y2',innerH)
+                    .style('stroke','black')
+                    .style('stroke-width',1);
+                  svg2.selectAll('.texts').remove();
+                  if($('#fati-btn').attr("value")==0){
+                    svg2.append('text').attr("class","texts")
+                      .attr('transform','translate('+ x[pyear](tmpdata[minInd].date) +',' + yF(tmpdata[minInd].fati) + ')')
+                      .style('display', 'block')
+                      .text(tmpdata[minInd].fati);
+                  }else{
+                    svg2.append('text').attr("class","texts")
+                      .attr('transform','translate('+ x[pyear](tmpdata[minInd].date) +',' + yFA(tmpdata[minInd].fati_add) + ')')
+                      .style('display', 'block')
+                      .text(tmpdata[minInd].fati_add);
+                  }
+                  svg2.append('text').attr("class","texts")
+                    .attr('transform', 'translate('+ x[pyear](tmpdata[minInd].date) +',' + yW(tmpdata[minInd].whip) + ')')
+                    .style('display', 'block')
+				    .text(tmpdata[minInd].whip.toFixed(2));
+                  svg2.append('text').attr("class","texts")
+                    .attr('transform', 'translate('+ (x[pyear](tmpdata[minInd].date)-35) +',' + (innerH+25) + ')')
+                    .style('display', 'block')
+				    .text(formatTime(tmpdata[minInd].date));
+                });
+              }
+//툴팁 삭제
+              svg2.on('mouseleave', function() {
+                svg2.selectAll('.lines').remove();
+                svg2.selectAll('.texts').remove();
+              });
+/*rank chart  */
+              var datar = [];
+              for(var i=0;i<yCount-1;i++){
+                var tmparr = nested_data[i].value.map(function(d){
+//                  console.log(d);
+                  var disp = (i+2014)+"-"+(i+2015)+""+d.key;
+                  var name = d.key;
+                  var fati = d.fati_tot;
+                  var war_ny; //next year
+                  for(var j=0;j<pCount;j++){
+                    if(nested_data[i+1].value[j].key == d.key){
+                      war_ny = nested_data[i+1].value[j].war;
+                      break;
+                    }
+                  }
+                  return {disp:disp, name:name, fati:fati, war_ny:war_ny}
+                });
+                datar = datar.concat(tmparr);
+              }
+              console.log(datar);
+//svg w,h지정
+              var wr = 700, hr = 500;
+              var marginr = {top: 20, right: 120, bottom:20, left:120};
+              var innerWr = wr - marginr.left - marginr.right;
+              var innerHr = hr - marginr.top - marginr.bottom;
+              var xRanger = [10, innerWr];
+              var yRanger = [innerHr, 10];
+              var svgr = d3.select('#rankdiv')
+                           .append('svg')
+                           .attr('width', wr)
+                           .attr('height', hr)
+                           .append('g')
+                           .attr('transform','translate(' + [marginr.left+","+marginr.top] +')');
+              var xDomainr = d3.extent(datar, function(d){return d.fati});
+              var xr = d3.scaleLinear().domain(xDomainr).rangeRound(xRanger);
+              var yDomainr = d3.extent(datar, function(d){return d.war_ny});
+              var yr = d3.scaleLinear().domain(yDomainr).rangeRound(yRanger);
+              console.log(xDomainr);
+              console.log(yDomainr);
+              var pointr = svgr.selectAll('circle')
+                  .data(datar)
+                  .enter().append('circle')
+                  .style('cursor', 'pointer')
+                  .style('fill', "black")
+                  .attr('r', 4) //원반지름 2로
+                  .attr('transform', function(d){
+                    return 'translate('+ xr(d.fati) + ',' + yr(d.war_ny) + ')';
+                  });
+              var xAxisr = d3.axisTop(xr).tickSize(0).ticks(10);
+              var xAxisGr = svgr.append('g')
+                        .attr('class', 'x axis')
+                        .style('stroke', '#ff0000')
+//                        .attr('transform','translate(' + [0+","+innerHr] +')')
+                        .call(xAxisr);
+              var yAxisr = d3.axisLeft(yr).tickSize(0).ticks(10);
+              var yAxisGr = svgr.append('g')
+                        .attr('class', 'y axis')
+                        .style('stroke', '#0000ff')
+//                        .attr('transform','translate(' + [innerWr+","+0] +')')
+                        .call(yAxisr);
+//툴팁
+              pointr.on('mouseenter', function(dat) {
+                svgr.selectAll('.tooltip_txt').remove();
+                svgr.selectAll('circle').classed('mouseSpot', function(d){return d.name===dat.name?true:false;});
+                for(var i=0;i<datar.length;i++){
+                  if(dat.name == datar[i].name){
+                    svgr.append('text')
+                        .text(datar[i].disp).attr('fill',"red")
+                        .attr('dx',5)
+                        .attr('dy',-5)
+                        .attr('class','tooltip_txt')
+                        .attr('transform','translate('+ xr(datar[i].fati) + ',' + yr(datar[i].war_ny) + ')');
+                  }
+                }
+              });
+              pointr.on('mouseleave', function(dat) {
+                svgr.selectAll('.tooltip_txt').remove();
+                svgr.selectAll('circle').classed('mouseSpot',false);
+              });
+              pointr.on('click', function(dat) {
+                var year = dat.disp.substr(0,4)-2014;
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(dat.name === nested_data[year].value[j]["key"]){break;}
+                }
+                drawChart(year,j);
+                pSelected(year,j);
+                rankKeySpot();
+              });
+//앞의 클릭한 선수에 따라 주황식으로 그려준다.
+              rankKeySpot();
+              function rankKeySpot(){
+                var i = Math.floor($("#s-title").attr("value")/pCount);
+                var j = $("#s-title").attr("value")%pCount;
+                var keystr = nested_data[i].value[j]["key"];
+//                svgr.selectAll('circle').attr('fill', function(d){return d.name===keystr?"orange":"black";});
+                svgr.selectAll('circle').style('fill', function(d){return d.name===keystr?"orange":"rgba(0,0,0,0.7)";});
+              }
+//들여다보기에서 클릭했을때 처리
+              $(".playerLookUp").click(function(e){
+                var keystr = e.currentTarget.innerText;
+                $(".divPlayerSel").removeClass("divPlayerSel");
+                var i = 0;
+                for(j=0;j<nested_data[i].value.length;j++){
+                  if(keystr === nested_data[i].value[j]["key"]){break;}
+                }
+                drawChart(i,j);
+                pSelected(i,j);
+                rankKeySpot();
+              });
+            }
+          }
+          
+        </script>
+    </body>
+</html>

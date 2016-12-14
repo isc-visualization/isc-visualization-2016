@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="utf-8">
+    <title> OECD 유리천장 </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="d3/d3.js"></script>
+  </head>
+  <style>
+  .axis line {
+    stroke: #777;
+    stroke-dasharray: 2,2;
+  }
+  h1 {
+    display: block;
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+  }
+  body {
+   font-family:'애플 SD 산돌고딕 Neo';
+   font-size: 18px;
+   line-height: 30px;
+   letter-spacing: 0.4px;
+  }
+  div.ex1 {
+    max-width:1000px;
+    margin: auto;
+}
+#indent {
+  margin-top: 30px;
+  margin-left: 50px;
+  margin-bottom: 30px;
+}
+
+.d3-tip {
+  line-height: 1;
+  /*font-weight: bold;*/
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+  </style>
+
+  <body>
+  <div class="ex1">
+    <br>
+    <h1>교육과 직업 통계로 살펴보는, OECD 국가 여성이 겪는 ‘유리천장’</h1>
+    <p style= "text-align:right">made by. 한 상 훈</p>
+    <br>
+    <p> 대부분의 선진국이 OECD 회원국에 해당하기 때문에, OECD 국가 통계를 살펴보면 전세계의 현재와 미래의 추세를 어느정도 짐작해볼 수 있다. 여기서는 OECD 국가 여성들이 겪는 ‘유리천장’을 교육 통계와 직업 통계로 살펴본다. 이곳의 모든 시각화는 <a href="https://www.oecd.org/gender/">OECD 성평등 통계 데이터</a>를 사용해 만들었다.</p>
+    <br>
+    <br>
+      <svg height="30" width="1000">
+        <g id = "tool1" transform="translate(70,0)">
+          <rect x = '0' width="18" height="18" style="fill:rgb(52,152,219)" />
+          <text x="25" y='14' fill="black" style ="font-size:14px">남성 교육율</text>
+          <rect x = '110' width="18" height="18" style="fill:rgb(231,76,60)" />
+          <text x="135" y='14' fill="black" style="font-size:14px">여성 교육율</text>
+          <circle cx = '228' r="6" cy="9" stroke = "black" fill="none" />
+          <text x="243" y='14' fill="black" style="font-size:14px">차이 (%)</text>
+        </g>
+        <g id = "tool2" transform="translate(730,0)">
+          <rect x = '155' width="18" height="18" style="fill:rgb(76,153,0)" />
+          <text x="0" y='14' fill="black" style="font-size:14px">임금 격차 / 남성 임금 (%)</text>
+        </g>
+      </svg>
+
+
+    <p id = "graph1" style="text-align:center"></p>
+    <p>  OECD 국가의 남녀 별 교육율 차이와 임금 차이를 비교했다. 전반적으로 여성이 남성보다 적은 교육율과 임금을 보이는 것을 확인할 수 있다. ‘교육율’과 ‘임금’을 클릭하면 그에 따라서 크기 순서대로 나열되고, 국가를 클릭하면 아래 모든 정보가 그 국가에 대한 정보로 구성된다.</p>
+    <br>
+    <br>
+    <svg height="30" width="1000">
+      <g id = "tool1" transform="translate(70,0)">
+        <rect x = '0' width="18" height="18" style="fill:rgb(52,152,219)" />
+        <text x="25" y='14' fill="black" style ="font-size:14px">남성 교육율</text>
+        <rect x = '110' width="18" height="18" style="fill:rgb(231,76,60)" />
+        <text x="135" y='14' fill="black" style="font-size:14px">여성 교육율</text>
+      </g>
+      <g id = "tool2" transform="translate(730,0)">
+        <rect x = '155' width="18" height="18" style="fill:rgb(76,153,0)" />
+        <text x="0" y='14' fill="black" style="font-size:14px">여성 임금 (남성 대비 %)</text>
+      </g>
+    </svg>
+    <div display='inline'><div id = "graph2" style="text-align:center"></div> <div id = "graph3" style="text-align:center"></div></div>
+    <br>
+    <p>  흔히 말하는 소위 ‘유리천장’이라는 것이 어떻게 여성에게 작용하는지를 짐작할 수 있다. 유리천장(glass ceiling)이란, 충분한 능력을 갖춘 사람이 직장 내 성 차별이나 인종 차별등의 이유로 고위직을 맡지 못하는 상황을 비유적으로 이르는 경제학 용어로, <월 스트리트 저널>에서 1970년에 처음으로 사용했다. 여기서 '천장'은 승진을 방해하는 상황을 비유적으로 표현한 것이다. 또한, 이러한 차별은 공식적인 정책 등에는 드러나지 않아서 존재하지 않는 것처럼 보이므로, 이러한 현상을 유리 천장이라 일컫는 것이다. 즉, 소수집단이 직장의 좋은 자리를 얻지 못하게 하는 회사 규칙은 없지만, 이면에는 분명히 그러한 차별이 존재한다는 것이다. 데이빗 카터와 동료들은 유리 천장이 존재한다고 결론짓기 위해서는 네 가지의 특징을 충족해야 한다고 정의를 했다.
+      <br>
+      <div id = 'indent'>
+    1. 종업원의 업무 적합성에 의해 설명되지 않는 성적 또는 인종적 차별<br>
+    2. 더 낮은 수준의 성과에 비해 더 높은 수준의 성과보다 큰 성적 또는 인종적 차별<br>
+    3. 승진 기회에서의 큰 성적 또는 인종적 불평등(단순히 더 높은 수준의 성별, 인종별 비율에 의한 것이 아닌)<br>
+    4. 경력이 증가함에 따라 나타나는 성적, 인종적 불평등<br>
+    </div>
+      교육수준이 높을수록 교육 참여율은 떨어지고, 직장에서의 임금은 높아지는 것은 일반적인 사실이다. 그런데 문제는 그 교육 참여율과 임금의 변화정도에서 남녀의 차이가 확연하게 난다는 것이다. 여성의 교육 참여율과 임금은 교육 수준이 높아지면서 남성보다 더 빠르게 줄었다.
+      <br><br>
+     앞서 설명했듯이 여성이 유리천장을 경험하고 있다고 말하기 위해서는 능력, 성과와 관련없이 고위직에 오르기 어려워지는 차별이 있다는 사실을 확인해야 한다. 이에 대해 간접적으로 확인하기 위해 남녀의 PISA 테스트 점수를 비교해보자. OECD에서는 15세 학생들의 기술과 지식의 정책지향적 국제 지표를 제공하기 위해 국제학생평가프로그램(PISA: Program for International Student Assessment)를 설립해 읽기, 수학, 과학 세 분야의 PISA 테스트 점수를 측정했다. 전반적으로 여성이 남성보다 높은 점수를 얻은 것을 확인할 수 있다. 여성들이 오히려 더 높은 교육 점수를 받음에도 이후 참여율이나 임금에서 남성보다 더 큰 감소를 보이는 것은 성적인 불평등이 있음에 대한 간접적인 증거가 된다.
+    </p>
+    <div display='inline'>
+    <div id = "graph7" style="text-align:center"></div>
+    </div>
+    <p>  남녀간 교육율과 임금차이는 여전히 존재하지만, 시간 흐름에 따라 교육율의 격차와 임금의 격차가 전반적으로 조금씩 줄어들고 있다는 것을 확인할 수 있다. 또한, 고위직 비율도 점차 늘어나는 추세이다.
+
+교육율, 임금 수준과 같이 하나하나의 통계값은 정부가 정책 방향을 결정하는데 도움을 주지만, 통계값이 가지는 의미가 단면적이기 때문에 그 나라의 성차별 실태를 설명하기에 한계가 있을 수밖에 없다. 그런 맥락에서 유리천장 이론은 이러한 기존의 단편적 접근에서 벗어나려는 하나의 좋은 시도가 되었다. 예를 들어 유리천장에 대한 국민들의 공감을 바탕으로, 미국의 경우 1990년대 노동부 산하로 연방 유리 천장 위원회를 조직하여 활동했으며, 일부 유럽 국가에서는 여성임원할당제를 도입해 시행해 오고 있다.</p>
+
+    <script type="text/javascript" src = "d3-tip.js"></script>
+    <script type="text/javascript" src = "index.js">
+    </script>
+  </div>
+  </body>
+</html>

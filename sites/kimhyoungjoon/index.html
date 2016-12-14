@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<head>
+	<title>기말프로젝트 작업</title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="crossfilter.min.js"></script>
+	<style type="text/css">
+/*		html, body {
+			height: 100%;
+		}
+
+		html {
+			display: table;
+			margin: auto;
+		}*/
+
+		a {
+		    text-decoration: none;
+		    color: red;
+		}
+		body {
+			font-family: "애플 SD 산돌고딕 Neo";
+			margin: 0 auto;
+			margin-top: 80px;
+			width: 1280px;
+			/*min-height: 2000px;*/
+		}
+		div .chart {
+			display: inline-block;
+		}
+
+		.brush .selection {
+			fill: #bdbdbd  ;
+			opacity: 0.5;
+		}
+
+		:not(.selected).bar {
+			opacity: 0.8;
+			fill: #f0f0f0 ;
+		}
+
+		.mainCharts :not(.selected).bar {
+			opacity: 0.8;
+			fill: #f0f0f0 ;
+			stroke: #f0f0f0;
+		}
+		
+		.label {
+			color: #151530;
+		}
+
+		.bar {
+			stroke: #151530;
+			fill: #151530;
+		}		
+		
+		.title {
+			font-size: 20px;
+			font-weight: lighter;
+		}
+
+		#batter {
+			font-size: 20px;
+			border:none;
+			font-weight: lighter;
+		}
+
+		.intro-title {
+			font-size: 60px;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		.intro-description {
+			font-size: 14px;
+			font-weight: lighter;
+		}
+
+		.intro-reference {
+			font-size:12px;
+			font-weight: lighter;
+		}
+
+		#intro {
+
+		}
+
+		.quote {
+			font-size: 30px;
+			font-style: italic;
+			/*font-family: "굴림";*/
+		}
+
+		#byHit .tick {
+			font-size: 20px;
+		}
+
+		#bySeason .tick {
+			font-size: 8px;
+			font-weight: lighter;
+		}
+
+		#bySeason .tick text {
+		}
+
+		#bySalary #byTeam .tick {
+			font-size: 5px;
+		}
+		
+		.summary{
+			padding-left: 10px;
+		}
+
+		.summary .text{
+			margin-top: 0px;
+			margin-bottom: 0px;
+			text-align: left;
+			font-size: 12px;
+			font-weight: lighter;
+		}
+
+		.legend{
+			display: inline;
+			font-size: 5px;
+			text-anchor: right;
+			align: right;
+		}
+
+		#conclusion{
+			margin-top: 20px;
+			font-size: 7px;
+			font-weight: lighter;
+		}
+
+		.indicator {
+			display: none;
+		}
+
+	</style>
+</head>
+
+<body>
+	<div id="intro">
+		<p class="intro intro-title"></p>
+		<p class="quote">It's unbelievable how much you don't know about the game you've been playing all your life <br>- Mickey Mantle</p>
+		<p class="intro intro-description">
+			2016년 스토브리그에서 최형우가 KIA와 4년 총액 100억원(공식 발표 기준)에 FA계약을 맺음으로써 공식적으로 FA 100억 원 시대가 열렸다. 사실 비공식적인 소스를 통해 흘러나오는 선수들의 FA 계약총액은 이미 오래전부터 100억을 훌쩍 뛰어넘었다는 이야기들이 심심찮게 들려온다. 두산의 장원준은 8년 계약설이 돌았고, 박석민 역시 실제로는 발표액인 96억보다 큰 액수에 세 자릿수 계약을 맺었다는 설이 있다. 
+			<br>
+			<br>
+			이러나 저러나 이제는 공식적으로도 100억 원 짜리 계약이 등장했다. 물론 FA시장에서 초대형 계약을 맺는 선수들은 그 누구도 의심할 여지 없이 뛰어난 실력을 갖춘 선수들이다. 그러나, 물론 나가는 돈이 내 돈은 아니라지만, 수십억 단위의 비현실적인 계약액수를 보고 있노라면, '돈 값'에 대한 생각이 들 수밖에 없는 것이 사실이다. 또 무조건적인 투자만이 답인 것도 아니다. 2016시즌 KBO 연봉 총액 상위팀인 한화와 삼성, 롯데가 모두 포스트시즌에 진출하지 못했고, 오히려 신진 선수들 발굴에 힘썼던 넥센이나 두산, NC가 선전했다. 선수를 단순히 실력적 요인으로 평가하는 것이 아닌, 비용 대비 효율성 측면에서 살펴보면 어떤 결과가 나올까? 프로야구 원년인 1982년부터 2016년까지 시즌별로 200타석 이상 출전한 타자들의 '가성비'를 살펴보자. 
+		</p>
+		<p class="intro intro-reference">
+			<a href="http://www.statiz.co.kr">www.statiz.co.kr</a>의 데이터를 이용.<br>
+			1982-2016시즌 타자들 중 200타석 이상 출전한 타자들의 기록을 수집.<br>
+			<a href="http://square.github.io/crossfilter/">crossfilter</a> 라이브러리를 사용해 데이터 정리.
+		</p>
+	</div>
+	<div id="charts" width = "1200">
+		<br>
+		<div class="mainCharts"> 
+			<div class="title">KBO 타자들의<select id = "batter">
+					<option value = "1">안타</option>
+					<option value="2">타석</option>
+					<option value="3">루타</option>
+					<option value="4">득점</option>
+					<option value="5">홈런</option></select>가성비는?</div><div class="indicator"></div>
+			<div id="conclusion" class="conclusion">
+			</div>
+			<div id="byHit" class="chart batter-chart">
+			</div>
+			<div id="byAtBat" class="chart batter-chart">
+			</div>
+			<div id="byBase" class="chart batter-chart">
+			</div>
+			<div id="byRun" class="chart batter-chart">
+			</div>
+			<div id="byHomeRun" class="chart batter-chart">
+			</div>
+		</div>
+		<br>
+		<br>
+		<br>
+		<div id="bySeason" class="chart" >
+			<div class="title">시즌별로 살펴보면... </div>
+		</div>
+		<div id="bySalary" class="chart">
+			<div class="title">연봉수준별로 살펴보면... 
+			<div class="legend">(단위:만 원)</div></div>
+			
+		</div>
+		<div id="byTeam" class="chart">
+			<div class="title">팀별로 살펴보면... </div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var statW = 1260,
+			seasonW = 400,
+			salaryW = 400,
+			teamW = 400;
+
+		var byHit, byHits, byAtBat, byAtBats, byBase, byBases, byRun, byRuns, byHomeRun, byHomeRuns,bySeason, bySeasons, bySalary, bySalaries, byTeam, byTeams, byName;
+
+		var hitDomain, hitRange, seasonDomain, seasonRange, salaryDomain, salaryRange, teamDomain, teamRange;
+
+		var nestByTeam;
+
+		var scales = d3.local();
+
+		var chart, charts;
+
+		function render(method) {
+			d3.select(this).call(method);
+		}
+
+		function renderAll() {
+			barChart.id = 0;
+			d3.selectAll(".chart")
+			.data(charts)
+			.each(render);
+			// list.each(render);
+			// d3.select("#active").text(formatNumber(all.value()));
+		}
+
+		var batterUrl = "batter.json"  //타자 json 파일 url 지정 
+		var pitcherUrl = "pitcher.json" //투수 json 파일 url 지정
+
+		var birthParse = d3.timeParse("%Y-%m-%d");
+		var seasonParse = d3.timeParse("%Y");
+		var yearFormat = d3.timeFormat("%y");
+
+		d3.json(batterUrl, callbackBatter);
+
+
+		function getKeys(data){
+			var keys = Object.keys(data[0]);
+			return keys;
+		}
+
+		function callbackBatter(err, data){
+			if(err) throw err;
+						
+			var keys = getKeys(data); // JSON파일의 key값을 가져옴
+			
+			var salaryData = data.filter(function(d) {return d.연봉 != null}) //연봉이 null인 경우 제외 
+							.filter(function(d){return d.타석 >= 200}); //타석이 200타석 이상일 경우에만 취급
+			
+			salaryData.forEach(function(d){ //연봉 단위 환산(만원), 가성비 지표 추가
+				d.상세이름 = yearFormat(seasonParse(d.연도)) + d.이름 + "(" + yearFormat(birthParse(d.생일)) + ")"
+				d.연봉 = d.연봉 * 1000;
+				
+				d.타석가성비 = getGasongbi(d.연봉, d.타석);
+				d.안타가성비 = getGasongbi(d.연봉, d.안타);
+				d.루타가성비 = getGasongbi(d.연봉, d.안타+d.이루타+d.삼루타*2+d.홈런*3);
+				d.득점가성비 = getGasongbi(d.연봉, d.득점);
+				d.홈런가성비 = getGasongbi(d.연봉, d.홈런);
+				d.팀 = d.팀.split(",")[0];
+				if(d.팀 === "해태" || d.팀 === "KIA" || d.팀 === "해태/KIA"){
+					d.팀 = "해태/KIA";
+				}
+				if(d.팀 === "OB" || d.팀 === "두산"){
+					d.팀 = "OB/두산";
+				}
+				if(d.팀 === "쌍방울" || d.팀 === "SK"){
+					d.팀 = "쌍방울/SK";
+				}
+				if(d.팀 === "히어로즈" || d.팀 === "넥센"){
+					d.팀 = "히어로즈/넥센";
+				}
+			});
+
+
+			batterRecords = crossfilter(salaryData);	//crossfilter 설정
+			byAtBat = batterRecords.dimension(function(d){return d.타석가성비});
+			byAtBats = byAtBat.group(function(d){return d});
+			byHit = batterRecords.dimension(function(d){return d.안타가성비});
+			byHits = byHit.group(function(d){return d});
+			byBase = batterRecords.dimension(function(d){return d.루타가성비});
+			byBases = byBase.group(function(d){return d});
+			byRun = batterRecords.dimension(function(d){return d.득점가성비});
+			byRuns = byRun.group(function(d){return d});
+			byHomeRun = batterRecords.dimension(function(d){return d.홈런가성비});
+			byHomeRuns = byHomeRun.group(function(d){return d});
+
+			bySeason = batterRecords.dimension(function(d){ if(d.연도 >= 1997) return d.연도; });
+			bySeasons = bySeason.group(function(d){return d});
+			bySalary = batterRecords.dimension(function(d){return d.연봉});
+			bySalaries = bySalary.group(function(d){
+							var result;
+							if(d < 10000){
+								result = Math.floor(d/2000) * 2000; 
+							} 
+							if (d >= 10000 && d < 20000){
+								result = Math.floor(d/5000) * 5000;
+							} 
+							if (d >= 20000 && d < 30000){
+								result = Math.floor(d/10000) * 10000;
+							}
+							if (d >= 30000 && d < 50000){
+								result = Math.round(d/20000) * 20000 -10000;
+							}
+							if (d >= 50000) {
+								result = 50000;
+							}
+							return result;}); // 구간설정을 잘 해야할 것 같은데 다음에 다시 제대로 해보자
+			byTeam = batterRecords.dimension(function(d){return d.팀});
+			byTeams = byTeam.group(function(d){return d});
+			byName = batterRecords.dimension(function(d){return d.상세이름});
+			byAll = batterRecords.dimension(function(d){return d.이름});
+
+			hitDomain = byHit.top(Infinity).map(function(d){ return d.상세이름 });
+			hitRange = [0, statW];
+
+			atBatDomain = byAtBat.top(Infinity).map(function(d){ return d.상세이름});
+			atBatRange = [0, statW]
+
+			runDomain = byRun.top(Infinity).map(function(d){ return d.상세이름});
+			runRange = [0, statW]
+
+			homeRunDomain = byHomeRun.top(Infinity).map(function(d){ return d.상세이름});
+			homeRunRange = [0, statW]
+
+			baseDomain = byBase.top(Infinity).map(function(d){ return d.상세이름});
+			baseRange = [0, statW]
+
+			seasonDomain = bySeasons.all().map(function(d){ return d.key });
+			seasonRange = [0, seasonW];
+
+			salaryDomain = bySalaries.all().map(function(d){return d.key});
+			salaryRange = [0, salaryW];
+
+			teamDomain = byTeams.all().map(function(d){ return d.key });
+			teamRange = [0, teamW];
+
+			charts = [
+				barChart()
+				.dimension(byHit)
+				.group(byHits)
+				.x(d3.scaleBand()
+				.domain(hitDomain)
+				.range(hitRange)
+				.padding(0))
+				.isUpdate(false),
+
+				barChart()
+				.dimension(byAtBat)
+				.group(byAtBats)
+				.x(d3.scaleBand()
+				.domain(atBatDomain)
+				.range(atBatRange)
+				.padding(0))
+				.isUpdate(true),
+
+				barChart()
+				.dimension(byBase)
+				.group(byBases)
+				.x(d3.scaleBand()
+				.domain(baseDomain)
+				.range(baseRange)
+				.padding(0)),
+				
+				barChart()
+				.dimension(byRun)
+				.group(byRuns)
+				.x(d3.scaleBand()
+				.domain(runDomain)
+				.range(runRange)
+				.padding(0)),
+
+				barChart()
+				.dimension(byHomeRun)
+				.group(byHomeRuns)
+				.x(d3.scaleBand()
+				.domain(homeRunDomain)
+				.range(homeRunRange)
+				.padding(0)),
+
+				barChart()
+				.dimension(bySeason)
+				.group(bySeasons)
+				.x(d3.scaleBand()
+				.domain(seasonDomain)
+				.rangeRound(seasonRange)
+				.padding(0.1))
+				.isGroup(true)
+				.isUpdate(false),
+
+				barChart()
+				.dimension(bySalary)
+				.group(bySalaries)
+				.x(d3.scaleBand()
+				.domain(salaryDomain)
+				.rangeRound(salaryRange)
+				.padding(0.1))
+				.isGroup(true)
+				.isUpdate(false),
+
+				barChart()
+				.dimension(byTeam)
+				.group(byTeams)
+				.x(d3.scaleBand()
+				.domain(teamDomain)
+				.rangeRound(teamRange)
+				.padding(0.1))
+				.isGroup(true)
+				.isUpdate(false)
+			];
+
+		    chart = d3.selectAll(".chart")
+			.data(charts)
+
+			renderAll();
+			
+			d3.select("#byAtBat").style("display", "none");
+			d3.select("#byBase").style("display", "none");
+			d3.select("#byRun").style("display", "none");
+			d3.select("#byHomeRun").style("display", "none");
+
+			mainChart = d3.select(".mainCharts")
+			statChart = mainChart.selectAll("#byHit, #byAtBat, #byHomeRun, #byRun, #byBase");
+
+			d3.select('#batter')
+			.on('change', function(){
+				statChart.style("display", "none");
+				statChart.select('.brush').select(".selection").style("display", "none");
+				statChart.selectAll('.bar').classed('selected', true);
+
+				var index = eval(d3.select(this).property('value'));
+				switch(index){
+					case 1:
+						d3.select("#byHit")
+						.style("display", "block");
+					break;
+					case 2:
+						d3.select("#byAtBat")
+						.style("display", "block");
+					break;
+					case 3:
+						d3.select("#byBase")
+						.style("display", "block");
+					break;
+					case 4:
+						d3.select("#byRun")
+						.style("display", "block");
+					break;
+					case 5:
+						d3.select("#byHomeRun")
+						.style("display", "block");
+					break;
+				}
+				byName.filterAll();
+				updater();
+			})
+
+			
+			xAxis = statChart.select(".xAxis");
+
+			xAxis.selectAll("text")
+			.style("display", "none");
+
+			statChart.append('div')
+			.attr("class", "summary")
+			.append('p')
+			.attr("class", "text bottom")
+			.text(function(d){
+				var bottom = d.dimension().bottom(1)[0];
+				if(d.dimension() === byHit){
+					return "연봉 대비 가장 많은 안타를 기록한 선수는 " + bottom.팀 +"의 " + bottom.이름 + "(" + bottom.생일.split("-")[0] + "년생)로, " + bottom.연도 + "시즌 연봉 " + bottom.연봉 + "만 원을 받고 " + bottom.안타 + "안타를 기록해 안타당 약 " + bottom.안타가성비.toString().split(".")[0] + "만 원을 가져간 셈이 되었다." 
+				}
+				if(d.dimension() === byAtBat){
+					return bottom.팀 +"의 " + bottom.이름 + "(" + bottom.생일.split("-")[0] + "년생)는 " + bottom.연도 + "시즌 연봉 " + bottom.연봉 + "만 원을 받고 " + bottom.타석 + "타석에 들어서는 기록을 세우며 KBO 역대 최고 가성비기록을 세웠다. 1타석에 " + bottom.타석가성비.toString().split(".")[0] + "만 원밖에 받지 않은 것." 
+				}
+				if(d.dimension() === byBase){
+					return bottom.팀 +"의 " + bottom.이름 + "(" +bottom.생일.split("-")[0] + "년생)는 " + bottom.연도 + "시즌 연봉 " + bottom.연봉 + "만 원을 받고 " + bottom.루타 + "루타를 기록했다. " + bottom.이름 + "를 1 베이스 전진시키는 데에 " + bottom.팀 + "가 들인 비용은 " + bottom.루타가성비.toString().split(".")[0] + "만 원에 불과했다." 
+				}
+				if(d.dimension() === byRun){
+					return bottom.이름 + "(" +bottom.생일.split("-")[0] + "년생)는 " + bottom.연도 + "시즌 연봉 " + bottom.연봉 + "만 원을 받고 " + bottom.득점 + "득점을 올렸다. " + bottom.이름 + "가 " + bottom.팀 + "에게서 1점당 받아간 돈은 " + bottom.득점가성비.toString().split(".")[0] + "만 원." 
+				}
+				if(d.dimension() === byHomeRun){
+					return "가장 저렴한 홈런타자는 " + bottom.팀 + "의 " + bottom.이름 + "(" +bottom.생일.split("-")[0] + "년생). " + bottom.연도 + "시즌 " + bottom.홈런 + "홈런을 날리는 동안 받은 돈은 불과 " + + bottom.연봉 + "만 원, 홈런 1개당 " + bottom.홈런가성비.toString().split(".")[0] + "만 원." 
+				}
+			})
+
+			statChart.append('div')
+			.attr("class", "summary main")
+			.append('p')
+			.attr("class", "text top")			
+			.text(function (d) {
+				var top = d.dimension().top(1)[0];
+				if(d.dimension() === byHit){
+					return "안타 기준 연봉 대비 최악의 활약을 펼친 선수도 " + top.이름 + "로, " + top.연도 + "시즌 연봉 " + top.연봉 + "만 원을 받고 " + top.안타 + "안타만을 기록해 안타 하나에 무려 " + top.안타가성비.toString().split(".")[0] + "만 원씩을 챙겼다."
+				}
+				if(d.dimension() === byAtBat){
+					return "그러나 " + top.연도 + "시즌에는 연봉 " + top.연봉 + "만 원을 받고 " + top.타석 + "타석만을 기록하며 타석당 비용에서도 최악의 가성비를 기록했다. 1타석당 비용은 " + top.타석가성비.toString().split(".")[0] + "만 원." 
+				}
+				if(d.dimension() === byBase){
+					return "그러나 " + top.연도 + "시즌에는 연봉 " + top.연봉 + "만 원을 받고 " + top.루타 + "루타를 기록하며 몸값에 영 걸맞지 않는 활약을 보여주었다. 1베이스 전진비용은 " + top.루타가성비.toString().split(".")[0] + "만 원." 
+				}
+				if(d.dimension() === byRun){
+					return top.팀 + "의 " + top.이름 + "(" + top.생일.split("-")[0] + ")는 " + top.연도 + "시즌 " + top.득점 + "점을 내는 동안 " + top.연봉 + "만 원을 받으면서 KBO역사상 최저효율을 기록했다. " + top.이름 + "가 1점을 내는 데 필요로 한 비용은 무려 " + top.득점가성비.toString().split(".")[0] + "만 원." 
+				}
+				if(d.dimension() === byHomeRun){
+					var zero = d.dimension().top(Infinity);
+
+					zero = zero.filter(function(d){return d.홈런 === 0;})
+					.sort(sortByProperty('연봉'));
+					top = zero[zero.length - 1];
+
+					return "한편 200타석 이상 경기에 출전한 선수들 중 무려 76명의 선수들이 홈런을 단 1개도 치지 못했다. 그 중 최고연봉자는 " + top.팀 + "의 " + top.이름 + "(" + top.생일.split("-")[0] + "). " + top.연도 + "시즌 무려 " +  top.연봉 +"만 원을 받았으나 홈런은 단 하나도 때려내지 못했다!"
+				}												
+			})
+
+
+			bars = mainChart.selectAll('.bar')
+			bars.on('mouseenter', function(d){
+				console.log(d);
+			})
+
+			updateIndicator();
+
+			var xAxisText = ["-4000", "-6000", "-8000", "-10000", "-15000", "-20000", "-30000", "-50000", "이상"];
+			d3.select("#bySalary")
+			.select(".databox")
+			.select(".xAxis")
+			.selectAll("text")
+			.attr("y", "0.5em")
+			.append("tspan")
+			.attr("x", "0")
+			.attr("y", "2.0em")
+			.data(xAxisText)
+			.text(function(d){return d});
+
+			updateConclusion();
+
+		};	
+		function updateIndicator(){
+			d3.select(".indicator")
+			.select("p")
+			.remove();
+
+			d3.select(".indicator")
+			.append("p")
+			.text(function(){
+				return byAll.top(Infinity).length + "명의 선수를 선택했습니다"
+			})
+		}
+		function updateConclusion(){
+			d3.select("#conclusion")
+			.select("div")
+			.remove();
+
+			d3.select("#conclusion")
+			.data(byAll.top(Infinity))
+			.append("div")
+			.attr("class", "explanation")
+			.text(function(d){
+				var seasonSelect = bySeason.top(Infinity).map(function(d){return d.연도})
+				seasonSelect = joongbok(seasonSelect);
+
+				var salarySelect = bySalary.top(Infinity).map(function(d){return d.연봉})
+				salarySelect = joongbok(salarySelect);
+
+				var teamSelect = byTeam.top(Infinity).map(function(d){return d.팀})
+				teamSelect = joongbok(teamSelect).sort();
+
+				function returnTeam(){
+					if(teamSelect.length >= 3){
+						return teamSelect[0] + ", " + teamSelect[1] + " 등 " + teamSelect.length +"개 팀에서 뛴 ";
+					} else if (teamSelect.length === 2) {
+						return teamSelect[0] + ", " + teamSelect[1] + "에서 뛴 ";
+					} else if (teamSelect.length === 1){
+						return teamSelect[0] + "에서 뛴 "
+					}				
+				}
+
+				function joongbok(array) {
+					arr = array.filter(function(itm, i, a){
+					return i == a.indexOf(itm);
+				}).sort(sSortNumber);
+					return arr;
+				}
+
+				function sSortNumber(a,b) { //배열 정렬하기
+					return a - b; 
+				} 
+
+				function getSeason(array) {
+					if(array.length === 0){
+
+					} else if(array.length === 1){
+						return array[0] + "년 ";
+					} else {
+						return array[0] + "년부터 " + array[array.length-1] +"년까지 ";
+					}
+				}
+
+				console.log(teamSelect);
+				var string = getSeason(seasonSelect) + returnTeam() +"연봉 " + salarySelect[0] + "-" + salarySelect[salarySelect.length-1] + "만 원 사이의 선수는 " + byAll.top(Infinity).length +"명이다.";
+				return string; 
+				
+			})
+		};
+
+		function getGasongbi(salary, index){ // 가성비 계산기(?) 
+			var gasongbi = salary/index;	// 가성비 계산에 사용할 지표를 정리해야 한다. 투수와 타자 각각 정리해보기. 	
+			if(gasongbi === Infinity){
+				gasongbi = 123456;
+			}
+			return gasongbi;
+		};
+
+		function barChart() {
+			if (!barChart.id) barChart.id = 0;
+
+			var margin = {top: 10, right: 10, bottom: 20, left: 10};
+			var x, y,
+				innerW, innerH = 300;
+			var brushScale, brushCell;
+			var id = barChart.id++;
+			var xAxis = d3.axisBottom(x),
+				yAxis = d3.axisLeft(y);
+			var brush = d3.brushX();
+			var dimension, group, round;
+			var isGroup;
+			var stat;
+			var isUpdate;
+
+			function chart(div){
+				var innerW = d3.max(x.range());
+					width = innerW + margin.left + margin.right,
+					height = innerH + margin.top + margin.bottom,
+					y = d3.scaleLinear().range([innerH, 0]);
+
+					div.each(function(){
+						var div = d3.select(this),
+							g = div.select("g");
+
+						//그래프 뼈대 작성 
+						if(g.empty()){
+							div.select(".title").append("a")
+							.attr("href", "javascript:reset(" + id + ")")
+							.attr("class", "reset")
+							.text("reset")
+							.style("display", "none");
+
+							svg = div.append("svg")
+								.attr("class", "databox")
+								.attr("width", width)
+								.attr("height", height);
+
+							g = svg.append("g")
+								.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+							g.append("clipPath")
+							.attr("id", "clip-" + id)
+							.append("rect")
+							.append("width", innerW)
+							.append("height", innerH)
+
+							barBox = g.append("g")
+							.attr("class", "bar-box")
+
+							var noticks = ["byHit","byBase","byRun","byHomeRun","byAtBat"];
+							if(contains.call(noticks, div.attr('id'))){
+								xAxis.tickSize(0);
+							}
+
+							g.append("g")
+							.attr("class", "xAxis")
+							.attr("transform", "translate(0," + innerH + ")")
+							.call(xAxis);
+							
+							g.append("g")
+							.attr("class", "brush")
+							.call(brush);
+						};
+
+						brush = brush.extent([0,0], [x.bandwidth(), x.bandwidth()])		
+								.on("start", brushStarted)
+								.on("brush", brushed)
+								.on("end", brushEnded);	
+ 
+						if(isGroup) {
+							y = y.domain([0, group.top(1)[0].value]);
+							bars = barBox.selectAll(".bar").data(group.all())
+							bars.enter().append("rect")
+							.attr("class", "bar selected")
+							.attr("x", function(d){return x(d.key)})
+							.attr("y", function(d){return y(d.value)})
+							.attr("width", x.bandwidth())
+							.attr("height", function(d){return innerH - y(d.value)})
+							
+							barBox.selectAll("text").data(group.all())
+							.enter().append("text")
+							.attr("class", "label")
+							.attr('x', function(d) {return x(d.key);})
+							.attr('y', function(d) {return y(d.value);})
+							.text(function(d){return d.value})
+							.attr('text-anchor', 'middle')
+							.attr('dx', function(d){return x.bandwidth()/2;})
+							.attr('dy', '-0.3em')
+							.style('font-size', '0.5em');
+						} else {
+
+							var color = d3.scaleOrdinal(d3.schemeCategory20);
+							if(d3.select(this).attr('id') === "byHit" ){
+								y = y.domain([0, dimension.top(1)[0].안타가성비]); // data 변하게 하려면 이부분을 고쳐야
+								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
+								.enter().append("rect")
+								.attr("class", "bar selected")
+								.attr("x", function(d){return x(d.상세이름)})
+								.attr("y", function(d){return y(d.안타가성비)})
+								.attr("width", x.bandwidth())
+								.attr("height", function(d){return innerH - y(d.안타가성비)});
+
+							}
+							if(d3.select(this).attr('id') === "byAtBat" ){
+								y = y.domain([0, dimension.top(1)[0].타석가성비]); // data 변하게 하려면 이부분을 고쳐야
+								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
+								.enter().append("rect")
+								.attr("class", "bar selected")
+								.attr("x", function(d){return x(d.상세이름)})
+								.attr("y", function(d){return y(d.타석가성비)})
+								.attr("width", x.bandwidth())
+								.attr("height", function(d){return innerH - y(d.타석가성비)});
+							}							
+							if(d3.select(this).attr('id') === "byBase" ){
+								y = y.domain([0, dimension.top(1)[0].루타가성비]); // data 변하게 하려면 이부분을 고쳐야
+								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
+								.enter().append("rect")
+								.attr("class", "bar selected")
+								.attr("x", function(d){return x(d.상세이름)})
+								.attr("y", function(d){return y(d.루타가성비)})
+								.attr("width", x.bandwidth())
+								.attr("height", function(d){return innerH - y(d.루타가성비)});
+							}
+							if(d3.select(this).attr('id') === "byRun" ){
+								y = y.domain([0, dimension.top(1)[0].득점가성비]); // data 변하게 하려면 이부분을 고쳐야
+								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
+								.enter().append("rect")
+								.attr("class", "bar selected")
+								.attr("x", function(d){return x(d.상세이름)})
+								.attr("y", function(d){return y(d.득점가성비)})
+								.attr("width", x.bandwidth())
+								.attr("height", function(d){return innerH - y(d.득점가성비)});
+							}
+							if(d3.select(this).attr('id') === "byHomeRun" ){
+								y = y.domain([0, dimension.top(1)[0].홈런가성비]); // data 변하게 하려면 이부분을 고쳐야
+								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
+								.enter().append("rect")
+								.attr("class", "bar selected")
+								.attr("x", function(d){return x(d.상세이름)})
+								.attr("y", function(d){return y(d.홈런가성비)})
+								.attr("width", x.bandwidth())
+								.attr("height", function(d){return innerH - y(d.홈런가성비)});
+							}
+						}
+					});
+				}
+
+				var domain;
+				var selected;
+				var target;
+				var filtered;
+
+				function brushStarted(d){
+					var div = d3.select(this.parentNode.parentNode.parentNode);
+					if(brushCell !== this){
+						d3.select(brushCell).call(brush.move, null);
+						brushCell = this;
+					}
+					selected = [];
+				}
+				// var selected;
+				function brushed(d){
+					var div = d3.select(this.parentNode.parentNode.parentNode);
+
+					if(d3.event.selection === null) return;
+					
+					domain = [];
+					selected = [];
+					target = [];
+					var range = d.x().range();
+					var bandwidth = d.x().bandwidth();
+					var length = d.x().domain().length;
+					var step = d.x().step();
+					var padding = d.x().padding();
+
+					for (i = 0 ; i < length ; i++ ){
+						domain.push(d.x().domain()[i]);
+					};
+
+
+
+					for(i = 0 ; i < Object.keys(domain).length ; i++ ){
+						if(!(d3.event.selection[0] >= d.x()(domain[i]) + bandwidth  || d3.event.selection[1] <= d.x()(domain[i]))){
+							selected.push(d.x().domain()[i]);
+						}
+					}
+					
+					target = [d.x()(selected[0]), d.x()(selected[selected.length-1])];
+
+					div.selectAll(".bar")
+					.classed('selected', function(d){ 						
+						if(isGroup){
+							if(contains.call(selected, d.key)) return true;
+						} else {
+							if(contains.call(selected, d.상세이름)) return true;	
+						}
+					})
+
+					div.selectAll(".bar")
+					.call(function(d){
+						if(isGroup){
+							filtered = dimension.filterFunction(function(d){
+								return contains.call(selected, d);
+							});
+							updater();
+						} else { 
+							filtered = byName.filterFunction(function(d){
+								return contains.call(selected, d);
+							})
+							updater();
+						}
+					
+
+					})
+
+					
+				}
+
+
+			function brushEnded(d){
+				var div = d3.select(this.parentNode.parentNode.parentNode);
+
+				filtered = [];
+				if(d3.event.selection === null){
+					dimension.filterAll();
+					if(!isGroup){
+						byName.filterAll();
+					}
+					div.selectAll(".bar").classed('selected', true);
+
+				};
+				updater();
+			};
+
+
+
+
+
+			chart.x = function(_){
+				if(!arguments.length) return x;
+				x = _;
+				xAxis.scale(x);
+				return chart;
+			}
+
+			chart.y = function(_){
+				if(!arguments.length) return y;
+				y = _;
+				yAxis.scale(y);
+				return chart;
+			}
+
+			chart.margin = function(_){
+				if(!arguments.length) return margin;
+				margin = _;
+				return chart;
+			}
+
+			chart.dimension = function(_){
+				if(!arguments.length) return dimension;
+				dimension = _;
+				return chart;
+			}
+
+			chart.group = function(_){
+				if(!arguments.length) return group;
+				group = _;
+				return chart;
+			}
+
+			chart.round = function(_){
+				if(!arguments.length) return round;
+				round = _;
+				return chart;
+			}
+
+			chart.filter = function(_){ //이부분은 브러쉬와 관련된 부분. 나중에 다시 해보
+			}
+
+			chart.round = function(_){
+		        if (!arguments.length) return round;
+		        round = _;
+		        return chart;
+			}
+
+			chart.isGroup = function(_){
+				if(!arguments.length) return isGroup;
+				isGroup = _;
+				return chart;
+			}
+
+			chart.isUpdate = function(_){
+				if(!arguments.length) return isUpdate;
+				isUpdate = _;
+				return chart;
+			}
+
+			chart.innerH = function(_){
+				if(!arguments.length) return innerH;
+				innerH = _;
+				return chart;
+			}
+
+			chart.stat = function(_){
+				if(!arguments.length) return stat;
+				stat = _;
+				return chart;
+			}
+
+			window.reset = function(i) {
+				charts[i].filter(null);
+			};		
+
+			return d3.rebind(chart, brush, "on");
+
+		};
+
+		function updater(){
+			var t = d3.transition()
+			.duration(1000)
+			.ease(d3.easeCubicOut);
+
+			d3.select('#bySeason').selectAll(".bar").data(charts[5].group().all())
+			.transition(t)
+			.attr("y", function(d){return charts[5].y()(d.value)})
+			.attr("height", function(d){return charts[5].innerH() - charts[5].y()(d.value)});
+
+			d3.select('#bySalary').selectAll(".bar").data(charts[6].group().all())
+			.transition(t)
+			.attr("y", function(d){return charts[6].y()(d.value)})
+			.attr("height", function(d){return charts[6].innerH() - charts[6].y()(d.value)})
+
+			d3.select('#byTeam').selectAll(".bar").data(charts[7].group().all())
+			.transition(t)
+			.attr("y", function(d){return charts[7].y()(d.value)})
+			.attr("height", function(d){return charts[7].innerH() - charts[7].y()(d.value)})
+
+			d3.select('#bySeason').selectAll(".label")
+			.transition(t)
+			.text(function(d){return d.value})
+			.attr("y", function(d){return charts[5].y()(d.value)});
+			d3.select('#bySalary').selectAll(".label")
+			.transition(t)
+			.text(function(d){return d.value})
+			.attr("y", function(d){return charts[6].y()(d.value)});
+			d3.select('#byTeam').selectAll(".label")
+			.transition(t)
+			.text(function(d){return d.value})
+			.attr("y", function(d){return charts[7].y()(d.value)});
+
+			updateIndicator();
+			updateConclusion();			
+		}
+
+		// Copies a variable number of methods from source to target.
+		d3.rebind = function(target, source) {
+			var i = 1, n = arguments.length, method;
+			while (++i < n) target[method = arguments[i]] = d3_rebind(target, source, source[method]);
+			return target;
+		};
+
+		// Method is assumed to be a standard D3 getter-setter:
+		// If passed with no arguments, gets the value.
+		// If passed with arguments, sets the value and returns the target.
+		function d3_rebind(target, source, method) {
+			return function() {
+				var value = method.apply(source, arguments);
+				return value === source ? target : value;
+			};
+		}
+
+		var contains = function(needle) {
+		    // Per spec, the way to identify NaN is that it is not equal to itself
+		    var findNaN = needle !== needle;
+		    var indexOf;
+
+		    if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+		        indexOf = Array.prototype.indexOf;
+		    } else {
+		        indexOf = function(needle) {
+		            var i = -1, index = -1;
+
+		            for(i = 0; i < this.length; i++) {
+		                var item = this[i];
+
+		                if((findNaN && item !== item) || item === needle) {
+		                    index = i;
+		                    break;
+		                }
+		            }
+
+		            return index;
+		        };
+		    }
+
+		    return indexOf.call(this, needle) > -1;
+		};
+
+		var sortByProperty = function (property) {
+		    return function (x, y) {
+		        return ((x[property] === y[property]) ? 0 : ((x[property] > y[property]) ? 1 : -1));
+		    };
+		};
+
+	</script>
+</body>
+
+
+<!-- 
+
+진행상황
+- crossfilter 활용해 데이터에 dimension 설정
+- 기본적인 그래프 그림
+- 브러시 추가, 브러시 실행시 데이터 선택되도록
+- 브러시로 선택할 경우 그래프가 업데이트되도록
+- 가성비지표 그래프에서도 선택되도록 변경
+- 가성비지표를 다른 걸 선택할 경우 잘 되도록!(안타 -> 홈런. 이 경우 데이터를 다시 업데이트 )
+
+앞으로 예정사항
+- axis 변경(연봉별 분포에서 10000이 아니라 10000-20000 이런식으로 표현되도록!)
+- 리스트 추가
+- 색상 추가(팀별로 색상 지정)
+- 마우스 포지션에 따른 tick과 bar width 확대(가능하다면)
+- 투수지표 추가(가능하다면)
+- 브러시에 손잡이 넣어주자
+
+이슈
+- mouseover시 애니메이션이 가능한가?
+
+-->

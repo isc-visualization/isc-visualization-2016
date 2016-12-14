@@ -1,0 +1,37 @@
+[{
+  "name_kr" : "김종석",
+  "name_en" : "kimjongseok",
+  "college" : "자유전공학부",
+  "department" : "자유전공학부",
+  "category" :  "KBO",
+  "title" : "투수혹사논란",
+  "desc" : "날짜별 경기기록으로부터 혹사지수를 계산하여, 크게는 혹사지수-WAR, 세부적으로는 혹사지수-WHIP의 관계를 시각화"
+},
+{
+  "name_kr" : "류원룡",
+  "name_en" : "ryouwonryong",
+  "college" : "공과대학",
+  "department" : "컴퓨터공학부",
+  "category" :  "MQs",
+  "title" : "U.S. Supreme Court Justices Being Liberal?",
+  "desc" : "1976~2015년 미국 대법관별 정치 성향의 진보화 경향 시각화"
+},
+{
+  "name_kr" : "한상훈",
+  "name_en" : "hansanghoon",
+  "college" : "공과대학",
+  "department" : "산업공학과",
+  "category" :  "GENDER",
+  "title" : "통계로 살펴보는 유리천장",
+  "desc" : "OECD에서 제공하는 각 국가의 교육과 직업 통계를 통해 여성들이 겪는 ‘유리천장’을 확인해본다."
+},
+{
+  "name_kr" : "김형준",
+  "name_en" : "kimhyoungjoon",
+  "college" : "사회과학대학",
+  "department" : "경제학부",
+  "category" :  "KBO",
+  "title" : "활약대비 연봉으로 살펴보는 KBO의 머니볼",
+  "desc" : "KBO 타자들의 비용 대비 효율성을 그래프 시각화"
+}
+]

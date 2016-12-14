@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+		<meta charset="utf-8">
+		<title>Visualization 2016 Fall | Final Project</title>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<style>
+		.title {
+			text-align: center;
+			letter-spacing: 3px;
+			font-family: "Lucida Console", Fixdsys, monospace;
+		}
+		.desc {
+			width: 900px;
+			margin: auto;
+			border: none;
+			line-height: 130%;
+			font-size: 15px;
+			font-family: "Lucida Console", Fixdsys, monospace;
+		}
+		.proj {
+			margin: 0px;
+			position: relative;
+		}
+		h1 {
+			font-size: 50px;
+			margin: 15px;
+			margin-top: 25px;
+		}
+		h2 {
+			font-size: 20px;
+			margin: 15px;
+		}
+		svg {
+			font-family: "Lucida Console", Fixdsys, monospace;
+			cursor: crosshair;
+		}
+		.legend, .box{
+			cursor: pointer;
+		}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var showing = 1;
+			var titles = ['Chronicle of U.S. Supreme Court by Rank', 
+				'MQs Shift of same rank from adjacent years',
+				'Chronicle of U.S. Supreme Court by MQs',
+				'MQs Shift of Each Justice for Term'];
+			function divChange(dx){
+				showing += dx;
+				if(showing === 5)
+					showing = 1;
+				else if(showing === 0)
+					showing = 4;
+				for(i = 1; i <= 4; i ++){
+					div = document.getElementById('final_project' + i);
+					if(i === showing)
+						div.style.display = "block";
+					else
+						div.style.display = "none";
+				}
+				var p = document.getElementById('charttitle');
+				p.innerHTML = '"' + titles[showing - 1] + '"';
+			}
+		</script>
+		<div>
+			<h1 class="title">Visualization_2016F</h1>
+			<h2 class="title">Final Project by Wonryong Ryou</h2>
+			<h2 class="title">"U.S. Supreme Court Justices Being Liberal?"</h2>
+		</div>
+		<div class="chartview">
+			<div id="final_project1" align="center" class="proj" style="display:block"></div>
+			<div id="final_project2" align="center" class="proj" style="display:none"></div>
+			<div id="final_project3" align="center" class="proj" style="display:none"></div>
+			<div id="final_project4" align="center" class="proj" style="display:none"></div>
+			<p style="text-align:center; font-family: 'Lucida Console', Fixdsys, monospace;">
+				<a href="javascript:divChange(-1)" style="color: #000000; text-decoration: none;"><b>[◀]</b></a>
+				<a id="charttitle" style="text-align:center; font-family: 'Lucida Console', Fixdsys, monospace;"></a>
+				<a href="javascript:divChange(1)" style="color: #000000; text-decoration: none;"><b>[▶]</b></a>
+			</p>
+		</div>
+		<div class="desc">
+			<b>About:</b>
+			<br/>
+			Each rectangle represents a justice, sorted from left to right with the 'liberal' for an year.
+			Hover your mouse over those, and you can see additional information.
+			Check left and right side for what year you are watching and who the highlighted justice is.
+			Shattered block means start/end year of an justice.
+			If you still don't get there is not only one chart and can't change it, I'm pleased to inform you that clicking [◀] or [▶] makes desired change.
+			<br/><br/>
+			All the charts are showing that U.S. supreme court has certain trend to get liberal, rather than conservative.
+			Not only for nowadays, it's quite a meta-trend.
+			Take a look for those charts, and see how those charts persuade you.
+			<br/><br/>
+			<b>References:</b>
+			<br/>
+			<a href="http://colorbrewer2.org/">http://colorbrewer2.org/</a>
+			<br/>
+			<a href="http://mqscores.berkeley.edu/">http://mqscores.berkeley.edu/</a>
+			<br/><br/><br/>
+			Final project of 2114.411 Visualization by luwalong. w.r.ryou a† gmail d0† com. 2016
+		</div>
+		<script type="text/javascript" src="init.js"></script>
+		<script type="text/javascript" src="index1.js"></script>
+		<script type="text/javascript" src="index2.js"></script>
+		<script type="text/javascript" src="index3.js"></script>
+		<script type="text/javascript" src="index4.js"></script>
+		<script type="text/javascript">
+			divChange(0);
+		</script>
+	</body>
+</html>

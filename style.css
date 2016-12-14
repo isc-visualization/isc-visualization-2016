@@ -6,7 +6,9 @@ body {
   margin : 0 auto;
   font-family: "Apple SD Gothic Neo", sans-serif;
 }
-
+a {
+  text-decoration: none;
+}
 .title {
   text-align: center;
   margin : 0 auto;

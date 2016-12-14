@@ -114,7 +114,7 @@ function appendText(selection, isClipped) {
     .text(function(d){return d.college;})
     .attr('transform', 'rotate(90)')
     .transition(initTransition)
-    .attr('transform', 'translate(4, 24) rotate(90)');
+    .attr('transform', 'translate(4, '+ height/4 + ') rotate(90)');
 
 
   selection.append('text')
@@ -122,7 +122,7 @@ function appendText(selection, isClipped) {
     .text(function(d){return d.department;})
     .attr('transform', 'translate('+ (width-4) + ', '+ (height)+ ') rotate(-90)')
     .transition(initTransition)
-    .attr('transform', 'translate('+ (width-4) + ', '+ (height-64)+ ') rotate(-90)');
+    .attr('transform', 'translate('+ (width-4) + ', '+ (height/3*2)+ ') rotate(-90)');
 
   selection.append('text')
     .attr('class', 'title')

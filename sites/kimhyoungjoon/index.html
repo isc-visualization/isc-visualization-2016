@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<title>기말프로젝트 작업</title>
+	<title>KBO 머니볼</title>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="crossfilter.min.js"></script>
 	<style type="text/css">
@@ -34,34 +34,28 @@
 		}
 
 		:not(.selected).bar {
-			opacity: 0.8;
-			fill: #f0f0f0 ;
+			opacity: 0.2 !important;
 		}
 
-		.mainCharts :not(.selected).bar {
+/*		.mainCharts :not(.selected).bar {
 			opacity: 0.8;
 			fill: #f0f0f0 ;
 			stroke: #f0f0f0;
 		}
-		
+*/		
 		.label {
 			color: #151530;
 		}
-
-		.bar {
-			stroke: #151530;
-			fill: #151530;
-		}		
 		
 		.title {
 			font-size: 20px;
-			font-weight: lighter;
+			;
 		}
 
 		#batter {
 			font-size: 20px;
 			border:none;
-			font-weight: lighter;
+			;
 		}
 
 		.intro-title {
@@ -71,18 +65,19 @@
 		}
 
 		.intro-description {
-			font-size: 14px;
-			font-weight: lighter;
+			font-size: 16px;
+			;
 		}
 
 		.intro-reference {
 			font-size:12px;
-			font-weight: lighter;
+			;
 		}
 
 		.intro-direction {
 			font-size: 12px;
-			font-weight: lighter;
+			text-align: right;
+			;
 		}
 
 		#intro {
@@ -101,7 +96,7 @@
 
 		#bySeason .tick {
 			font-size: 8px;
-			font-weight: lighter;
+			;
 		}
 
 		#bySeason .tick text {
@@ -119,8 +114,9 @@
 			margin-top: 0px;
 			margin-bottom: 0px;
 			text-align: left;
-			font-size: 12px;
+			font-size: 18px;
 			font-weight: lighter;
+			;
 		}
 
 		.legend{
@@ -132,8 +128,10 @@
 
 		#conclusion{
 			margin-top: 20px;
-			font-size: 12px;
+			font-size: 30px;
+			text-align: center;
 			font-weight: lighter;
+			;
 		}
 
 		.indicator {
@@ -155,24 +153,6 @@
 		<p class="intro intro-title">야구에 가격을 매긴다면? </p>
 		<p class="subtitle"> - KBO의 머니볼               </span>
 		<p class="quote">It's unbelievable how much you don't know about the game you've been playing all your life <br>- Mickey Mantle</p>
-		<p class="intro intro-description">
-			2016년 스토브리그에서 최형우가 KIA와 4년 총액 100억원(공식 발표 기준)에 FA계약을 맺음으로써 공식적으로 FA 100억 원 시대가 열렸다. 사실 비공식적인 소스를 통해 흘러나오는 선수들의 FA 계약총액은 이미 오래전부터 100억을 훌쩍 뛰어넘었다는 이야기들이 심심찮게 들려온다. 두산의 장원준은 8년 계약설이 돌았고, 박석민 역시 실제로는 발표액인 96억보다 큰 액수에 세 자릿수 계약을 맺었다는 설이 있다. 
-			<br>
-			<br>
-			이러나 저러나 이제는 공식적으로도 100억 원 짜리 계약이 등장했다. 물론 FA시장에서 초대형 계약을 맺는 선수들은 그 누구도 의심할 여지 없이 뛰어난 실력을 갖춘 선수들이다. 그러나, 물론 나가는 돈이 내 돈은 아니라지만, 수십억 단위의 비현실적인 계약액수를 보고 있노라면, '돈 값'에 대한 생각이 들 수밖에 없는 것이 사실이다. 또 무조건적인 투자만이 답인 것도 아니다. 2016시즌 KBO 연봉 총액 상위팀인 한화와 삼성, 롯데가 모두 포스트시즌에 진출하지 못했고, 오히려 신진 선수들 발굴에 힘썼던 넥센이나 두산, NC가 선전했다. 선수를 단순히 실력적 요인으로 평가하는 것이 아닌, 비용 대비 효율성 측면에서 살펴보면 어떤 결과가 나올까? 프로야구 원년인 1982년부터 2016년까지 시즌별로 200타석 이상 출전한 타자들의 '가성비'를 살펴보자. 
-		</p>
-		<p class="intro intro-reference">
-			<a href="http://www.statiz.co.kr">www.statiz.co.kr</a>의 데이터를 이용.<br>
-			1982-2016시즌 타자들 중 200타석 이상 출전한 타자들의 기록을 수집.<br>
-			<a href="http://square.github.io/crossfilter/">crossfilter</a> 라이브러리를 사용해 데이터 정리.
-		</p>
-		<p class="intro intro-direction">
-			* 원하는 범위를 드래그해보세요
-		</p>
-
-	</div>
-	<div id="charts" width = "1200">
-		<br>
 		<div class="mainCharts"> 
 			<div class="title">KBO 타자들의<select id = "batter">
 					<option value = "1">안타</option>
@@ -180,7 +160,8 @@
 					<option value="3">루타</option>
 					<option value="4">득점</option>
 					<option value="5">홈런</option></select>가성비는?</div><div class="indicator"></div>
-			<div id="conclusion" class="conclusion">
+			<div class="intro intro-direction">
+				<p>* 원하는 범위를 드래그해보세요</p>
 			</div>
 			<div id="byHit" class="chart batter-chart">
 			</div>
@@ -192,6 +173,12 @@
 			</div>
 			<div id="byHomeRun" class="chart batter-chart">
 			</div>
+		</div>
+
+	</div>
+	<div id="charts" width = "1200">
+		<br>
+		<div id="conclusion" class="conclusion">
 		</div>
 		<br>
 		<br>
@@ -206,6 +193,19 @@
 		</div>
 		<div id="byTeam" class="chart">
 			<div class="title">팀별로 살펴보면... </div>
+		</div>
+		<div>
+			<p class="intro intro-description">
+				2016년 스토브리그에서 최형우가 KIA와 4년 총액 100억원(공식 발표 기준)에 FA계약을 맺음으로써 공식적으로 FA 100억 원 시대가 열렸다. 사실 비공식적인 소스를 통해 흘러나오는 선수들의 FA 계약총액은 이미 오래전부터 100억을 훌쩍 뛰어넘었다는 이야기들이 심심찮게 들려온다. 두산의 장원준은 8년 계약설이 돌았고, 박석민 역시 실제로는 발표액인 96억보다 큰 액수에 세 자릿수 계약을 맺었다는 설이 있다. 
+				<br>
+				<br>
+				이러나 저러나 이제는 공식적으로도 100억 원 짜리 계약이 등장했다. 물론 FA시장에서 초대형 계약을 맺는 선수들은 그 누구도 의심할 여지 없이 뛰어난 실력을 갖춘 선수들이다. 그러나, 물론 나가는 돈이 내 돈은 아니라지만, 수십억 단위의 비현실적인 계약액수를 보고 있노라면, '돈 값'에 대한 생각이 들 수밖에 없는 것이 사실이다. 또 무조건적인 투자만이 답인 것도 아니다. 2016시즌 KBO 연봉 총액 상위팀인 한화와 삼성, 롯데가 모두 포스트시즌에 진출하지 못했고, 오히려 신진 선수들 발굴에 힘썼던 넥센이나 두산, NC가 선전했다. 선수를 단순히 실력적 요인으로 평가하는 것이 아닌, 비용 대비 효율성 측면에서 살펴보면 어떤 결과가 나올까? 프로야구 원년인 1982년부터 2016년까지 시즌별로 200타석 이상 출전한 타자들의 '가성비'를 살펴보자. 
+			</p>
+			<p class="intro intro-reference">
+				<a href="http://www.statiz.co.kr">www.statiz.co.kr</a>의 데이터를 이용.<br>
+				1982-2016시즌 타자들 중 200타석 이상 출전한 타자들의 기록을 수집.<br>
+				<a href="http://square.github.io/crossfilter/">crossfilter</a> 라이브러리를 사용해 데이터 정리.
+			</p>
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -546,8 +546,10 @@
 			.text(function(d){return d});
 
 			updateConclusion();
-
 		};	
+
+
+
 		function updateIndicator(){
 			d3.select(".indicator")
 			.select("p")
@@ -595,9 +597,6 @@
 					return arr;
 				}
 
-				function sSortNumber(a,b) { //배열 정렬하기
-					return a - b; 
-				} 
 
 				function getSeason(array) {
 					if(array.length === 0){
@@ -609,12 +608,15 @@
 					}
 				}
 
-				console.log(teamSelect);
-				var string = getSeason(seasonSelect) + returnTeam() +"연봉 " + salarySelect[0] + "-" + salarySelect[salarySelect.length-1] + "만 원 사이의 선수는 " + byAll.top(Infinity).length +"명이다.";
+				var string = getSeason(seasonSelect) + returnTeam() +"연봉 " + salarySelect[0] + "-" + salarySelect[salarySelect.length-1] + "만 원 사이의 선수는 "+ byAll.top(Infinity).length +"명이다.";
 				return string; 
 				
 			})
 		};
+	
+		function sSortNumber(a,b) { //배열 정렬하기
+			return a - b; 
+		} 
 
 		function getGasongbi(salary, index){ // 가성비 계산기(?) 
 			var gasongbi = salary/index;	// 가성비 계산에 사용할 지표를 정리해야 한다. 투수와 타자 각각 정리해보기. 	
@@ -629,7 +631,7 @@
 
 			var margin = {top: 10, right: 10, bottom: 20, left: 10};
 			var x, y,
-				innerW, innerH = 300;
+				innerW, innerH = 200;
 			var brushScale, brushCell;
 			var id = barChart.id++;
 			var xAxis = d3.axisBottom(x),
@@ -645,6 +647,7 @@
 					width = innerW + margin.left + margin.right,
 					height = innerH + margin.top + margin.bottom,
 					y = d3.scaleLinear().range([innerH, 0]);
+
 
 					div.each(function(){
 						var div = d3.select(this),
@@ -666,11 +669,6 @@
 							g = svg.append("g")
 								.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-							g.append("clipPath")
-							.attr("id", "clip-" + id)
-							.append("rect")
-							.append("width", innerW)
-							.append("height", innerH)
 
 							barBox = g.append("g")
 							.attr("class", "bar-box")
@@ -696,14 +694,55 @@
 								.on("end", brushEnded);	
  
 						if(isGroup) {
+							var id = d3.select(this).attr('id')
+							
 							y = y.domain([0, group.top(1)[0].value]);
+
 							bars = barBox.selectAll(".bar").data(group.all())
-							bars.enter().append("rect")
+							.enter().append("rect")
 							.attr("class", "bar selected")
 							.attr("x", function(d){return x(d.key)})
 							.attr("y", function(d){return y(d.value)})
 							.attr("width", x.bandwidth())
 							.attr("height", function(d){return innerH - y(d.value)})
+							
+							// if(id === "byTeam"){
+							// 	var i = 0;
+							// 	var color = d3.scaleOrdinal(["#929292", "#1B3351", "#13112D", "#EA202C", "#EA4B1B", "#0D166C", "#DE0B31", "#F93621", "#C40B2B", "#159561", "#7A1430"]);
+							// 	bars
+							// 	.attr("fill", function(d){i = i + 1 ; return color(i) ;})
+							// 	.attr("stroke", "none");
+
+							// };
+							// if(id === "bySalary"){
+							// 	var keys = group.all().map(function(d){return d.key});
+							// 	var color = d3.scaleOrdinal().domain(keys).range(['#fff5f0','#fee0d2','#fcbba1','#fc9272','#fb6a4a','#ef3b2c','#cb181d','#a50f15','#67000d']);
+								
+							// 	bars
+							// 	.attr("fill", function(d){return color(d.key);})
+							// 	.attr("stroke", "none");
+								var values = group.all().map(function(d){return d.value}).sort(sSortNumber);
+								console.log(values);
+								var color = d3.scaleLinear().domain([values[0], values[values.length-1]]).range(["#fff5f0", "#67000d"])
+								console.log(color.domain())
+
+								bars
+								.call(function(d){console.log( d)})
+								.attr("fill", function(d){return color(d.value);})
+								.attr("stroke", "none");
+							// }							
+							// if(id === "bySeason"){
+								var values = group.all().map(function(d){return d.value}).sort(sSortNumber);
+								console.log(values);
+								var color = d3.scaleLinear().domain([values[0], values[values.length-1]]).range(["#fff5f0", "#67000d"])
+								console.log(color.domain())
+
+								bars
+								.call(function(d){console.log( d)})
+								.attr("fill", function(d){return color(d.value);})
+								.attr("stroke", "none");
+							// }
+
 							
 							barBox.selectAll("text").data(group.all())
 							.enter().append("text")
@@ -716,9 +755,8 @@
 							.attr('dy', '-0.3em')
 							.style('font-size', '0.5em');
 						} else {
-
-							var color = d3.scaleOrdinal(d3.schemeCategory20);
 							if(d3.select(this).attr('id') === "byHit" ){
+								var color = d3.scaleLinear().domain([dimension.top(1)[0].안타가성비,dimension.bottom(1)[0].안타가성비]).range(["#45000b", "#fcbba1"]);
 								y = y.domain([0, dimension.top(1)[0].안타가성비]); // data 변하게 하려면 이부분을 고쳐야
 								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
 								.enter().append("rect")
@@ -726,10 +764,12 @@
 								.attr("x", function(d){return x(d.상세이름)})
 								.attr("y", function(d){return y(d.안타가성비)})
 								.attr("width", x.bandwidth())
-								.attr("height", function(d){return innerH - y(d.안타가성비)});
-
+								.attr("height", function(d){return innerH - y(d.안타가성비)})
+								.style("background-color", function(d){return color(d.안타가성비)})
+								.style("stroke", function(d){return color(d.안타가성비)});
 							}
 							if(d3.select(this).attr('id') === "byAtBat" ){
+								var color = d3.scaleLinear().domain([dimension.top(1)[0].타석가성비,dimension.bottom(1)[0].타석가성비]).range(["#45000b", "#fcbba1"]);
 								y = y.domain([0, dimension.top(1)[0].타석가성비]); // data 변하게 하려면 이부분을 고쳐야
 								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
 								.enter().append("rect")
@@ -737,9 +777,13 @@
 								.attr("x", function(d){return x(d.상세이름)})
 								.attr("y", function(d){return y(d.타석가성비)})
 								.attr("width", x.bandwidth())
-								.attr("height", function(d){return innerH - y(d.타석가성비)});
+								.attr("height", function(d){return innerH - y(d.타석가성비)})
+								.style("background-color", function(d){return color(d.타석가성비)})
+								.style("stroke", function(d){return color(d.타석가성비)});
+
 							}							
 							if(d3.select(this).attr('id') === "byBase" ){
+								var color = d3.scaleLinear().domain([dimension.top(1)[0].루타가성비,dimension.bottom(1)[0].루타가성비]).range(["#45000b", "#fcbba1"]);
 								y = y.domain([0, dimension.top(1)[0].루타가성비]); // data 변하게 하려면 이부분을 고쳐야
 								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
 								.enter().append("rect")
@@ -747,9 +791,12 @@
 								.attr("x", function(d){return x(d.상세이름)})
 								.attr("y", function(d){return y(d.루타가성비)})
 								.attr("width", x.bandwidth())
-								.attr("height", function(d){return innerH - y(d.루타가성비)});
+								.attr("height", function(d){return innerH - y(d.루타가성비)})
+								.style("background-color", function(d){return color(d.루타가성비)})
+								.style("stroke", function(d){return color(d.루타가성비)});
 							}
 							if(d3.select(this).attr('id') === "byRun" ){
+								var color = d3.scaleLinear().domain([dimension.top(1)[0].득점가성비,dimension.bottom(1)[0].득점가성비]).range(["#45000b", "#fcbba1"]);
 								y = y.domain([0, dimension.top(1)[0].득점가성비]); // data 변하게 하려면 이부분을 고쳐야
 								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
 								.enter().append("rect")
@@ -757,9 +804,12 @@
 								.attr("x", function(d){return x(d.상세이름)})
 								.attr("y", function(d){return y(d.득점가성비)})
 								.attr("width", x.bandwidth())
-								.attr("height", function(d){return innerH - y(d.득점가성비)});
+								.attr("height", function(d){return innerH - y(d.득점가성비)})
+								.style("background-color", function(d){return color(d.득점가성비)})
+								.style("stroke", function(d){return color(d.득점가성비)});
 							}
 							if(d3.select(this).attr('id') === "byHomeRun" ){
+								var color = d3.scaleLinear().domain([dimension.top(1)[0].홈런가성비,dimension.bottom(1)[0].홈런가성비]).range(["#45000b", "#fcbba1"]);
 								y = y.domain([0, dimension.top(1)[0].홈런가성비]); // data 변하게 하려면 이부분을 고쳐야
 								bars = barBox.selectAll(".bar").data(dimension.top(Infinity))
 								.enter().append("rect")
@@ -767,7 +817,9 @@
 								.attr("x", function(d){return x(d.상세이름)})
 								.attr("y", function(d){return y(d.홈런가성비)})
 								.attr("width", x.bandwidth())
-								.attr("height", function(d){return innerH - y(d.홈런가성비)});
+								.attr("height", function(d){return innerH - y(d.홈런가성비)})
+								.style("background-color", function(d){return color(d.홈런가성비)})
+								.style("stroke", function(d){return color(d.홈런가성비)});
 							}
 						}
 					});
@@ -948,25 +1000,42 @@
 			.duration(1000)
 			.ease(d3.easeCubicOut);
 
+			var values = bySeasons.all().map(function(d){return d.value}).sort(sSortNumber);
+			console.log(values);
+			var color = d3.scaleLinear().domain([0, values[values.length-1]]).range(["#fff5f0", "#67000d"])
+
 			d3.select('#bySeason').selectAll(".bar").data(charts[5].group().all())
 			.transition(t)
 			.attr("y", function(d){return charts[5].y()(d.value)})
-			.attr("height", function(d){return charts[5].innerH() - charts[5].y()(d.value)});
+			.attr("height", function(d){return charts[5].innerH() - charts[5].y()(d.value)})
+			.attr("fill", function(d){return color(d.value);});
+
+			var values = bySalaries.all().map(function(d){return d.value}).sort(sSortNumber);
+			console.log(values);
+			var color = d3.scaleLinear().domain([0, values[values.length-1]]).range(["#fff5f0", "#67000d"])
 
 			d3.select('#bySalary').selectAll(".bar").data(charts[6].group().all())
 			.transition(t)
 			.attr("y", function(d){return charts[6].y()(d.value)})
 			.attr("height", function(d){return charts[6].innerH() - charts[6].y()(d.value)})
+			.attr("fill", function(d){return color(d.value);});
+
+			var values = byTeams.all().map(function(d){return d.value}).sort(sSortNumber);
+			console.log(values);
+			var color = d3.scaleLinear().domain([0, values[values.length-1]]).range(["#fff5f0", "#67000d"])
 
 			d3.select('#byTeam').selectAll(".bar").data(charts[7].group().all())
 			.transition(t)
 			.attr("y", function(d){return charts[7].y()(d.value)})
 			.attr("height", function(d){return charts[7].innerH() - charts[7].y()(d.value)})
+			.attr("fill", function(d){return color(d.value);});
 
 			d3.select('#bySeason').selectAll(".label")
 			.transition(t)
 			.text(function(d){return d.value})
 			.attr("y", function(d){return charts[5].y()(d.value)});
+			
+
 			d3.select('#bySalary').selectAll(".label")
 			.transition(t)
 			.text(function(d){return d.value})
@@ -979,6 +1048,11 @@
 			updateIndicator();
 			updateConclusion();			
 		}
+
+
+
+	
+
 
 		// Copies a variable number of methods from source to target.
 		d3.rebind = function(target, source) {

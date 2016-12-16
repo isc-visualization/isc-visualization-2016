@@ -81,6 +81,7 @@ function callback(err, data) {
             .data(data, function(d){return d.Country})
             .enter().append('g')
             .attr('class', 'bar')
+            .attr('id', 'tool2')
             .attr('transform', function(d){
           return 'translate('+ innerW/2 + ',' + (y(d.Country)+5) + ')'
           })
@@ -98,6 +99,7 @@ function callback(err, data) {
                     })
   var rect2 = bar2.append('rect')
         .attr('height', y.bandwidth()/2)
+        .attr('id', 'tool1')
         .attr('width', function(d){return -x2(d.MenEdu)})
         .style('fill', function(d){return 'rgb(52,152,219)'})
         .style('opacity', 0.9)
@@ -111,6 +113,7 @@ function callback(err, data) {
                     })
   var rect3 = bar3.append('rect')
         .attr('height', y.bandwidth()/2-2)
+        .attr('id', 'tool1')
         .attr('width', function(d){return -x2(d.WomenEdu)})
         .style('fill', function(d){return 'rgb(231,76,60)'})
         .style('opacity', 0.9)
@@ -420,6 +423,223 @@ function callback2(err, data) {
         .style('fill', function(d){return 'rgb(52,152,219)'})
         .style("opacity", opacity);
 
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.WomenEdu1)/10 + '%' +"</span>";
+    })
+    tip.offset(function() {
+      return [-10, 0]
+    })
+  var tip2 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.WomenEdu2)/10 + '%' +"</span>";
+    })
+    tip2.offset(function() {
+      return [-10, 0]
+    })
+  var tip3 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.WomenEdu3)/10 + '%' +"</span>";
+    })
+    tip3.offset(function() {
+      return [-10, 0]
+    })
+  var tip4 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.MenEdu1)/10 + '%' +"</span>";
+    })
+    tip.offset(function() {
+      return [-10, 0]
+    })
+  var tip5 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.MenEdu2)/10 + '%' +"</span>";
+    })
+    tip2.offset(function() {
+      return [-10, 0]
+    })
+  var tip6 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.MenEdu3)/10 + '%' +"</span>";
+    })
+    tip3.offset(function() {
+      return [-10, 0]
+    })
+
+    svg2.call(tip);
+    svg2.call(tip2);
+    svg2.call(tip3);
+    svg2.call(tip4);
+    svg2.call(tip5);
+    svg2.call(tip6);
+
+  svg2.selectAll('.bar')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect3.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect5.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect3.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect5.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+
+  svg2.selectAll('.bar3')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect3.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect5.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect3.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect5.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+
+  svg2.selectAll('.bar5')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect3.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect5.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect3.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect5.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'red').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+
+  svg2.selectAll('.bar2')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect2.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect4.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect6.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect2.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect4.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect6.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+  svg2.selectAll('.bar4')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect2.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect4.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect6.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect2.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect4.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect6.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+  svg2.selectAll('.bar6')
+  .on('mouseenter', function(d, i) {
+     tip.show(d, i)
+     tip2.show(d, i)
+     tip3.show(d, i)
+
+     rect2.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect4.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect6.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip.hide(d,i)
+    tip2.hide(d,i)
+    tip3.hide(d,i)
+
+    rect2.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect4.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect6.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'blue').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+
+//오른쪽 그래프
   var svg3 = d3.select('#graph2').append('svg')
     .attr('width', w)
     .attr('height', h)
@@ -496,12 +716,121 @@ function callback2(err, data) {
         .attr('width', rectWidth)
         .style('fill', function(d){return 'rgb(76,153,0)'})
         .style("opacity", opacity);
+
+
+  var tip7 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.Earning1)/10 + '%' +"</span>";
+    })
+    tip7.offset(function() {
+      return [-10, 0]
+    })
+  var tip8 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.Earning2)/10 + '%' +"</span>";
+    })
+    tip8.offset(function() {
+      return [-10, 0]
+    })
+  var tip9 = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+      return "<span style='color:white'>" + d.Country + ' : ' + Math.round(10*d.Earning3)/10 + '%' +"</span>";
+    })
+    tip9.offset(function() {
+      return [-10, 0]
+    })
+
+    svg3.call(tip7);
+    svg3.call(tip8);
+    svg3.call(tip9);
+
+  svg3.selectAll('.bar7')
+  .on('mouseenter', function(d, i) {
+     tip7.show(d, i)
+     tip8.show(d, i)
+     tip9.show(d, i)
+
+     rect7.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect8.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect9.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip7.hide(d,i)
+    tip8.hide(d,i)
+    tip9.hide(d,i)
+
+    rect7.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect8.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect9.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+  svg3.selectAll('.bar8')
+  .on('mouseenter', function(d, i) {
+     tip7.show(d, i)
+     tip8.show(d, i)
+     tip9.show(d, i)
+
+     rect7.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect8.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect9.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip7.hide(d,i)
+    tip8.hide(d,i)
+    tip9.hide(d,i)
+
+    rect7.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect8.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect9.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
+  svg3.selectAll('.bar9')
+  .on('mouseenter', function(d, i) {
+     tip7.show(d, i)
+     tip8.show(d, i)
+     tip9.show(d, i)
+
+     rect7.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect8.filter(function(p) {return d.Country === p.Country})
+        .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+     rect9.filter(function(p) {return d.Country === p.Country})
+         .style('opacity', 1).style('stroke', 'black').style('stroke-width',2).style('stroke-opacity', 1)
+    })
+  .on('mouseleave', function(d, i){
+    tip7.hide(d,i)
+    tip8.hide(d,i)
+    tip9.hide(d,i)
+
+    rect7.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect8.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+    rect9.filter(function(p) {return d.Country === p.Country})
+    .style('opacity', 0.3).style('stroke', 'green').style('stroke-width',1).style('stroke-opacity', 0.3)
+
+    })
 }
 
 
   ////SECTION 7
 
-d3.csv('data3-1.csv', row, callback3);
+d3.csv('data3-1.csv', row, callback4);
 function row(d) {
   for(var k in d) {
     if(d.hasOwnProperty(k) && k !== 'Country') d[k] = + d[k];
@@ -509,12 +838,12 @@ function row(d) {
   return d;
 }
 
-function callback3(err, data) {
+function callback4(err, data) {
   if(err) return console.error(err)
 
-  var w = 400;
-  var h = 3000;
-  var margin = {top:10, right:10, bottom: 10, left: 30};
+  var w = 300;
+  var h = 1500;
+  var margin = {top:14, right:10, bottom: 10, left: 30};
   var innerW = w - margin.right - margin.left;
   var innerH = h - margin.top - margin.bottom;
 
@@ -523,31 +852,58 @@ function callback3(err, data) {
       .attr('height', h)
       .append('g')
       .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+  var svg2 = d3.select('#graph7').append('svg')
+      .attr('width', w)
+      .attr('height', h)
+      .append('g')
+      .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+  var svg3 = d3.select('#graph7').append('svg')
+      .attr('width', w)
+      .attr('height', h)
+      .append('g')
+      .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+
+
+  svg.append('text').attr('x', 0).style('font-size', '15px').text('< 시간에 따른 각 국가의 여성 의원 수 변화 >')
 
   var nest = d3.nest()
       .key(function(d) { return d.Country; })
       .entries(data);
 
-  var x = d3.scalePoint()
-        .domain(data.map(function(d){console.log(d); return d.Date}))
+  var xForAxis = d3.scaleBand()
+        .domain([1997, 2000, 2003, 2006, 2009, 2012, 2015])
+        .range([0, innerW]);
+
+  var x = d3.scaleBand()
+        .domain(data.map(function(d){return d.Date}))
         .range([0, innerW]);
 
   var y = d3.scaleLinear()
     .domain([0, d3.max(data, function(d){return d.Num})])
-    .range([innerH/35, 0]);
+    .range([innerH/15, 0]);
 
-  var xAxis = d3.axisBottom(x)
-  .ticks(5);
-
+  var xAxis = d3.axisBottom(xForAxis)
+              .tickSize(0)
+              .tickPadding(10)
   var yAxis = d3.axisLeft(y)
-  .ticks(5);
+              .ticks(5)
+              .tickSize(0)
+              .tickPadding(10)
+              .tickSizeInner(-innerW);
 
-    //Axis 함수 선언
-
-  var header = d3.set(data.map(function(s){return s.Country;})).values()
+  var header = d3.set(data.map(function(s, i){return s.Country;})).values()
+  var header1 = []
+  var header2 = []
+  var header3 = []
+  for (i = 0; i < 12; i++){
+    header1.push(header[i]);
+    header2.push(header[i+12]);
+    header3.push(header[i+24]);
+  }
 
   var region = d3.scaleBand()
-        .domain(header)
+        .domain(header1)
         .range([0, innerH]).padding(.2)
 
   var line = d3.line()
@@ -555,7 +911,7 @@ function callback3(err, data) {
       .y(function(d) { return y(d.Num); })
 
   nest.map(function(d, i){
-    for (j = 0; j < 36; j++) {
+    for (j = 0; j < 12; j++) {
       var series = svg.selectAll('.series')
         .data(nest, function(d){return d.key})
         .enter().append('g')
@@ -571,7 +927,7 @@ function callback3(err, data) {
 
       series.append('g') //g를 먼저 추가하고
       .attr('class', 'x axis')
-      .attr('transform', 'translate('+ 0 + ',' + (region(header[j])+innerH/35) +')')
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j])+innerH/15) +')')
       .call(xAxis) //xAxis를 실행
 
       series.append('g')
@@ -580,9 +936,247 @@ function callback3(err, data) {
       .call(yAxis)
 
       series.append('text')
-      .attr('transform', 'translate('+ 10 + ',' + ((region(header[j]))+80) +')')
+      .attr('transform', 'translate('+ 253 + ',' + ((region(header[j]))+93) +')')
       .text(function(d){return d.key})
+      .style('font-size','14')
+      .style("text-anchor","end")
+
+    }
+    for (j = 12; j < 24; j++) {
+      var series = svg2.selectAll('.series')
+        .data(nest, function(d){return d.key})
+        .enter().append('g')
+        .filter(function(s){return s.key===header[j]})
+        .attr('class', 'series')
+
+      series.append('path')
+      .datum(function(d){return d.values})
+      .style('fill', 'none')
+      .style('stroke', 'black')
+      .attr('d', line)
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-12])) +')')
+
+      series.append('g') //g를 먼저 추가하고
+      .attr('class', 'x axis')
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-12])+innerH/15) +')')
+      .call(xAxis) //xAxis를 실행
+
+      series.append('g')
+      .attr('class', 'y axis')
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-12])) +')')
+      .call(yAxis)
+
+      series.append('text')
+      .attr('transform', 'translate('+ 253 + ',' + ((region(header[j-12]))+93) +')')
+      .text(function(d){return d.key})
+      .style('font-size','14')
+      .style("text-anchor","end")
+
+    }
+    for (j = 24; j < 36; j++) {
+      var series = svg3.selectAll('.series')
+        .data(nest, function(d){return d.key})
+        .enter().append('g')
+        .filter(function(s){return s.key===header[j]})
+        .attr('class', 'series')
+
+      series.append('path')
+      .datum(function(d){return d.values})
+      .style('fill', 'none')
+      .style('stroke', 'black')
+      .attr('d', line)
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-24])) +')')
+
+      series.append('g') //g를 먼저 추가하고
+      .attr('class', 'x axis')
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-24])+innerH/15) +')')
+      .call(xAxis) //xAxis를 실행
+
+      series.append('g')
+      .attr('class', 'y axis')
+      .attr('transform', 'translate('+ 0 + ',' + (region(header[j-24])) +')')
+      .call(yAxis)
+
+      series.append('text')
+      .attr('transform', 'translate('+ 253 + ',' + ((region(header[j-24]))+93) +')')
+      .text(function(d){return d.key})
+      .style('font-size','14')
+      .style("text-anchor","end")
+
     }
   })
 
+
 }
+
+// d3.csv('data3-1.csv', row, callback3);
+// function row(d) {
+//   for(var k in d) {
+//     if(d.hasOwnProperty(k) && k !== 'Country') d[k] = + d[k];
+//   }
+//   return d;
+// }
+//
+// function callback3(err, data) {
+//   if(err) return console.error(err)
+//
+//   var w = 333;
+//   var h = 3000;
+//   var margin = {top:10, right:10, bottom: 10, left: 30};
+//   var innerW = w - margin.right - margin.left;
+//   var innerH = h - margin.top - margin.bottom;
+//
+//   var svg = d3.select('#graph7').append('svg')
+//       .attr('width', w)
+//       .attr('height', h/3)
+//       .append('g')
+//       .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+//
+//   var nest = d3.nest()
+//       .key(function(d) { return d.Country; })
+//       .entries(data);
+//
+//   var x = d3.scalePoint()
+//         .domain(data.map(function(d){return d.Date}))
+//         .range([0, innerW]);
+//
+//   var y = d3.scaleLinear()
+//     .domain([0, d3.max(data, function(d){return d.Num})])
+//     .range([innerH/35, 0]);
+//
+//   var xAxis = d3.axisBottom(x)
+//   .ticks(5);
+//
+//   var yAxis = d3.axisLeft(y)
+//   .ticks(5);
+//
+//     //Axis 함수 선언
+//
+//   var header = d3.set(data.map(function(s){return s.Country;})).values()
+//
+//   var region = d3.scaleBand()
+//         .domain(header)
+//         .range([0, innerH]).padding(.2)
+//
+//   var line = d3.line()
+//       .x(function(d) { return x(d.Date); })
+//       .y(function(d) { return y(d.Num); })
+//
+//   nest.map(function(d, i){
+//     for (j = 0; j < 36; j++) {
+//       var series = svg.selectAll('.series')
+//         .data(nest, function(d){return d.key})
+//         .enter().append('g')
+//         .filter(function(s){return s.key===header[j]})
+//         .attr('class', 'series')
+//
+//       series.append('path')
+//       .datum(function(d){return d.values})
+//       .style('fill', 'none')
+//       .style('stroke', 'black')
+//       .attr('d', line)
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])) +')')
+//
+//       series.append('g') //g를 먼저 추가하고
+//       .attr('class', 'x axis')
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])+innerH/35) +')')
+//       .call(xAxis) //xAxis를 실행
+//
+//       series.append('g')
+//       .attr('class', 'y axis')
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])) +')')
+//       .call(yAxis)
+//
+//       series.append('text')
+//       .attr('transform', 'translate('+ 10 + ',' + ((region(header[j]))+80) +')')
+//       .text(function(d){return d.key})
+//     }
+//   })
+//
+// }
+//
+// d3.csv('data3-1.csv', row, callback5);
+// function row(d) {
+//   for(var k in d) {
+//     if(d.hasOwnProperty(k) && k !== 'Country') d[k] = + d[k];
+//   }
+//   return d;
+// }
+//
+// function callback5(err, data) {
+//   if(err) return console.error(err)
+//
+//   var w = 333;
+//   var h = 3000;
+//   var margin = {top:10, right:10, bottom: 10, left: 30};
+//   var innerW = w - margin.right - margin.left;
+//   var innerH = h - margin.top - margin.bottom;
+//
+//   var svg = d3.select('#graph9').append('svg')
+//       .attr('width', w)
+//       .attr('height', h/3)
+//       .append('g')
+//       .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+//
+//   var nest = d3.nest()
+//       .key(function(d) { return d.Country; })
+//       .entries(data);
+//
+//   var x = d3.scalePoint()
+//         .domain(data.map(function(d){return d.Date}))
+//         .range([0, innerW]);
+//
+//   var y = d3.scaleLinear()
+//     .domain([0, d3.max(data, function(d){return d.Num})])
+//     .range([innerH/35, 0]);
+//
+//   var xAxis = d3.axisBottom(x)
+//   .ticks(5);
+//
+//   var yAxis = d3.axisLeft(y)
+//   .ticks(5);
+//
+//     //Axis 함수 선언
+//
+//   var header = d3.set(data.map(function(s){return s.Country;})).values()
+//
+//   var region = d3.scaleBand()
+//         .domain(header)
+//         .range([0, innerH]).padding(.2)
+//
+//   var line = d3.line()
+//       .x(function(d) { return x(d.Date); })
+//       .y(function(d) { return y(d.Num); })
+//
+//   nest.map(function(d, i){
+//     for (j = 0; j < 36; j++) {
+//       var series = svg.selectAll('.series')
+//         .data(nest, function(d){return d.key})
+//         .enter().append('g')
+//         .filter(function(s){return s.key===header[j]})
+//         .attr('class', 'series')
+//
+//       series.append('path')
+//       .datum(function(d){return d.values})
+//       .style('fill', 'none')
+//       .style('stroke', 'black')
+//       .attr('d', line)
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])) +')')
+//
+//       series.append('g') //g를 먼저 추가하고
+//       .attr('class', 'x axis')
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])+innerH/35) +')')
+//       .call(xAxis) //xAxis를 실행
+//
+//       series.append('g')
+//       .attr('class', 'y axis')
+//       .attr('transform', 'translate('+ 0 + ',' + (region(header[j])) +')')
+//       .call(yAxis)
+//
+//       series.append('text')
+//       .attr('transform', 'translate('+ 10 + ',' + ((region(header[j]))+80) +')')
+//       .text(function(d){return d.key})
+//     }
+//   })
+//
+// }

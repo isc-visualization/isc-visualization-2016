@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+
+
+     <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanskr.css">
+     <!-- radar chart-->
+     <link rel="stylesheet" href="https://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.css">
+
+    <script src="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+     <script src="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.js"></script>
+
+    <style>
+    hr {
+
+      }
+    h1 {
+      padding: 20px;
+      }
+    h3 {
+      padding: 10px;
+      }
+    p {
+      text-align:left;
+      margin-left: 20%;
+      padding:5px;
+      }
+    @font-face {
+      font-family: 'Daehan';
+      font-style: normal;
+      font-weight: 400;
+      src: url('//cdn.jsdelivr.net/korean-webfonts/1/corps/yoon/Daehan/DaehanR.woff2') format('woff2'), url('//cdn.jsdelivr.net/korean-webfonts/1/corps/yoon/Daehan/DaehanR.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Daehan';
+      font-style: normal;
+      font-weight: 700;
+      src: url('//cdn.jsdelivr.net/korean-webfonts/1/corps/yoon/Daehan/DaehanB.woff2') format('woff2'), url('//cdn.jsdelivr.net/korean-webfonts/1/corps/yoon/Daehan/DaehanB.woff') format('woff');
+    }
+
+     body {
+     font-family: 'Daehan', serif;
+     margin:auto;
+    }
+
+    .teamimg {
+      height: 30px;
+      }
+    form {
+      display: inline !important;
+      }
+    input {
+      height: 40px;
+      width: 300px;
+      border: solid silver;
+      }
+     #refresh{
+         height:40px;
+         width: 50px;
+         background-color : silver;
+         display: inline-block;
+
+         }
+    div {
+        margin: auto;
+        text-align:center;
+
+        }
+    .team {
+        display : inline-block;
+        /*border : solid #3a4454 0.1px;*/
+        border-radius: 2px;
+        padding : 5px;
+        background-color : #eaedf2;
+            margin-bottom : 5px;
+            margin-right : 5px;
+            height : 40px;
+            width : 150px;
+            text-align : center;
+        }
+        .point {
+          fill-opacity : .8;
+        }
+        .point .hidden {
+          fill : #ddd !important;
+
+        }
+        td, th {
+            padding: 1px 4px;
+            border: 2px silver solid;
+        }
+        #table-wrapper {
+          position:relative;
+          margin-bottom:30px;
+        }
+        .parallel {
+
+          }
+        #table-scroll {
+          max-height:300px;
+          overflow:scroll;
+          margin-top:20px;
+          margin-left:20px;
+        }
+         #tip {
+             margin-top:20px;
+             margin-bottom:20px;
+             }
+
+        #table-wrapper table {
+          width:100%;
+
+        }
+
+        #table-wrapper table thead th .text {
+          position:absolute;
+          top:-20px;
+          z-index:2;
+          height:20px;
+          width:100%;
+          border:1px solid red;
+        }
+        .x.axis2 .domain{
+          stroke : none;
+        }
+        .series path {
+          fill : none;
+        }
+        .series.hidden path {
+          stroke : #ddd !important;
+        }
+        #searchicon {
+          height: 30px;
+          margin: 15px;
+          }
+       .radar-chart .area {
+          fill-opacity: 0.7;
+        }
+        .radar-chart.focus .area {
+          fill-opacity: 0.3;
+        }
+        .radar-chart.focus .area.focused {
+          fill-opacity: 0.9;
+        }
+
+        </style>
+  </head>
+    <body>
+
+
+    <script>
+        var w = 1200;
+        var margin = {top: 10, right:50, bottom: 100, left: 50};
+        var innerW = w - margin.right - margin.left;
+        var brush = d3.brush();
+        var scales = d3.local();
+
+        var xAxis = d3.axisBottom().ticks(6);
+        var yAxis = d3.axisLeft().ticks(6);
+
+        var region = d3.scaleBand().range([0, innerW]).padding(.2);
+
+        var c = d3.scaleOrdinal().range([ '#231F21', '#AF917B','#F04D22','#C10B4B','#820024','#EE1E23','#EF6C00','#ED1C24','#0166B2', '#000000']);
+
+        var w2 = 1200, h = 500;
+        var margin2 = {top:100, right:30, bottom: 50, left: 30};
+        var innerW2 = w2 - margin2.right - margin2.left,
+          innerH = h - margin2.top - margin2.bottom;
+
+        var xAxis2 = d3.axisBottom().tickSize(0).tickPadding(-12);
+        var yAxis2 = d3.axisLeft();
+        var x = d3.scalePoint().range([0, innerW2]).padding(0.04);
+        var y = {};
+
+        var line  = d3.line().x(function(d){return d.x}).y(function(d){return d.y;});
+
+    d3.csv('baseball.csv', callback);
+
+           ////////
+        function callback(err, data) {
+            console.log(data);
+          if(err) return console.error(err);
+          var headers = data.columns.slice(3,10);
+          headers = headers.map(function(h) {
+            var domain = [];
+            var max = d3.max(data, function(d) { return +d[h];} );
+            var min = d3.min(data, function(d) { return +d[h];} );
+            domain[0] = min;
+            domain[1] = max;
+            return {name:h, domain:domain};
+          });
+          console.log(headers);
+          region.domain(headers.map(function(d){return d.name;}));
+          c.domain(d3.set(data, function(d){return d.team;}).values());
+
+          //
+          var entries = d3.nest()
+                            .key(function(d){return d.team;})
+                            .entries(data);
+        var samsung = [];
+        var kt = [];
+        var LG = [];
+        var nexen = [];
+        var KIA = [];
+        var SK = [];
+        var doosan = [];
+        var hanhwa = [];
+        var NC = [];
+        var lotte = [];
+        var team2016 =[];
+
+        data.forEach(function(e){
+
+                        if(e.team === '삼성' && e.year === '2016') samsung.push(e);
+                        if(e.team === 'kt'&& e.year === '2016') kt.push(e);
+                        if(e.team === 'LG'&& e.year === '2016') LG.push(e);
+                        if(e.team === '넥센'&& e.year === '2016') nexen.push(e);
+                        if(e.team === 'KIA'&& e.year === '2016') KIA.push(e);
+                        if(e.team === 'SK'&& e.year === '2016') SK.push(e);
+                        if(e.team === '두산'&& e.year === '2016') doosan.push(e);
+                        if(e.team === '한화'&& e.year === '2016') hanhwa.push(e);
+                        if(e.team === 'NC'&& e.year === '2016') NC.push(e);
+                        if(e.team === '롯데'&& e.year === '2016') lotte.push(e);
+                        if(e.year === '2016') team2016.push(e);
+              });
+
+
+          //text
+            //d3.select('body').append('div').attr('display','block').attr('height',500).attr('width',200)
+            d3.select("body").append("div").attr("display",'block').attr('id','title1').append('h1').attr('class','title')
+            .text('"승리기여도(WAR)에 영향을 주는 지표 알아보기"');
+            d3.select('#title1').append('hr');
+            d3.select('body').append('p').style('text-align','right').style('margin-right','150px').style('padding','0px').append('a').attr('id','mail').text('by. 오주영');
+            var amail = document.getElementById('mail');
+            amail.href ="mailto:ohippi@snu.ac.kr";
+            d3.select('body').append('p').style('text-align','right').style('margin-right','150px').style('padding','0px').append('a').attr('id','from').text('출처 : http://www.kbreport.com/leader/main')
+            var afrom = document.getElementById('from'); //or grab it by tagname etc
+            afrom.href = "http://www.kbreport.com/leader/main"
+            d3.select("body").append("div").attr("display",'block').attr('id','war').append('h3')
+            .text("승리기여도(WAR)란?");
+            var explainwar = d3.select("body").append("div").attr('display','block')
+            explainwar.append('p').text('Wins Above Replacement의 줄임말로, 대체선수와 비교해 팀 승리에 기여한 정도를 나타내는 지표이다.')
+            explainwar.append('p').text('WAR 0~1은 대체 수준의 선수, 1~2는 벤치 플레이어 수준, 2~3은 주전 선수급, 3~4는 우수 선수급, 4~5는 올스타급, 5~6은 전국구 슈퍼스타급, 6 이상은 MVP급이다.')
+            explainwar.append('p').text('WAR = (Batting Runs + Base Running Runs +Fielding Runs + Positional Adjustment + League Adjustment +Replacement Runs) / (Runs Per Win)')
+
+            var explainstats = d3.select('body').append('div').attr('display','block').attr('id','explainstats');
+            explainstats.append('h3').text('타자의 능력치를 보여주는 지표들')
+            var pa = explainstats.append('div').attr('id','pa')
+            pa.append('p').text('1. PA(타석수) : 타자가 타격을 하기 위해 타석에 선 횟수, plate appearance');
+            //pa.append('p1').text('타석수 = 안타를 쳐 진루한 횟수+아웃 당한 횟수+희생플라이를 친 횟수+희생번트를 친 횟수');
+            var ba = explainstats.append('div')
+            ba.append('p').text('2. BA(타율) : 타자의 타격 정확도를 가늠하는 지표, batting average')
+           // ba.append('p1').text('타율=안타 수/타수')
+            var bs = explainstats.append('div')
+            bs.append('p').text('3. BS(볼넷/삼진) : 타자의 공을 고르는 능력을 보여주는 지표, 정식 명칭은 BB/K이나 이 페이지에서는 BS로 통칭한다. ')
+            var iso = explainstats.append('div')
+            iso.append('p').text('4. ISO(순수장타율) : 타자의 순수한 장타력을 대략적으로 유추할 수 있는 지표, isolate power')
+           // iso.append('p1').text('ISO = ((2B) + (2*3B) + (3*HR)) / AB = 장타율 - 타율')
+            var spd = explainstats.append('div')
+            spd.append('p').text('5. SPD(스피드 스코어) : 선수의 스피드를 0~10점 스케일로 평가하는 지표, speed score')
+           // spd.append('p1').text('Speed Score = ( f1 + f2 + f3 + f4 + f5 ) / 5 * 도루 성공률  f1 = ( ( SB + 3 ) / ( SB + CS + 7 ) – 0.4 ) * 20 * 도루 시도율 f2 = ( ( SB + CS ) / ( ( H – 2B – 3B – HR ) + BB + HP ) )^0.5 / 0.07 * 3루타 비율 f3 = 3B / ( AB – HR – K ) / 0.02 x 10 * 출루 시 득점 비율 f4 = ( ( R – HR ) / ( H + BB – HR – HP ) - 0.1 ) / 0.04 * 병살 회피율 f5 = ( 0.055 – GDP / ( AB – HR – K ) ) / 0.005 * 각 성분(f1~f5)은 최소 0, 최대 10으로 조정한다.');
+            var wsb = explainstats.append('div')
+            wsb.append('p').text('6. wSB(도루생산력) : 평균적인 주자에 비해 도루를 통해 얼마나 득점을 더 창출해냈는 지를 나타내는 지표, weighted stolen base runs')
+           // wsb.append('p1').text('wSB = SB * runSB + CS * runCS – lgwSB * (1B + BB + HBP – IBB) runSB = 도루의 득점가치 runCS = 도실의 득점가치 lgwSB = (lgSB * runSB + lgCS * runCS) / (lg1B + lgBB + lgHBP – lgIBB)')
+            explainstats.append('hr')
+
+          //button
+          d3.select('body').append('div').append('p').attr('id','tip').text('Tip. 팀 버튼을 클릭하여 그 팀의 선수들에 관한 수치를 그래프 상에 나타낼 지 결정할 수 있습니다. 그래프 상에서 드래그를 하여 점들의 분포를 확인해보아요.')
+          d3.select('body').append('div').attr('id','button');
+
+          var divDoosan = d3.select("#button").append("div").attr('class','team').attr('id','doosan').style('background-color','#ED1C24');
+          divDoosan.append('img').attr('src', 'team_bears.png').attr('class','teamimg');
+          //divDoosan.append('br');
+          var textDoosan = divDoosan.append('text').text(' 두산 베어스').style('color','white');
+
+          var divSamsung = d3.select("#button").append("div").attr('class','team').attr('id','samsung').style('background-color','#0166B2');
+          divSamsung.append('img').attr('src', 'team_lions.png').attr('class','teamimg');
+          //divSamsung.append('br');
+          var textSamsung = divSamsung.append('text').text(' 삼성 라이온즈').style('color','white');
+
+          var divNC = d3.select("#button").append("div").attr('class','team').attr('id','nc').style('background-color','#AF917B');
+          divNC.append('img').attr('src', 'team_dinos.png').attr('class','teamimg');
+          //divNC.append('br');
+          var textNC = divNC.append('text').text(' NC 다이노스').style('color','white');
+
+          var divNexen = d3.select("#button").append("div").attr('class','team').attr('id','nexen').style('background-color','#820024');
+          divNexen.append('img').attr('src', 'team_heroes.png').attr('class','teamimg');
+          //divNexen.append('br');
+          var textNexen = divNexen.append('text').text(' 넥센 히어로즈').style('color','white');
+
+          var divSK = d3.select("#button").append("div").attr('class','team').attr('id','sk').style('background-color','#EF6C00');
+          divSK.append('img').attr('src', 'team_wyvurns.png').attr('class','teamimg');
+          //divSK.append('br');
+          var textSK = divSK.append('text').text(' SK 와이번즈').style('color','white');
+
+          d3.select('#button').append('br');
+
+          var divHanhwa = d3.select("#button").append("div").attr('class','team').attr('id','hanhwa').style('background-color', '#231F21');
+          divHanhwa.append('img').attr('src', 'team_eagles.png').attr('class','teamimg');
+          //divHanhwa.append('br');
+          var textHanhwa = divHanhwa.append('text').text(' 한화 이글즈').style('color','white');
+
+          var divKIA = d3.select("#button").append("div").attr('class','team').attr('id','kia').style('background-color','#EE1E23');
+          divKIA.append('img').attr('src', 'team_tigers.png').attr('class','teamimg');
+          //divKIA.append('br');
+          var textKIA = divKIA.append('text').text(' KIA 타이거즈').style('color','white');
+
+          var divLotte = d3.select("#button").append("div").attr('class','team').attr('id','lotte').style('background-color','#F04D22');
+          divLotte.append('img').attr('src', 'team_giants.png').attr('class','teamimg');
+          //divLotte.append('br');
+          var textLotte = divLotte.append('text').text(' 롯데 자이언츠').style('color','white');
+
+          var divLG = d3.select("#button").append("div").attr('class','team').attr('id','lg').style('background-color','#C10B4B');
+          divLG.append('img').attr('src', 'team_twins.png').attr('class','teamimg');
+         // divLG.append('br');
+          var textLG = divLG.append('text').text(' LG 트윈즈').style('color','white');
+
+          var divKT = d3.select("#button").append("div").attr('class','team').attr('id','kt').style('background-color','#000000');
+          divKT.append('img').attr('src', 'team_wiz.png').attr('class','teamimg');
+          //divKT.append('br');
+          var textKT = divKT.append('text').text(' kt 위즈').style('color','white');
+
+
+          //svg
+          d3.select('body').append('div').attr('id','cell');
+           var svg = d3.select('#cell').append('svg')
+            .attr('width', w)
+            .attr('height', w)
+          .append('g')
+            .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+            console.log(cross(headers));
+
+          var cell = svg.selectAll('.cell')
+                        .data(cross(headers))
+                      .enter().append('g')
+                        .attr('class', 'cell')
+                        .attr('transform', function(d){return 'translate(' + [region(d.x.name), innerW - region(d.y.name)- region.bandwidth()]+ ')'})
+                        .each(function(d) {
+                          var x = d3.scaleLinear().domain(d.x.domain).range([0, region.bandwidth()]);
+                          var y = d3.scaleLinear().domain(d.y.domain).range([region.bandwidth(), 0]);
+                          scales.set(this, {x:x, y:y});
+                        });
+
+          cell.append('g')
+          .attr('class', 'x axis')
+          .attr('transform', 'translate(' + [0, region.bandwidth()]+ ')')
+          .each(function() {
+            d3.select(this).call(xAxis.scale(scales.get(this).x))
+          });
+
+          cell.append('text')
+          .attr('transform', function(d){return 'translate(' + [60,10]+ ')'})
+          .text(function(d){return d.x.name +'-'+d.y.name; });
+
+        cell.append('g')
+          .attr('class', 'y axis')
+          .each(function() {
+            d3.select(this).call(yAxis.scale(scales.get(this).y));
+          });
+
+        //scatter plot
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointS')
+              .data(samsung)
+            .enter().append('circle')
+              .attr('class','point pointsamsung')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#0166B2')
+              .style('opacity',1);
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointd')
+              .data(doosan)
+            .enter().append('circle')
+              .attr('class','point pointdoosan')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#ED1C24').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointnc')
+              .data(NC)
+            .enter().append('circle')
+              .attr('class','point pointnc')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#AF917B').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointnexen')
+              .data(nexen)
+            .enter().append('circle')
+              .attr('class','point pointnexen')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#820024').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointsk')
+              .data(SK)
+            .enter().append('circle')
+              .attr('class','point pointsk')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#EF6C00').style('opacity',1);;
+        });
+       cell.each(function(d) {
+          d3.select(this).selectAll('.pointhanhwa')
+              .data(hanhwa)
+            .enter().append('circle')
+              .attr('class','point pointhanhwa')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#231F21').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointkia')
+              .data(KIA)
+            .enter().append('circle')
+              .attr('class','point pointkia')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#EE1E23').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointlotte')
+              .data(lotte)
+            .enter().append('circle')
+              .attr('class','point pointlotte')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#F04D22').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointlg')
+              .data(LG)
+            .enter().append('circle')
+              .attr('class','point pointlg')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#C10B4B').style('opacity',1);;
+        });
+        cell.each(function(d) {
+          d3.select(this).selectAll('.pointkt')
+              .data(kt)
+            .enter().append('circle')
+              .attr('class','point pointkt')
+              .attr('cx', function(p){return scales.get(this).x(p[d.x.name]);})
+              .attr('cy', function(p){return scales.get(this).y(p[d.y.name]);})
+              .attr('r', 4)
+              .style('fill', '#000000').style('opacity',1);;
+        });
+        //onclick event
+
+        d3.select('#samsung').on('click',function(d){
+
+
+            var active  = divSamsung.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#0166B2';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointsamsung").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textSamsung.style('color',newTextColor);
+            // Update whether or not the elements are active
+            divSamsung.active = active;
+
+                });
+
+        d3.select('#doosan').on('click',function(d){
+              var active   = divDoosan.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#ED1C24';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointdoosan").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textDoosan.style('color',newTextColor);
+            // Update whether or not the elements are active
+            divDoosan.active = active;
+
+
+                });
+
+        d3.select('#nc').on('click',function(d){
+            var active   = NC.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#AF917B';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointnc").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textNC.style('color',newTextColor);
+            // Update whether or not the elements are active
+            NC.active = active;
+
+                });
+
+        d3.select('#nexen').on('click',function(d){
+              var active   = nexen.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#820024';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointnexen").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textNexen.style('color',newTextColor);
+            // Update whether or not the elements are active
+            nexen.active = active;
+
+
+                });
+
+        d3.select('#sk').on('click',function(d){
+
+                var active   = SK.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#EF6C00';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointsk").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textSK.style('color',newTextColor);
+            // Update whether or not the elements are active
+            SK.active = active;
+
+                });
+
+
+        d3.select('#hanhwa').on('click',function(d){
+
+            var active   = hanhwa.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#231F21';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointhanhwa").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textHanhwa.style('color',newTextColor);
+            // Update whether or not the elements are active
+            hanhwa.active = active;
+
+                });
+
+
+        d3.select('#kia').on('click',function(d){
+
+            var active   = kia.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#EE1E23';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointkia").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textKIA.style('color',newTextColor);
+            // Update whether or not the elements are active
+            KIA.active = active;
+
+                });
+
+
+        d3.select('#lotte').on('click',function(d){
+
+            var active   = lotte.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#F04D22';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointlotte").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textLotte.style('color',newTextColor);
+            // Update whether or not the elements are active
+            lotte.active = active;
+
+                });
+
+
+        d3.select('#lg').on('click',function(d){
+
+            var active   = LG.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#C10B4B';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointlg").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textLG.style('color',newTextColor);
+            // Update whether or not the elements are active
+            LG.active = active;
+
+                });
+
+
+        d3.select('#kt').on('click',function(d){
+
+            var active   = kt.active ? false : true,
+              newOpacity = active ? 0 : 1;
+              newColor = active ? '#eaedf2':'#000000';
+              newTextColor = active ? 'black' : 'white';
+            // Hide or show the elements
+            d3.selectAll(".pointkt").style("opacity", newOpacity);
+            d3.select(this).style('background-color',newColor);
+            textKT.style('color',newTextColor);
+            // Update whether or not the elements are active
+            kt.active = active;
+
+                });
+
+
+
+        //brush
+          brush = brush.extent([[0, 0], [region.bandwidth(), region.bandwidth()]]);//range of brush
+          brush = brush.extent([[0, 0], [region.bandwidth(), region.bandwidth()]])
+          .on('start', brushStarted)
+          .on('brush', brushed)
+          .on('end', brushEnded);
+
+
+        function brushed(d) {
+            if(d3.event.selection === null) return;
+          var xName = d.x.name, yName = d.y.name; //axis name
+          var scale = scales.get(this);
+          var domain = d3.event.selection.map(function(d) {
+            return [scale.x.invert(d[0]), scale.y.invert(d[1])];
+          });
+          svg.selectAll('.point').classed('hidden', function(d,i) {
+            return d[xName] < domain[0][0] || d[xName] > domain[1][0] || d[yName] > domain[0][1] || d[yName] < domain[1][1];
+          })
+          svg.selectAll('.point').classed('brushed', function(d,i) {
+            return d[xName] > domain[0][0] && d[xName] < domain[1][0] && d[yName] < domain[0][1] && d[yName] > domain[1][1];
+          })
+
+          /*
+          var brushed = svg.selectAll('.brushed').each(function(d){
+            //console.log(d);
+
+            //d3.select('body').append('div').append('text').text(radarData.name);
+            })
+          */
+        }
+        function brushEnded(d) {
+          if(d3.event.selection === null) { // no selection ->
+            svg.selectAll('.point.hidden').classed('hidden', false);
+          }
+        }
+
+
+        cell.append('g')
+              .attr('class', 'brush')
+              .call(brush);
+
+        //table
+        d3.select('body').append('hr');
+        d3.select('body').append('div').append('h1').text('"타자 개인별 능력치 알아보기"');
+        d3.select('body').append('div').append('p').text('Tip. 선수 이름을 검색할 때마다 아래 그래프에 각 선수에 관한 수치가 아래 그래프에 그려집니다. 그래프 영역을 클릭하면 새로고침이 됩니다.')
+        d3.select('body').append('img').attr('src','search-128.png').attr('id','searchicon');
+        //d3.select('body').append('span').attr('class', 'glyphicon glyphicon-zoom-in').attr('aria-hidden','true')
+
+         function renderTable(data, columns) {
+        var table = d3.select('body').append('div').attr('id','table-wrapper')
+                        .append('div').attr('id','table-scroll')
+                        .append('table')
+                            .style("border", "2px black solid")
+                            .style("border-collapse", "collapse")
+                            .attr('id','myTable')
+
+        var thead = table.append('thead')
+        var tbody = table.append('tbody');
+
+        // append the header row
+        thead.append('tr')
+          .selectAll('th')
+          .data(columns).enter()
+          .append('th')
+            .text(function (column) {
+                if(column === 'name') return '이름';
+                if(column === 'team') return '팀명';
+                if(column === 'year') return '연도';
+                else return column;
+            });
+
+        // create a row for each object in the data
+        var rows = tbody.selectAll('tr')
+          .data(team2016)//what data?
+          .enter()
+          .append('tr');
+
+        // create a cell in each row for each column
+        var cells = rows.selectAll('td')
+          .data(function (row) {
+            return columns.map(function (column) {
+               return {column: column, value: row[column]};
+            });
+          })
+          .enter()
+          .append('td')
+            .text(function (d) { return d.value; });
+
+        return table;
+          }
+        //text
+       // d3.select('body').append('div').append('p2').text("이름으로 검색한다.");
+
+        var searchName = d3.select('body').append('form').append('input')
+                            .attr('type','text').attr('id','inputSearch')
+                            .attr('placeholder','이름으로 검색하기');
+
+
+        d3.select('body').append('div').attr('display','block');
+        document.getElementById('inputSearch').onkeyup = function findTable(event){
+
+              var input, filter, table, tr, td, i;
+              input = document.getElementById("inputSearch");
+              filter = input.value.toUpperCase();
+              table = document.getElementById("myTable");
+              tr = table.getElementsByTagName("tr");
+
+
+              for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+
+                if (td) {
+                  if (td.innerHTML.indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+
+                  } else {
+                    tr[i].style.display = "none";
+                  }
+                }
+              }
+              console.log(filter);
+              data.forEach(function(e){
+                if(filter === e.name){
+                  console.log("hello");
+                  console.log(e);
+                  var datasearched = [e];
+                  console.log(datasearched);
+                  //show&hide
+                  var show = d3.selectAll('.series').filter(function(d){return d.name === filter})
+                  show.style('stroke',function(d){return c(d.team)})//.text(function(d){return d.name;});
+                  //show.append('text').attr('x',function(d){return x(d.pa)}).attr('y',function(d){return y(d.name)}).text(function(d){return d.name}).style('stroke-width',1)
+                    //d3.select('body').append('div').append('text').text(e.name);
+                  }
+              })
+            };
+
+      renderTable(data, ["name","team","PA","BA","BS","ISO","SPD","wSB","WAR","year"]);
+
+        d3.select('body').append('hr');
+        //parallel
+        var parallel = d3.select('body').append('div').attr('class','parallel');
+
+
+
+        var svgL = d3.select('.parallel').append('svg')
+            .attr('width', w2)
+            .attr('height', h)
+          .append('g')
+            .attr('transform', 'translate('+ [margin2.left, margin2.top] + ')');
+
+        headers.map(function(h) {
+          y[h.name] = d3.scaleLinear().domain(h.domain).range([innerH, 0]);
+        });
+
+        x.domain(headers.map(function(d){return d.name;}));
+
+
+        svgL.selectAll('.series')
+                    .data(data)
+                      .enter().append('g')
+                    .attr('class', 'series')
+                    //.style('stroke', function(d){return c(d.team)})
+                    .style('stroke-width',3)
+                      .selectAll('path')
+                    .data(function(d){return [series(d)]})//double array
+                      .enter().append('path')
+                      .attr('d', line)
+
+
+
+
+        svgL.selectAll('.y.axis2')
+            .data(headers, function(d){return d.name;})
+          .enter().append('g')
+            .attr('class', 'y axis2')
+            .attr('transform', function(d) {return 'translate(' + [x(d.name), 0] + ')';})
+            .each(function(d) {
+              yAxis2.scale(y[d.name]);
+              d3.select(this).call(yAxis2)
+            })
+
+        xAxis2.scale(x);
+        svgL.append('g')
+          .attr('class', 'x axis2')
+          .call(xAxis2);
+
+        parallel.on('click',function(){
+
+            reloadScroll();
+            return false
+
+            });
+
+
+        }//end
+
+        var brushCell;
+        function brushStarted(d) {
+          if(brushCell !== this) {//called brush
+            d3.select(brushCell).call(brush.move, null);//cancel existing brushing//brush.move : function,
+            brushCell = this;
+          }
+        }
+
+        function cross(headers) {
+          var result = [];
+          var result2 =[];
+
+          headers.forEach(function(a) {
+            headers.forEach(function(b){
+
+            result.push({x:a, y:b});
+            });
+          });
+
+          return result;
+        }
+        function series(d) {
+          return x.domain().map(function(h) {
+            return {x:x(h), y:y[h](d[h])};//for polyline
+          });
+        }
+        var conditions = {};
+        function brushedL(d) {
+          conditions[d.name] = d3.event.selection.map(y[d.name].invert);
+          hide();
+        }
+        function brushEndedL(d) {
+          if(d3.event.selection === null) {
+            delete conditions[d.name];
+            hide();
+          }
+        }
+        function hide() {
+          svg.selectAll('.series').classed('hidden', function(d) {
+            var result = false;
+            for(var k in conditions) {
+              var domain = conditions[k];
+              result = result || (d[k] < domain[1]  || d[k] > domain[0])
+            }
+            return result;
+          });
+        }
+         var isFramed = top.frames.length > 0;
+
+   // call this function to reload the page
+   function reloadScroll()
+   {
+      var scrollAmount = document.body.scrollTop; // this is the current scroll position
+      if (isFramed)
+      {
+         top.scrollValue = scrollAmount; // save it in the top frame's namespace
+      }
+      else
+      {
+         document.cookie="scrollAmount=" + scrollAmount; // save it in cookie
+         window.dontkillcookie = true; // just a flag used in onunload
+      }
+      window.location.reload();
+   }
+
+   window.onload = function () // when the window is reloaded, check if a scroll value has been saved
+   {
+      var scrollAmount;
+      if (isFramed)
+      {
+         scrollAmount = top.scrollValue;
+      }
+      else
+      {
+         var cook = document.cookie; // parse the cookie
+         var pos = cook.indexOf("scrollAmount=");
+         if (pos >= 0)
+         {
+            scrollAmount = parseInt(cook.substr(pos + 13));
+         }
+      }
+      if (scrollAmount) // and reset the scrolling. et voilà.
+      {
+         document.body.scrollTop = scrollAmount;
+      }
+   }
+
+   window.onunload = function()
+   {
+      // reset the cookie to zero, this way the window won't
+      // scroll the next time the user accesses it
+      if (!window.dontkillcookie)
+      {
+         document.cookie="scrollAmount=0";
+      }
+   }
+    </script>
+  </body>
+</html>
+
+<!--
+
+-->

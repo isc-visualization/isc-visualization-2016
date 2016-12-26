@@ -33,5 +33,59 @@
   "category" :  "KBO",
   "title" : "활약대비 연봉으로 살펴보는 KBO의 머니볼",
   "desc" : "KBO 타자들의 비용 대비 효율성을 그래프 시각화"
+},
+{
+  "name_kr" : "강희윤",
+  "name_en" : "kangheeyun",
+  "college" : "사회과학대학",
+  "department" : "언론정보학과",
+  "category" :  "MQs",
+  "title" : "미국대법관의 정치성향과 위기",
+  "desc" : "과거 미국 대법원의  전반적인 정치성향과  최근 미국 대법원 대법관 변동에 따라 예측되는 방향"
+},
+{
+  "name_kr" : "서우민",
+  "name_en" : "seowoomin",
+  "college" : "자연과학대학",
+  "department" : "물리·천문학부",
+  "category" :  "MQs",
+  "title" : "미국 대법관과 대통령의 정치적 상관관계",
+  "desc" : "미국 대법관과 이들을 임명한 대통령의 정치성향 분석"
+},
+{
+  "name_kr" : "안혜민",
+  "name_en" : "annhyemin",
+  "college" : "자연과학대학",
+  "department" : "물리·천문학부",
+  "category" :  "KBO",
+  "title" : "KBO 승패 그래프",
+  "desc" : "1982~2016년 시즌별 팀의 승패 그래프 시각화"
+},
+{
+  "name_kr" : "오주영",
+  "name_en" : "ohjooyoung",
+  "college" : "농업생명과학대학",
+  "department" : "바이오시스템·소재학부",
+  "category" :  "KBO",
+  "title" : "승리기여도(WAR)에 영향을 주는 지표 알아보기",
+  "desc" : "승리기여도(WAR)에 영향을 주는 지표 알아보기"
+},
+{
+  "name_kr" : "현유지",
+  "name_en" : "hyunyuji",
+  "college" : "공과대학",
+  "department" : "컴퓨터공학부",
+  "category" :  "GENDER",
+  "title" : "종교와 성평등지수와의 관계",
+  "desc" : "OECD 성평등 데이터와 국가 별 종교 데이터를 기반으로 종교적 독실함에 따른 성평등 정도를 시각화하고 통계 수치 제공"
+},
+{
+  "name_kr" : "김용진",
+  "name_en" : "kimyongjin",
+  "college" : "사범대학",
+  "department" : "지리교육과",
+  "category" :  "GENDER",
+  "title" : "우리나라의 성별 임금 및 전일제 환산 고용률 격차",
+  "desc" : "고용 측면에서 우리나라 성평등지수의 변화를 다른 국가와 비교"
 }
 ]

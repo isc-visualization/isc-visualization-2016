@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<style>
+
+
+body {
+  font: 12px sans-serif;
+
+}
+
+path, line {
+	stroke: grey;
+	stroke-width: 3.5;
+	fill: none;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+  stroke-width : 2.5;
+	stroke: grey;
+	shape-rendering: crispEdges;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 120px;
+  height: 50px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+ /*  pointer-events: none;	This line needs to be removed */
+
+}
+
+</style>
+</head>
+
+<body>
+  <h1> &nbsp;&nbsp; All Time Bears Team Win-Loss Records</h1>
+  <p style = "text-align : left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[참고 사항]    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. 1982-2016 팀 그래프 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. 그래프 영역에서 마우스를 움직이면 시즌 승패 그래프 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. 각 지점에서의 승 패 툴팁
+   </p>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 500 - margin.left - margin.right,
+    h = 500 - margin.top - margin.bottom,
+    height = 500 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+var formatTime = d3.time.format("%Y-%m-%d");
+
+
+var x = d3.scale.linear().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+// var c = d3.scale.ordinal().domain([d3.min(data, function(d){return d3.min(d.Rate, function(d){return d.Rate;});}),
+//                                   d3.max(data, function(d){return d3.max(d.Rate, function(d){return d.Rate;});})])
+//           .range(["Grey","Grey"]);
+
+
+
+var	xAxisline = d3.svg.axis().scale(x)
+.orient("bottom").ticks(9);
+
+var	yAxisline = d3.svg.axis().scale(y)
+.orient("left").ticks(9);
+
+
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.Defeat); })
+    .y(function(d) { return y(d.Win); });
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var team = d3.select("body").append("svg")
+    // .attr("width", width + margin.left + margin.right)
+    .attr("height", h + margin.top + margin.bottom)
+    .attr("width", 500)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    // .attr("transform", "rotate(45)")
+    // .attr("transform", "translate(" + 550 + "," + margin.top + ") rotate(45)")
+;
+
+
+
+// Get the data
+d3.json("BEARS.json", function(error, data) {
+  if (error) throw error;
+
+
+  // format the data
+  data.forEach(function(d) {
+      d.Date = parseDate(d.Date);
+      d.Defeat = +d.Defeat;
+      d.Win = +d.Win;
+      d.Defeat_cum = +d.Defeat_cum;
+      d.Win_cum = +d.Win_cum;
+      d.Year = +d.Year
+      d.Rate = +d.Rate;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.Defeat; }));
+  y.domain([0, d3.max(data, function(d) { return d.Win; })]);
+
+  var nest = d3.nest()
+      .key(function(d){return d.Year})
+      .entries(data);
+
+  var series = team.selectAll('.series')
+               .data(nest, function(d){return d.key})
+               .enter().append('g')
+
+
+  // Add the X Axis
+  team.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxisline)
+      .append("text")
+      .attr("class", "axis-title")
+      .attr("x", 400)
+      .attr('y', -10)
+      .attr("dx", ".3em")
+      .text("Defeat")
+      ;
+
+  // Add the Y Axis
+  team.append("g")
+      .attr("class", "y axis")
+      .call(yAxisline)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("x", -10)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Win");
+
+
+  team.selectAll("dot")
+       .data(data)
+       .enter().append("circle")
+       .attr("r", 1.5)
+       .attr('color', 'grey')
+       .style('opacity',0.2)
+       .attr("cx", function(d) { return x(d.Defeat); })
+       .attr("cy", function(d) { return y(d.Win); })
+       .on("mouseover", function(d) {
+        div.transition()
+			     .duration(200)
+				   .style("opacity", .9);
+        div.html(formatTime(d.Date)+ "<br/>"+d.Year +"시즌 "+ d.Win+ "승" +" "+ d.Defeat+"패" +"<br/>"+"누적"+ d.Win_cum+ "승" +" "+ d.Defeat_cum+"패" )
+           .style("left", (d3.event.pageX) + "px")
+           .style("top", (d3.event.pageY - 28) + "px");
+         })
+       .on("mouseout", function(d) {
+         div.transition()
+           .duration(500)
+           .style("opacity", 0);
+         });
+
+
+      series.append('path')
+            .datum(function(d) { return d.values})
+            .style('fill', 'none')
+            .attr('d', valueline)
+            .attr('stroke-width', 3.5)
+            .attr('opacity', 0.3)
+            .on("mouseover", function(d) {
+              d3.select(this)
+              .attr('opacity', 1.0)
+              .attr('stroke-width', 5)
+              .style("stroke", "#0431B4");
+              div.transition()
+                 .duration(0)
+            })
+            .on("mouseout", function(d) {
+              d3.select(this)
+              .attr('opacity',0.3)
+              .attr('stroke-width', 3.5)
+              .style("stroke", function(d){return d.key});
+              div.transition()
+                .duration(500)
+            });
+
+  // Add the X Axis
+  // team.append("g")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis)
+  //     .append("text")
+  //    .attr("class", "axis-title")
+  //    .attr("x", 675)
+  //    .attr('y', -10)
+  //    .attr("dx", ".3em")
+  //
+  //
+  // // Add the Y Axis
+  // team.append("g")
+  //     .call(yAxis)
+  //     .append("text")
+  //    .attr("class", "axis-title")
+  //    .attr("transform", "rotate(-90)")
+  //    .attr("y", 6)
+  //    .attr("dy", ".71em")
+  //    .style("text-anchor", "end")
+  //    .attr("fill", "black")
+  //    .text("Win");
+
+
+
+      // team.selectAll(".axis line, .axis path")
+      // .style({"stroke":"black", "fill":"none", "stroke-width":"3px"});
+
+});
+
+
+</script>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:1px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:1px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+.tg .tg-nrw1{font-size:12px;text-align:center;}
+.tg .tg-e8d4{font-size:12px;font-family: sans-serif !important;;text-align:center;}
+</style>
+<table class="tg" style = "position: absolute; left : 600px; top : 200px">
+  <tr>
+    <th class="tg-nrw1">team</th>
+    <th class="tg-nrw1">날짜</th>
+    <th class="tg-nrw1">승리</th>
+    <th class="tg-e8d4">상대팀</th>
+    <th class="tg-nrw1">스코어</th>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1983-10-05</td>
+    <td class="tg-nrw1">100</td>
+    <td class="tg-nrw1">삼성</td>
+    <td class="tg-nrw1">3 대 0</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1985-08-15</td>
+    <td class="tg-nrw1">200</td>
+    <td class="tg-nrw1">삼성</td>
+    <td class="tg-nrw1">6 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1987-07-22</td>
+    <td class="tg-nrw1">300</td>
+    <td class="tg-nrw1">빙그레</td>
+    <td class="tg-nrw1">4 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1989-07-04</td>
+    <td class="tg-nrw1">400</td>
+    <td class="tg-nrw1">MBC</td>
+    <td class="tg-nrw1">9 대 4</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1991-08-18</td>
+    <td class="tg-nrw1">500</td>
+    <td class="tg-nrw1">해태</td>
+    <td class="tg-nrw1">1 대 0</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1993-07-09</td>
+    <td class="tg-nrw1">600</td>
+    <td class="tg-nrw1">LG</td>
+    <td class="tg-nrw1">3 대 2</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1995-05-03</td>
+    <td class="tg-nrw1">700</td>
+    <td class="tg-nrw1">롯데</td>
+    <td class="tg-nrw1">3 대 2</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1996-08-01</td>
+    <td class="tg-nrw1">800</td>
+    <td class="tg-nrw1">LG</td>
+    <td class="tg-nrw1">10 대 3</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">OB 베어스</td>
+    <td class="tg-nrw1">1998-07-18</td>
+    <td class="tg-nrw1">900</td>
+    <td class="tg-nrw1">롯데</td>
+    <td class="tg-nrw1">6 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">1999-10-03</td>
+    <td class="tg-nrw1">1000</td>
+    <td class="tg-nrw1">현대</td>
+    <td class="tg-nrw1">8 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2001-05-15</td>
+    <td class="tg-nrw1">1100</td>
+    <td class="tg-nrw1">LG</td>
+    <td class="tg-nrw1">9 대 6</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2002-09-04</td>
+    <td class="tg-nrw1">1200</td>
+    <td class="tg-nrw1">현대</td>
+    <td class="tg-nrw1">8 대 3</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2004-06-15</td>
+    <td class="tg-nrw1">1300</td>
+    <td class="tg-nrw1">삼성</td>
+    <td class="tg-nrw1">7 대 6</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2005-09-04</td>
+    <td class="tg-nrw1">1400</td>
+    <td class="tg-nrw1">한화</td>
+    <td class="tg-nrw1">5 대 4</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2007-06-07</td>
+    <td class="tg-nrw1">1500</td>
+    <td class="tg-nrw1">KIA</td>
+    <td class="tg-nrw1">2 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2008-09-04</td>
+    <td class="tg-nrw1">1600</td>
+    <td class="tg-nrw1">한화</td>
+    <td class="tg-nrw1">6 대 5</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2010-04-29</td>
+    <td class="tg-nrw1">1700</td>
+    <td class="tg-nrw1">한화</td>
+    <td class="tg-nrw1">3 대 1</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2011-08-28</td>
+    <td class="tg-nrw1">1800</td>
+    <td class="tg-nrw1">삼성</td>
+    <td class="tg-nrw1">7 대 2</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2013-05-02</td>
+    <td class="tg-nrw1">1900</td>
+    <td class="tg-nrw1">KIA</td>
+    <td class="tg-nrw1">6 대 4</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2014-08-17</td>
+    <td class="tg-nrw1">2000</td>
+    <td class="tg-nrw1">롯데</td>
+    <td class="tg-nrw1">7 대 4</td>
+  </tr>
+  <tr>
+    <td class="tg-nrw1">두산 베어스</td>
+    <td class="tg-nrw1">2016-04-12</td>
+    <td class="tg-nrw1">2100</td>
+    <td class="tg-nrw1">한화</td>
+    <td class="tg-nrw1">8 대 2</td>
+  </tr>
+</table>
+</body>
+</html>

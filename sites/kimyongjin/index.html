@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>final</title>
+<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+<style>
+.circle {
+  display : inline-block;
+  position : relative;
+}
+
+/* .axis path.domain {
+  stroke : none;
+}
+.y.axis .tick:nth-child(2n+1) line {
+  opacity : .25;
+}
+.y.axis .tick:nth-child(2n+1) text {
+  visibility: hidden;
+} */
+svg {
+  /*cursor:pointer;*/
+  pointer-events: bounding-box; /*SVG2.0 이상에서 작동*/
+}
+
+/*.
+links line {
+  stroke: #aaa;
+}
+.links line.linked {
+  stroke-width : 2px;
+}
+.nodes circle {
+  pointer-events: all;
+  stroke: #eee;
+  stroke-width: 2px;
+}
+
+.nodes circle.linked {
+  stroke: blue;
+}*/
+</style>
+</head>
+<body>
+<!-- <script type = "text/javascript" src="index.js"></script> -->
+
+<div><h1>우리나라의 성별 임금 및 전일제 환산 고용률 격차 </h1></div>
+<br>
+2013년 기준으로 한국의 남녀 임금 격차는 36.6%이며,
+<br>
+한국의 성별 임금격차는 OECD에서 통계를 조사하기 시작한 2002년부터 부동의 1위를 유지하고 있다.
+<br>
+<br>
+<div> <font size="1px"> OECD 국가별 남녀 임금 격차 ( 2013년 ) </font> </div>
+<div id="div_gender_wage_gap"></div>
+
+<br>
+<br>
+다른 OECD국가들과의 격차도 매우 큰 편이기에
+성별 임금 격차를 줄여야 한다는 사회적 목소리는 높지만,<br>
+다른 국가에 비하면 성과가 저조한 것으로 보인다. <br>
+한국은 2003년 40.1%에서 2013년 36.6%로 11년 동안 남녀 임금격차가 3.5% 줄었지만, <br>
+영국은 같은 기간에 24.1%에서 17.5%로 7.6%가 감소했다. <br>
+남성과 여성의 전일제 환산 고용률 격차를 보아도 <br>
+다른 국가들에 비해서 개선 속도가 느린 것으로 보인다. <br>
+<br>
+<br>
+<div> <font size="1px"> 연도별 OECD국가의 남녀 전일제 환산 고용률 격차와 임금 격차 </font> </div>
+<div>
+  연도 :
+  <select id="select_gap_scatter_transition" style="margin-left:10px"></select>
+  <button id="btn_start_gap_scatter_transition">▶︎</button>
+  <button id="btn_stop_gap_scatter_transition">◼︎</button>
+</div>
+<div id="div_gap_scatter_transition"></div>
+<br>
+<br>
+
+여성의 고용률은 계속 증가하고 있지만, 남녀 임금 격차가 여전한 것은 <br>
+고용률의 증가가 파트타임 고용 증가가 견인하기 때문이다. <br>
+즉, 전체 고용률이 증가하더라도 파트타임 고용률이 증가하게되면 <br>
+전일제로 환산하는 경우 고용률의 증가로 나타나지 않는다. <br>
+한국의 고용률 변화를 보면 이 양상이 잘 나타난다. <br>
+한국의 경우 고용률이 증가했지만, 파트타임 고용 증가가 견인한 모양새로 <br>
+전일제로 환산하는 경우 오히려 감소하는 모양을 보이고 있다. <br>
+
+<br>
+<br>
+<div> <font size="1px"> 한국의 여성 시간제 고용률, 고용률, 전일제 환산 고용률 추이</font> </div>
+<div id="div_gap_line"></div>
+
+<br>
+<br>
+실질적으로 남녀 고용의 격차를 줄이기 위해서는 <br>
+위에서 살펴본 바와 같이 파트타임 고용을 고려하여 <br>
+실질적인 전일제 환산 고용률의 개선을 위해 노력해야 한다. <br>
+우리 눈에 드러나지 않지만 여전히 존재하는 <br>
+사회정서적 요인에 대해서도 관심과 노력이 필요하다. <br>
+
+<script type = "text/javascript" src="index.js"></script>
+<!-- <script type = "text/javascript" src="index2.js"></script> -->
+
+<br>
+<br>
+<br>
+<div>자료출처 : <a href="https://www.oecd.org/gender/data/employment">https://www.oecd.org/gender/data/employment</a></div>
+<br>
+<br>
+</body>
+</html>

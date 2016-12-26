@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<style>
+
+
+body {
+  font: 12px sans-serif;
+
+}
+
+path, line {
+	stroke: grey;
+	stroke-width: 3.5;
+	fill: none;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+  stroke-width : 2.5;
+	stroke: grey;
+	shape-rendering: crispEdges;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 120px;
+  height: 50px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+ /*  pointer-events: none;	This line needs to be removed */
+
+}
+
+</style>
+</head>
+
+<body>
+  <h1> &nbsp;&nbsp; All Time Eagles Team Win-Loss Records</h1>
+  <p style = "text-align : left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[참고 사항]    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. 1982-2016 팀 그래프 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. 그래프 영역에서 마우스를 움직이면 시즌 승패 그래프 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. 각 지점에서의 승 패 툴팁
+   </p>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 500 - margin.left - margin.right,
+    h = 500 - margin.top - margin.bottom,
+    height = 500 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+var formatTime = d3.time.format("%Y-%m-%d");
+
+
+var x = d3.scale.linear().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+
+
+var	xAxisline = d3.svg.axis().scale(x)
+.orient("bottom").ticks(9);
+
+var	yAxisline = d3.svg.axis().scale(y)
+.orient("left").ticks(9);
+
+
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.Defeat); })
+    .y(function(d) { return y(d.Win); });
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var team = d3.select("body").append("svg")
+    .attr("height", h + margin.top + margin.bottom)
+    .attr("width", 500)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+;
+
+
+
+// Get the data
+d3.json("EAGLES.json", function(error, data) {
+  if (error) throw error;
+
+
+  // format the data
+  data.forEach(function(d) {
+      d.Date = parseDate(d.Date);
+      d.Defeat = +d.Defeat;
+      d.Win = +d.Win;
+      d.Defeat_cum = +d.Defeat_cum;
+      d.Win_cum = +d.Win_cum;
+      d.Year = +d.Year
+      d.Rate = +d.Rate;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.Defeat; }));
+  y.domain([0, d3.max(data, function(d) { return d.Win; })]);
+
+  var nest = d3.nest()
+      .key(function(d){return d.Year})
+      .entries(data);
+
+  var series = team.selectAll('.series')
+               .data(nest, function(d){return d.key})
+               .enter().append('g')
+
+
+  // Add the X Axis
+  team.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxisline)
+      .append("text")
+      .attr("class", "axis-title")
+      .attr("x", 400)
+      .attr('y', -10)
+      .attr("dx", ".3em")
+      .text("Defeat")
+      ;
+
+  // Add the Y Axis
+  team.append("g")
+      .attr("class", "y axis")
+      .call(yAxisline)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("x", -10)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Win");
+
+
+  team.selectAll("dot")
+       .data(data)
+       .enter().append("circle")
+       .attr("r", 1.5)
+       .attr('color', 'grey')
+       .style('opacity',0.2)
+       .attr("cx", function(d) { return x(d.Defeat); })
+       .attr("cy", function(d) { return y(d.Win); })
+       .on("mouseover", function(d) {
+        div.transition()
+			     .duration(200)
+				   .style("opacity", .9);
+        div.html(formatTime(d.Date)+ "<br/>"+d.Year +"시즌 "+ d.Win+ "승" +" "+ d.Defeat+"패" +"<br/>"+"누적"+ d.Win_cum+ "승" +" "+ d.Defeat_cum+"패" )
+           .style("left", (d3.event.pageX) + "px")
+           .style("top", (d3.event.pageY - 28) + "px");
+         })
+       .on("mouseout", function(d) {
+         div.transition()
+           .duration(500)
+           .style("opacity", 0);
+         });
+
+
+      series.append('path')
+            .datum(function(d) { return d.values})
+            .style('fill', 'none')
+            .attr('d', valueline)
+            .attr('stroke-width', 3.5)
+            .attr('opacity', 0.3)
+            .on("mouseover", function(d) {
+              d3.select(this)
+              .attr('opacity', 1.0)
+              .attr('stroke-width', 5)
+              .style("stroke", "#FFBF00");
+              div.transition()
+                 .duration(0)
+            })
+            .on("mouseout", function(d) {
+              d3.select(this)
+              .attr('opacity',0.3)
+              .attr('stroke-width', 3.5)
+              .style("stroke", function(d){return d.key});
+              div.transition()
+                .duration(500)
+            });
+
+
+});
+
+</script>
+</body>
+</html>

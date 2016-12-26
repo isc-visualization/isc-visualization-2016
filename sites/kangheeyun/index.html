@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+    <title>Visualization Final Project</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+<style>
+div.container {
+    width: 100%;
+}
+div.chart{
+
+}
+header {
+    padding: 5em;
+    color: black;
+    background-color: white;
+    opacity: 1;
+    clear: left;
+    text-align: center;
+    font-size: 12px;
+}
+footer {
+    padding: 5em;
+    color: black;
+    background-color: white;
+    clear: left;
+    text-align: center;
+    font-size: 7px;
+}
+
+article {
+    padding: 5em;
+    margin-left: 100px;
+    margin-right: 100px;
+  //  border-bottom: 1px solid gray;
+    padding: 1em;
+    text-align: center;
+    font-size: 10px;
+    overflow: hidden;
+
+}
+
+body {
+  font: 11px sans-serif;
+}
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .dot {
+    stroke: none;
+  }
+
+  .tooltip {
+    position: absolute;
+    width: 200px;
+    height: 28px;
+    pointer-events: none;
+    font-size: 8px;
+  }
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+       <h1>US Supreme Court </br>미국 연방 대법원 정치경향성 </h1>
+       <h2>1935 - 2015</h2>
+    </header>
+    <article>
+      <h1>미국 연방 대법원</h1>
+          <p>미국 최고의 사법 기관으로 헌법 및 하위 법률에 대한 최종적인 판단을 하는 곳으로 헌법재판소의 역할도 한다. 연방 대법원의 판결에 따라 미국 사회가 급변할 수 있으며 보수와 진보의 첨예한 각축장이기도 하다.
+          </br>현재 미국 연방 대법원은 9명으로 구성되어있으며 종신제로 운영되고 있다. []대법원장(Chief Justice)과 8명의 대법관(Associate Justice)으로 구성]
+              </p> 대통령에 의해 지명되고 상원의 동의를 받아 임명되며, 스스로 사임·은퇴하거나 범죄 행위로 인해 탄핵받지 않는 한 헌법에 의해 종신까지 임기를 보장받는다.
+              <p>  "대법관 9명의 전원합의체"  </p>
+            <p><img src="https://media1.britannica.com/eb-media/36/137236-004-7EC9D7AA.jpg" alt="2009" width="600" height="350">2009년 구성</p>
+    </article>
+
+  </div>
+  <div class='chart1'>
+    <script>
+    // Set the dimensions of the canvas / graph
+    var margin = {top: 30, right: 20, bottom: 30, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 270 - margin.top - margin.bottom;
+
+
+    // Set the ranges
+    var x = d3.scaleLinear().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+
+    // Define the axes
+    var xAxis1 = d3.axisBottom().scale(x)
+        .ticks(5);
+
+    var yAxis1 = d3.axisLeft().scale(y)
+        .ticks(5);
+
+    // Define the line
+    var valueline = d3.svg.line()
+        .x(function(d) { return x(d.term); })
+        .y(function(d) { return y(d.justice); });
+
+    // Adds the svg canvas
+    var svg = d3.select("body")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    d3.csv("justices.csv", function(error, data) {
+        data.forEach(function(d) {
+            d.term = +d.term;
+            d.justice = +d.justice;
+        });
+
+        // Scale the range of the data
+        x.domain(d3.extent(data, function(d) { return d.date; }));
+        y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+        // Add the valueline path.
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", valueline(data));
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis1);
+
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis1);
+
+    });
+
+
+    </script>
+
+</div>
+
+<article>
+
+
+  <h2>(2) 변화  </h2>
+<p>2016년 2월 13일 Antonin Scalia의 급작스러운 죽음과 더불어, 차기 대법원 판사 임명에 대한 시선이 모아지고 있다.
+미국 국회의 공화당은 버락 오바마가 대법원 판사를 임명하는 것을 막고, 임명권을 트럼프에게 넘겨주었다.</p>
+<p><img src="http://www.newyorker.com/wp-content/uploads/2016/02/Scalia-ART-3-1200.jpg" alt="scalia" height="300" width="350"></p>
+      <p>스칼리아의 죽음 이후, 대법원은 4명의 liberal으로 치우친 판사와 4명의 보수쪽으로 치우친 판사가 있다.
+      A conservative judge nominated by Trump could hold sway over a slew of upcoming cases involving transgender students’ rights, limits on racial bias in the justice system and the ability of religious schools to receive state grants.</p>
+      <p>이러한 배경 속에서, 1935년부터 2015년까지 미국 대법원의 정치성향을 시각화하여 살펴볼 것이다.</p>
+      <p> Merrick Garland         </p>
+
+
+</article>
+<div class='chart2'>
+  <script>
+
+  //         d3.csv("justices.csv", function(data){
+  //           var length_data = render(data);
+  //           data.forEach(function(d) {
+  //                d.term = parseTime(d.term);
+  //                d.length = +d.length;
+  //            });
+  var margin = {top: 20, right:20, bottom: 30, left: 50},
+      width = 600 - margin.left - margin.right,
+      height = 350 - margin.top - margin.bottom;
+
+
+  //setup X
+  var xValue = function(d){return d.term;},
+      xScale = d3.scaleLinear().range([0, width]),
+      xMap = function(d){return xScale(xValue(d));},
+      xAxis = d3.axisBottom().scale(xScale);
+
+  //setup Y
+  var yValue = function (d){return d.post_mn;},
+      yScale = d3.scaleLinear().range([height, 0]),
+      yMap = function (d){return yScale(yValue(d))},
+      yAxis = d3.axisLeft().scale(yScale);
+
+ //setup Y
+ var cValue = function (d){return d.justice;},
+     color = d3.scaleOrdinal(d3.schemeCategory20);
+
+ var svg = d3.select('body').append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+           .attr('transform', "translate("+ margin.left +", "+ margin.top +")");
+
+ var tooltip = d3.select('body').append('div')
+              .attr('class', 'tooltip')
+              .style('opacity', 0);
+
+
+  //load data
+  d3.csv('justices.csv', function(error, data){
+    if (error) throw error;
+
+    //change string into number
+    data.forEach(function(d){
+      d.post_mn = +d.post_mn;
+      d.justice = +d.justice;
+      d.term = +d.term;
+     //    console.log(d);
+     });
+
+    //adding in buffer
+    xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+    yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
+    //xAxis
+    svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', "translate(0, " + height + ")")
+        .call(xAxis)
+      .append('text')
+        .attr('class', 'label')
+        .attr('x', width)
+        .attr("y", -6)
+        .style("text-anchor", "end")
+        .text("term");
+
+   //yAxis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("post_mn");
+
+   // draw dots
+   svg.selectAll(".dot")
+       .data(data)
+     .enter().append("circle")
+       .attr("class", "dot")
+       .attr("r", 2)
+       .attr("cx", xMap)
+       .attr("cy", yMap)
+       .style("fill", function(d) { return color(cValue(d));})
+       .on('mouseover', function(){
+         d3.select(this)
+            .attr("fill", "red");
+       })
+       .on("mouseover", function(d) {
+
+           tooltip.transition()
+                  .duration(200)
+                  .style("opacity", .9);
+           tooltip.html(d["justiceName"] + "<br/> (" + xValue(d) + ", " + yValue(d) + ")")
+                  .style("left", (d3.event.pageX + 5) + "px")
+                  .style("top", (d3.event.pageY - 28) + "px");
+         })
+
+   .on("mouseout", function(d) {
+      tooltip.transition()
+             .duration(500)
+             .style("opacity", 0);
+    })
+
+    .on('click', function(d){
+
+    });
+  })
+
+
+
+
+
+
+  </script>
+
+</div>
+<footer>Visualization 2016-Autunm</footer>
+
+</body>
+</html>

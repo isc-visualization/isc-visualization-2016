@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>KBO W-L Records</title>
+<style>
+p.test {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 50px;
+    margin-left: 30px;
+   }
+body {
+  font: 12px sans-serif;
+
+}
+
+.axis path,
+.axis line,
+.axis1 path,
+.axis1 line {
+  fill: none;
+  stroke: #E6E7E8;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path, .x.axis1 path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke-width: 5px;
+}
+
+.legend-box {
+  cursor: pointer;
+}
+
+#mouse-tracker1 {
+  stroke: #E6E7E8;
+  stroke-width: 1px;
+}
+#mouse-tracker2 {
+  stroke: #E6E7E8;
+  stroke-width: 1px;
+}
+
+.hover-line {
+  stroke: #E6E7E8;
+  fill: none;
+  stroke-width: 5px;
+  left: 10px;
+  shape-rendering: crispEdges;
+  opacity: 1e-6;
+}
+
+.hover-text {
+  stroke: none;
+  font-size: 30px;
+  font-weight: bold;
+  fill: #000000;
+}
+
+
+.brush .extent {
+  stroke: #FFF;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 120px;
+  height: 30px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+
+
+}
+
+</style>
+</head>
+<body>
+  <h1> &nbsp;&nbsp; All Time KBO Team Win-Loss Records </h1>
+  <p style = "text-align : left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[참고 사항]    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. 좌측의 그래프는 통산 팀 승리 / 우측의 그래프는 통산 팀 패배
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. 그래프 영역에서 마우스를 움직이면 해당 날짜까지의 통산 팀 승리 / 패배 숫자 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. 범례 부분에서 팀을 선택하면 팀의 그래프 확인 가능
+    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. 연도 부분에서 영역 선택 및 이동하여 그래프 확대 및 이동 가능
+   </p>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+var margin = {top: 20, right: 200, bottom: 100, left: 50},
+    margin2 = { top: 430, right: 10, bottom: 20, left: 40 },
+    width = 700 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom,
+    height2 = 500 - margin2.top - margin2.bottom;
+
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+
+var xScale = d3.time.scale()
+    .range([0, width]),
+
+    xScale2 = d3.time.scale()
+    .range([0, width]);
+
+var yScale = d3.scale.linear()
+    .range([height, 0]);
+
+var color2 = d3.scale.ordinal().range(["#000000", "#445274", "#810124", "#e1002a", "#ffc71f", "#fd5c09", "#009a4e",  "#c10b4b", "#ed1d24", "#0166b2", "#f58220", "#131230"]);
+var color1 = d3.scale.ordinal().range(["#000000", "#445274", "#810124", "#e1002a", "#ffc71f", "#fd5c09", "#009a4e",  "#c10b4b", "#ed1d24", "#0166b2", "#f58220", "#131230"]);
+
+
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom"),
+
+    xAxis2 = d3.svg.axis()
+    .scale(xScale2)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left");
+
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { return xScale(d.date); })
+    .y(function(d) { return yScale(d.rating); })
+    .defined(function(d) { return d.rating; });
+
+var maxY;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+svg.append("rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("id", "mouse-tracker1")
+    .style("fill", "white");
+
+
+var context1 = svg.append("g")
+    .attr("transform", "translate(" + 0 + "," + 410 + ")")
+    .attr("class", "context1");
+
+svg.append("defs")
+  .append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+
+d3.csv("win.csv", function(error, data) {
+  color1.domain(d3.keys(data[0]).filter(function(key) {
+    return key !== "date";
+  }));
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.date);
+  });
+
+  var categories = color1.domain().map(function(name) {
+
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {
+          date: d.date,
+          rating: +(d[name]),
+          };
+      }),
+      visible: (name === "OB-두산" ? true : false)
+    };
+  });
+
+  xScale.domain(d3.extent(data, function(d) { return d.date; }));
+
+  yScale.domain([0, 2500]);
+
+  xScale2.domain(xScale.domain());
+
+
+ var brush = d3.svg.brush()
+    .x(xScale2)
+    .on("brush", brushed);
+
+  context1.append("g")
+      .attr("class", "x axis1")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  var context1Area = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return xScale2(d.date); })
+    .y0(height2)
+    .y1(0);
+
+  context1.append("path")
+    .attr("class", "area")
+    .attr("d", context1Area(categories[0].values))
+    .attr("fill", "#F1F1F2");
+
+    context1.append("g")
+    .attr("class", "x brush")
+    .call(brush)
+    .selectAll("rect")
+    .attr("height", height2)
+      .attr("fill", "#E6E7E8");
+
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("x", -10)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Win");
+
+  var issue = svg.selectAll(".issue")
+      .data(categories)
+    .enter().append("g")
+      .attr("class", "issue");
+
+  issue.append("path")
+      .attr("class", "line")
+      .style("pointer-events", "none")
+      .attr("id", function(d) {
+        return "line-" + d.name.replace(" ", "").replace("/", "");
+      })
+      .attr("d", function(d) {
+        return d.visible ? line(d.values) : null;
+      })
+      .attr("clip-path", "url(#clip)")
+      .style("stroke", function(d) { return color1(d.name); });
+
+
+  var legendSpace = 450 / categories.length;
+
+  issue.append("rect")
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("x", width + (margin.right/3) - 15)
+      .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace) - 8; })
+      .attr("fill",function(d) {
+        return d.visible ? color1(d.name) : "#F1F1F2";
+      })
+      .attr("class", "legend-box")
+      .on("click", function(d){
+        d.visible = !d.visible;
+        maxY = findMaxY(categories);
+        yScale.domain([0,maxY]);
+        svg.select(".y.axis")
+          .transition()
+          .call(yAxis);
+        issue.select("path")
+          .transition()
+          .attr("d", function(d){
+            return d.visible ? line(d.values) : null;
+          })
+
+        issue.select("rect")
+          .transition()
+          .attr("fill", function(d) {
+          return d.visible ? color1(d.name) : "#F1F1F2";
+        });
+      })
+
+      .on("mouseover", function(d){
+
+        d3.select(this)
+          .transition()
+          .attr("fill", function(d) { return color1(d.name); });
+
+        d3.select("#line-" + d.name.replace(" ", "").replace("/", ""))
+          .transition()
+          .style("stroke-width", 5);
+      })
+
+      .on("mouseout", function(d){
+
+        d3.select(this)
+          .transition()
+          .attr("fill", function(d) {
+          return d.visible ? color1(d.name) : "#F1F1F2";});
+
+        d3.select("#line-" + d.name.replace(" ", "").replace("/", ""))
+          .transition()
+          .style("stroke-width", 5);
+      })
+
+  issue.append("text")
+      .attr("x", width + (margin.right/3))
+      .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); })
+      .text(function(d) { return d.name; });
+
+
+  var hoverLineGroup = svg.append("g")
+            .attr("class", "hover-line");
+
+  var hoverLine = hoverLineGroup
+        .append("line")
+            .attr("id", "hover-line")
+            .attr("x1", 10).attr("x2", 10)
+            .attr("y1", 0).attr("y2", height + 10)
+            .style("pointer-events", "none")
+            .style("opacity", 1e-6);
+
+  var hoverDate = hoverLineGroup
+        .append('text')
+            .attr("class", "hover-text")
+            .attr("y", height - (height-40))
+            .attr("x", width - 150)
+            .style("fill", "#E6E7E8");
+
+  var columnNames = d3.keys(data[0])
+                  .slice(1);
+
+  var focus = issue.select("g")
+      .data(columnNames)
+    .enter().append("g")
+      .attr("class", "focus");
+
+  focus.append("text")
+        .attr("class", "tooltip")
+        .attr("x", width + 20)
+        .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); });
+
+
+  d3.select("#mouse-tracker1")
+  .on("mousemove", mousemove)
+  .on("mouseout", function() {
+      hoverDate
+          .text(null)
+
+      d3.select("#hover-line")
+          .style("opacity", 1e-6);
+  });
+
+  function mousemove() {
+      var mouse_x = d3.mouse(this)[0];
+      var graph_x = xScale.invert(mouse_x);
+
+
+
+      var format = d3.time.format('%b %Y');
+
+      hoverDate.text(format(graph_x));
+
+      d3.select("#hover-line")
+          .attr("x1", mouse_x)
+          .attr("x2", mouse_x)
+          .style("opacity", 1);
+
+
+
+      var x0 = xScale.invert(d3.mouse(this)[0]),
+      i = bisectDate(data, x0, 1),
+      d0 = data[i - 1],
+      d1 = data[i],
+      d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+
+      focus.select("text").text(function(columnName){
+
+         return (d[columnName]);
+      });
+  };
+
+  function brushed() {
+
+    xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+
+    svg.select(".x.axis")
+          .transition()
+          .call(xAxis);
+
+    maxY = findMaxY(categories);
+    yScale.domain([0,maxY]);
+
+    svg.select(".y.axis")
+      .transition()
+      .call(yAxis);
+
+    issue.select("path")
+      .transition()
+      .attr("d", function(d){
+          return d.visible ? line(d.values) : null;
+      });
+
+  };
+
+});
+
+  function findMaxY(data){
+    var maxYValues = data.map(function(d) {
+      if (d.visible){
+        return d3.max(d.values, function(value) {
+          return value.rating; })
+      }
+    });
+    return d3.max(maxYValues);
+  }
+
+  var chart = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  chart.append("rect")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("id", "mouse-tracker2")
+      .style("fill", "white");
+
+  var context2 = chart.append("g")
+      .attr("transform", "translate(" + 0 + "," + 410 + ")")
+      .attr("class", "context2");
+
+  chart.append("defs")
+    .append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+
+  d3.csv("defeat.csv", function(error, data) {
+    color2.domain(d3.keys(data[0]).filter(function(key) {
+      return key !== "date";
+    }));
+
+    data.forEach(function(d) {
+      d.date = parseDate(d.date);
+    });
+
+    var categories = color2.domain().map(function(name) {
+
+      return {
+        name: name,
+        values: data.map(function(d) {
+          return {
+            date: d.date,
+            rating: +(d[name]),
+            };
+        }),
+        visible: (name === "OB-두산" ? true : false)
+      };
+    });
+
+    xScale.domain(d3.extent(data, function(d) { return d.date; }));
+
+    yScale.domain([0, 2500]);
+
+    xScale2.domain(xScale.domain());
+
+
+   var brush = d3.svg.brush()
+      .x(xScale2)
+      .on("brush", brushed);
+
+    context2.append("g")
+        .attr("class", "x axis1")
+        .attr("transform", "translate(0," + height2 + ")")
+        .call(xAxis2);
+
+    var context2Area = d3.svg.area()
+      .interpolate("monotone")
+      .x(function(d) { return xScale2(d.date); })
+      .y0(height2)
+      .y1(0);
+
+    context2.append("path")
+      .attr("class", "area")
+      .attr("d", context2Area(categories[0].values))
+      .attr("fill", "#F1F1F2");
+
+    context2.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+      .selectAll("rect")
+      .attr("height", height2)
+        .attr("fill", "#E6E7E8");
+
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    chart.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("x", -10)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Loss");
+
+    var issue = chart.selectAll(".issue")
+        .data(categories)
+      .enter().append("g")
+        .attr("class", "issue");
+
+    issue.append("path")
+        .attr("class", "line")
+        .style("pointer-events", "none")
+        .attr("id", function(d) {
+          return "line-" + d.name.replace(" ", "").replace("/", "");
+        })
+        .attr("d", function(d) {
+          return d.visible ? line(d.values) : null;
+        })
+        .attr("clip-path", "url(#clip)")
+        .style("stroke", function(d) { return color2(d.name); });
+
+    var legendSpace = 450 / categories.length;
+
+    issue.append("rect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("x", width + (margin.right/3) - 15)
+        .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace) - 8; })
+        .attr("fill",function(d) {
+          return d.visible ? color2(d.name) : "#F1F1F2";
+        })
+        .attr("class", "legend-box")
+
+        .on("click", function(d){
+          d.visible = !d.visible;
+
+          maxY = findMaxY(categories);
+          yScale.domain([0,maxY]);
+          chart.select(".y.axis")
+            .transition()
+            .call(yAxis);
+
+          issue.select("path")
+            .transition()
+            .attr("d", function(d){
+              return d.visible ? line(d.values) : null;
+            })
+
+          issue.select("rect")
+            .transition()
+            .attr("fill", function(d) {
+            return d.visible ? color2(d.name) : "#F1F1F2";
+          });
+        })
+
+        .on("mouseover", function(d){
+
+          d3.select(this)
+            .transition()
+            .attr("fill", function(d) { return color2(d.name); });
+
+          d3.select("#line-" + d.name.replace(" ", "").replace("/", ""))
+            .transition()
+            .style("stroke-width", 5);
+        })
+
+        .on("mouseout", function(d){
+
+          d3.select(this)
+            .transition()
+            .attr("fill", function(d) {
+            return d.visible ? color2(d.name) : "#F1F1F2";});
+
+          d3.select("#line-" + d.name.replace(" ", "").replace("/", ""))
+            .transition()
+            .style("stroke-width", 5);
+        })
+
+    issue.append("text")
+        .attr("x", width + (margin.right/3))
+        .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); })
+        .text(function(d) { return d.name; });
+
+    // Hover line
+    var hoverLineGroup = chart.append("g")
+              .attr("class", "hover-line");
+
+    var hoverLine = hoverLineGroup
+          .append("line")
+              .attr("id", "hover-line")
+              .attr("x1", 10).attr("x2", 10)
+              .attr("y1", 0).attr("y2", height + 10)
+              .style("pointer-events", "none")
+              .style("opacity", 1e-6);
+
+    var hoverDate = hoverLineGroup
+          .append('text')
+              .attr("class", "hover-text")
+              .attr("y", height - (height-40))
+              .attr("x", width - 150)
+              .style("fill", "#E6E7E8");
+
+    var columnNames = d3.keys(data[0])
+                    .slice(1);
+
+    var focus = issue.select("g")
+        .data(columnNames)
+      .enter().append("g")
+        .attr("class", "focus");
+
+    focus.append("text")
+          .attr("class", "tooltip")
+          .attr("x", width + 20)
+          .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); });
+
+    d3.select("#mouse-tracker2")
+    .on("mousemove", mousemove)
+    .on("mouseout", function() {
+        hoverDate
+            .text(null)
+
+        d3.select("#hover-line")
+            .style("opacity", 1e-6);
+    });
+
+    function mousemove() {
+        var mouse_x = d3.mouse(this)[0];
+        var graph_x = xScale.invert(mouse_x);
+
+
+
+        var format = d3.time.format('%b %Y');
+
+        hoverDate.text(format(graph_x));
+
+        d3.select("#hover-line")
+            .attr("x1", mouse_x)
+            .attr("x2", mouse_x)
+            .style("opacity", 1);
+
+
+        var x0 = xScale.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+        focus.select("text").text(function(columnName){
+
+           return (d[columnName]);
+        });
+    };
+
+    function brushed() {
+
+      xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+
+      chart.select(".x.axis")
+            .transition()
+            .call(xAxis);
+
+      maxY = findMaxY(categories);
+      yScale.domain([0,maxY]);
+
+      chart.select(".y.axis")
+        .transition()
+        .call(yAxis);
+
+      issue.select("path")
+        .transition()
+        .attr("d", function(d){
+            return d.visible ? line(d.values) : null;
+        });
+
+    };
+
+  });
+
+    function findMaxY(data){
+      var maxYValues = data.map(function(d) {
+        if (d.visible){
+          return d3.max(d.values, function(value) {
+            return value.rating; })
+        }
+      });
+      return d3.max(maxYValues);
+    }
+
+</script>
+
+<h2> </br>&nbsp;&nbsp;- Team Win-Loss Chart </h2>
+<p class = "test"> &nbsp;미국 MLB 내셔널리그 동부지구에 소속되어 있는 필라델피아 필리스는 일부 MLB 팬들에게 ‘만패’라는 별칭으로 불린다.
+   말 그대로 10,000패를 뜻한다. 2007년 7월 15일, 시티즌스뱅크 파크에서 열린 세인트루이스 카디널스와의 홈경기에서 2-10으로 대패하여
+   전 세계 최초로 프로 스포츠 구단 10,000패를 달성했다. 뒤이어 애틀랜타 브레이브스, 시카고 컵스, 피츠버그 파이어리츠, 신시내티 레즈가 10,000패를 달성하였다.
+   1869년 신시내티 레드스타킹스라는 미국 최초의 프로 야구팀이 창단된 이래로 약 150년간 이어져온 MLB는 그 긴 시간만큼이나 방대한 데이터가 누적되어있다.
+   KBO는 올해 35살을 맞이했다. 가장 왕성하고 활발한 장년기에 들어선 셈이다. 한 해 관중 800만을 돌파하는 대중적 인기도 있다.
+   사회과학의 게임 이론과 통계학적 방법론을 도입해서 선수의 가치에 좀 더 깊이 있는 접근을 시도하면서 데이터의 깊이도 더해가고 있다.
+   하지만 선수가 아닌 팀의 정통성을 보여 줄 수 있는 데이터는 너무 홀대받고 있다. 당장 자신의 응원팀이 1000승을 언제 달성했는지 확인하려면 많은 시간이 걸린다.
+   어쩌면 자료가 없을 수도 있다. 팀의 기록은 중요하다. 두산 베어스가 언제 1500승을 했는지. 빙그레 이글스가 언제 700패를 했는지.
+   이와 같은 팀 기록에는 역사가 담겨있다. 언젠가 KBO도 100년이 지나면 필리스처럼 롯데가 10,000패를 달성할지도 모른다.
+   그 정통성이 가득한 정보를 우리는 기억해야한다. 그래서 만들어보았다.</p>
+
+<p class = "test"  align = "right"> Ann</p>
+
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="bears.html">1. OB-두산</a>&nbsp;
+&nbsp;<a href="giants.html">2. 롯데 자이언츠</a>&nbsp;
+&nbsp;<a href="lions.html">3. 삼성 라이온즈</a>&nbsp;
+&nbsp;<a href="tigers.html">4. 해태-KIA</a>&nbsp;
+&nbsp;<a href="mbclg.html">5. MBC-LG</a>&nbsp;
+&nbsp;<a href="incheon.html">6. 삼-청-태-현</a>&nbsp;
+&nbsp;<a href="eagles.html">7. 빙그레-한화</a>&nbsp;
+&nbsp;<a href="raiders.html">8. 쌍방울 레이더스</a>&nbsp;
+&nbsp;<a href="wyverns.html">9. SK 와이번스</a>&nbsp;
+&nbsp;<a href="heros.html">10. 히어로즈</a>&nbsp;
+&nbsp;<a href="dinos.html">11. NC 다이노스</a>&nbsp;
+&nbsp;<a href="wiz.html">12. kt 위즈</a>&nbsp;</h3>
+<h7>&nbsp;&nbsp;</h7>
+
+<p class = "test"  align = "right"> 모든 데이터는 KBO와 statiz.co.kr에서 참고하였다.</p>
+<h7>&nbsp;&nbsp;</h7>
+</html>

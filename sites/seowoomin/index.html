@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+
+<html lang="kr">
+  <head> 
+    <meta charset="utf-8"> 
+    <title>2016-2 비주얼라이제이션 Final Project</title> 
+    <script src="https://d3js.org/d3.v4.min.js"></script> 
+      <style>
+
+      body {
+        margin-left : 300px;
+        margin-right : 300px;
+        line-height : 25px;
+        letter-spacing : 0.5px;
+        text-align : center;
+      }
+
+      p {
+        text-align : left;
+      }
+
+      a {
+        text-decoration : none;
+      }
+
+      #nixon, #ford, #reagan, #bush, #clinton, #bush2, #obama {
+        display : inline-block;
+      }
+
+      </style> 
+  </head> 
+
+  <body>
+    <br><h1>미국 대법관과 대통령의 정치적 상관관계</h1>
+    <h3 style = 'text-align : right'>서우민</h3><br>
+
+    <p style = 'text-align : center; font-style : italic; color : grey'>다음의 그래프들이 그려지지 않을 시 새로고침(F5)을 하십시오.</p><br><br>
+
+    <h2>① 대법원의 정치적 성향 변화 (1937~2015)</h2><br>
+
+    <p>Martin-Quinn Score는 미국 연방 대법원의 판례를 분석하여 개별 대법관들의 정치적 성향을 점수로 표현한 것이다. 정치적 성향이 진보(Liberal)에 가까울 수록 음의 값을 갖고, 보수(Conservative)에 가까울 수록 양의 값을 갖는다.</p>
+
+    <p>출처: <a href = 'http://mqscores.berkeley.edu/measures.php'>Martin-Quinn Score (http://mqscores.berkeley.edu/measures.php)</a></p>
+
+    <p>다음 그래프는 개별 대법관과 대법원의 정치적 성향이 1937년부터 2015년까지 어떻게 변화해 왔는지를 보여준다. 여러 색깔의 그래프는 개별 대법관의 정치적 성향을, 중간의 회색 음영은 대법원의 정치적 성향을 각각 의미한다. 이 중 후자의 경우, 대법원 정치적 성향의 평균(mean)에 표준편차의 값을 가감하여 이를 각각 상한과 하한으로 하는 영역 그래프로 표현하였다. 이를 통해 연도별 대법관들의 정치적 이념의 편차가 어떻게 변해왔는지 추가적으로 나타내고자 하였다.</p>
+
+    <div id='chart'></div>
+
+    <p>이 그래프를 통해 대법원의 정치적 성향이 당시 집권 중인 대통령의 영향을 많이 받는다는 사실을 확인할 수 있다. 1953년 공화당의 Eisenhower 집권 당시 보수적이었던 대법원의 정치적 성향이 이후 민주당의 Kennedy, Johnson 집권기에는 급속히 진보적으로 변화하였고, 뒤이어 공화당의 Nixon이 집권하자 다시금 보수적으로 선회하였음을 확인할 수 있다.</p><br><br><br>
+  
+
+    <h2>② 대법관과 그를 지명한 대통령 간의 정치적 상관관계</h2><br>
+
+    <p>앞서 살펴보았듯이 대통령의 정치적 성향이 대법원에도 영향을 끼친다는 사실을 확인하였다. 그런데 이를 정량적으로 비교하여 확인하기 위해서는 새로운 데이터가 필요하였다. Martin-Quinn Score는 대법관의 정치적 성향에만 한정된 데이터였기 때문이다. 따라서, 이 이후부터는 InsideGov.com에서 얻은 새로운 데이터를 사용하도록 하겠다.</p>
+
+    <p>출처: <a href = 'http://us-presidents.insidegov.com/'>InsideGov.com (http://us-presidents.insidegov.com)</a></p>
+
+    <p>InsideGov.com에서 얻은 데이터는 Martin-Quinn Score와 마찬가지로 진보(Liberal)에 가까울 수록 음의 값을 갖고, 보수(Conservative)에 가까울 수록 양의 값을 갖는다. 대통령과 대법관의 정치적 성향을 'Individual Rights', 'Domestic Issues', 'Economic Issues', 'Defense and International Issues'의 4가지 분야에서 각기 정량화하였으며, 이 부분에서는 이 값들의 평균값을 이용하고자 한다.</p>
+
+    <p>다음 그래프는 개별 대통령과 그가 지명한 대법관의 정치적 상관관계를 나타낸 그래프이다.</p>
+     
+    <div id='plot'></div><br>
+
+    <p>민주당의 Obama가 무소속의 Sotomayor를 지명한 경우를 제외하고는 항상 대통령이 본인이 소속된 당의 인물을 대법관으로 지명하였음을 알 수 있다. 이로 인해 대통령의 소속당을 나타내는 내부 원의 색과 지명된 대법관의 소속당을 나타내는 외부 원의 색이 하나를 제외하고는 모두 같게 표시되고 말았다.</p>
+
+    <p>또한, 노란색으로 표현된 x=y 인근 지대에 대부분의 원이 위치한 것으로 보아 대체로 소속당뿐만 아니라 대통령 자신의 정치적 성향에 부합하는 인물을 대법관으로 지명하였음을 알 수 있다. 예외적으로는 Ford와 Bush가 소속당의 Stevens와 Souter를 각각 법관으로 임명하였지만 실제 정치적 성향은 상반되었던 경우가 있었다.</p><br><br><br>
+
+    <h2>③ 대법관과 그를 지명한 대통령 간의 범주별 세부 비교</h2><br>
+
+    <p>다음에서는 대법관과 그를 지명한 대통령 간에 'Individual Rights', 'Domestic Issues', 'Economic Issues', 'Defense and International Issues'의 4가지 분야 중 특히 어떤 분야에서 연관성이 있는지를 자세히 살펴보고자 한다. 다음의 버튼을 눌러서 해당 대통령과 그가 지명한 대법관의 분야별 상관 관계를 확인할 수 있다. 굵은 선은 대통령을 의미하며, 얇은 선은 대법관을 의미한다. 대법관들의 이름은 크게 중요하지 않다고 판단되어 표시하지 않았다.</p>
+
+    <div id='nixon'>
+      <input name='nixon' type='button' value='nixon' onclick='nixon()' /></div>
+    <div id='ford'>
+      <input name='ford' type='button' value='ford' onclick='ford()' /></div>
+    <div id='reagan'>
+      <input name='reagan' type='button' value='reagan' onclick='reagan()' /></div>
+    <div id='bush'>
+      <input name='bush' type='button' value='bush' onclick='bush()' /></div>
+    <div id='clinton'>
+      <input name='clinton' type='button' value='clinton' onclick='clinton()' /></div>
+    <div id='bush2'>
+      <input name='bush2' type='button' value='bush2' onclick='bush2()' /></div>
+    <div id='obama'>
+      <input name='obama' type='button' value='obama' onclick='obama()' /></div>
+
+    <div id='parallel'></div>
+
+    <p>Obama와 Bush2는 Economic Issues에 대한 의견에는 차이가 있지만 Individual Rights와 Domestic Issues에 대한 정치적 성향이 비슷한 대법관을 지명함으로써 해당 분야에 대한 정치관을 중시했음을 알 수 있다.</p>
+
+    <p>반면, Reagan과 Bush는 Individual Rights보다는 각각 Economic Issues와 Defense and International Issues에 대한 정치적 성향이 비슷한 대법관을 지명함으로써 해당 분야에 대한 정치관을 중시했음을 알 수 있다.</p>
+
+    <p>Nixon, Ford, Clinton에 대해서는 유의미한 결과를 얻기 어려웠다.</p><br>
+
+    <script type="text/javascript">
+
+      var w = 600, h = 800;
+      var margin = {top: 20, right: 20, bottom: 20, left: 20};
+      var innerW = w - margin.right - margin.left,
+          innerH = h - margin.top - margin.bottom;
+
+      var svg = d3.select('#chart').append('svg')
+                  .attr('width', w)
+                  .attr('height', h)
+                  .append('g')
+                  .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+      var w2 = 600, h2 = 600;
+      var innerW2 = w2 - margin.right - margin.left,
+          innerH2 = h2 - margin.top - margin.bottom;
+
+      var svg2 = d3.select('#plot').append('svg')
+                   .attr('width', w2)
+                   .attr('height', h2)
+                   .append('g')
+                   .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+      var w3 = 600, h3 = 600;
+      var innerW3 = w3 - margin.right - margin.left,
+          innerH3 = h3 - margin.top - margin.bottom;
+
+      var svg3 = d3.select('#parallel').append('svg')
+                   .attr('width', w3)
+                   .attr('height', h3)
+                   .append('g')
+                   .attr('transform', 'translate('+ [margin.left, margin.top] + ')');
+
+      var xScale = d3.local();
+      var yScale = d3.local();
+
+      var x3Scale = d3.local();
+      var y3Scale = d3.local();
+
+      var nixonPubPSeries = d3.local();
+      var nixonPubJSeries = d3.local();
+
+      var fordPubPSeries = d3.local();
+      var fordPubJSeries = d3.local();
+  
+      var reaganPubPSeries = d3.local();
+      var reaganPubJSeries = d3.local();
+
+      var bushPubPSeries = d3.local();
+      var bushPubJSeries = d3.local();
+
+      var clintonPubPSeries = d3.local();
+      var clintonPubJSeries = d3.local();
+
+      var bush2PubPSeries = d3.local();
+      var bush2PubJSeries = d3.local();
+
+      var obamaPubPSeries = d3.local();
+      var obamaPubJSeries = d3.local();
+
+      d3.csv('justices.csv').row(rowJustices).get(callJustices);
+
+      d3.csv('court.csv').row(rowCourt).get(callCourt);
+
+      d3.csv('president.csv').row(rowPresident).get(callPresident);
+
+      function rowJustices(d) {
+        d.code = +d.code;
+        d.term = +d.term;
+        d.mean = +d.mean;
+        return d;
+      }
+
+      function rowCourt(d) {
+        d.term = +d.term;
+        d.mean = +d.mean;
+        d.dev = +d.dev;
+        d.min = +d.min;
+        d.max = +d.max;
+        return d;
+      }
+
+      function rowPresident(d) {
+        d.from = +d.from;
+        d.to = +d.to;
+        d.b_score = +d.b_score;
+        d.b_indiv = +d.b_indiv;
+        d.b_domes = +d.b_domes;
+        d.b_econo = +d.b_econo;
+        d.b_defen = +d.b_defen;
+        d.j_score = +d.j_score;
+        d.j_indiv = +d.j_indiv;
+        d.j_domes = +d.j_domes;
+        d.j_econo = +d.j_econo;
+        d.j_defen = +d.j_defen;
+        return d;
+      }
+
+      function callJustices(err, data) {
+        if(err) return console.error(err);
+
+        var xDomain = d3.extent(data, function(d) {return d.mean;});
+        var x = d3.scaleLinear().domain([xDomain[0], -xDomain[0]]).range([0, innerW]);
+
+        xScale = x;
+
+        var yDomain = d3.extent(data, function(d) {return d.term;});
+        var y = d3.scaleLinear().domain(yDomain).range([25, innerH]);
+
+        yScale = y;
+
+        var cDomain = d3.map(data, function(d) {return d.code;});
+        var c = d3.scaleOrdinal().domain(cDomain).range(d3.schemeCategory20);
+
+        var xAxis = d3.axisTop(x).ticks(17).tickSize(0).tickPadding(5);
+        var yAxis = d3.axisLeft(y).ticks(20).tickSize(5);
+
+        var xAxisG = svg.append('g')
+                        .attr('class', 'xAxis')
+                        .attr('transform', 'translate('+ [0, 25] + ')')
+                        .call(xAxis);
+
+        var yAxisG = svg.append('g')
+                        .attr('class', 'yAxis')
+                        .attr('transform', 'translate('+ [x(0), 0] + ')')
+                        .call(yAxis);
+
+        var nest = d3.nest()
+                     .key(function(d) {return d.code;})
+                     .entries(data);
+
+        var line = d3.line()
+                     .x(function(d) {return x(d.mean);})
+                     .y(function(d) {return y(d.term);});
+
+        var series = svg.selectAll('.series')
+                        .data(nest, function(d) {return d.key;})
+                        .enter().append('g')
+                        .attr('class', 'series')
+                        .style('stroke', function(d) {return c(d.key);})
+                        .style('stroke-width', '1.5')
+                        .style('fill', 'none');
+
+        var point = series.selectAll('circle')
+                          .data(function(d) {return d.values;})
+                          .enter().append('circle')
+                          .attr('cx', function(d) {return x(d.mean);})
+                          .attr('cy', function(d) {return y(d.term);})
+                          .attr('r', 1)
+                          .style('fill', function(d) {return c(d.code);});
+
+        series.append('path').datum(function(d) {return d.values;}).attr('d', line);
+
+        svg.append('text')
+           .attr('x', 15)
+           .attr('y', 0)
+           .attr('font-size', '18px')
+           .style('font-weight', 'bold')
+           .style('fill', 'Blue')
+           .text('← Liberal');
+
+        svg.append('text')
+           .attr('x', 420)
+           .attr('y', 0)
+           .attr('font-size', '18px')
+           .style('font-weight', 'bold')
+           .style('fill', 'Red')
+           .text('Conservative →');
+        
+      }
+
+      function callCourt(err, data) {
+        if(err) return console.error(err);
+
+        var x = xScale;
+        var y = yScale;
+
+        var area = d3.area()
+                     .x0(function(d) {return x(d.min);})
+                     .x1(function(d) {return x(d.max);})
+                     .y(function(d) {return y(d.term);});
+
+        var band = svg.append('path')
+                      .datum(data)
+                      .attr('class', 'band')
+                      .style('stroke', 'none')
+                      .style('fill', 'grey')
+                      .style('fill-opacity', 0.3)
+                      .attr('d', area);
+      }
+
+      function callPresident(err, data) {
+        if(err) return console.error(err);
+
+        data[8].from = 1937;
+        data[44].to = 2015;
+
+        var repubData = [data[20], data[29], data[33], data[35], data[38], data[42]];
+        var democData = [data[8], data[16], data[25], data[27], data[34], data[40], data[44]];
+
+        var y = yScale;
+
+        var repubRegion = svg.selectAll('.repubRegion')
+                        .data(repubData)
+                        .enter().append('g')
+                        .attr('class', 'repubRegion')
+                        .attr('transform', function(d) {
+                          return 'translate(' + [innerW / 2, y(d.from)] +')';});
+
+        var democRegion = svg.selectAll('.democRegion')
+                        .data(democData)
+                        .enter().append('g')
+                        .attr('class', 'democRegion')
+                        .attr('transform', function(d) {
+                          return 'translate(' + [0, y(d.from)] +')';});
+
+        var repubRect = repubRegion.append('rect')
+                                   .attr('width', innerW / 2)
+                                   .attr('height', function(d) {return y(d.to) - y(d.from);})
+                                   .style('fill', 'Red')
+                                   .style('fill-opacity', '0.05')
+                                   .style('stroke', 'Red')
+                                   .style('stroke-opacity', '0.1');
+
+        var democRect = democRegion.append('rect')
+                                   .attr('width', innerW / 2)
+                                   .attr('height', function(d) {return y(d.to) - y(d.from);})
+                                   .style('fill', 'Blue')
+                                   .style('fill-opacity', '0.05')
+                                   .style('stroke', 'Blue')
+                                   .style('stroke-opacity', '0.1');
+
+        var repubText = repubRegion.append('text')
+                                   .attr('x', innerW / 2 - 45)
+                                   .attr('y', function(d) {return (y(d.to) - y(d.from)) / 2;})
+                                   .attr('dy', function(d) {return '0.4em'})
+                                   .attr('text-anchor', 'middle')
+                                   .attr('font-size', '15px')
+                                   .style('fill', 'Red')
+                                   .text(function(d) {return d.boss;});
+
+        var democText = democRegion.append('text')
+                                   .attr('x', 40)
+                                   .attr('y', function(d) {return (y(d.to) - y(d.from)) / 2;})
+                                   .attr('dy', function(d) {return '0.4em'})
+                                   .attr('text-anchor', 'middle')
+                                   .attr('font-size', '15px')
+                                   .style('fill', 'Blue')
+                                   .text(function(d) {return d.boss;});
+
+
+        var x2 = d3.scaleLinear().domain([-9, 9]).range([0, innerW2]);
+        var y2 = d3.scaleLinear().domain([-9, 9]).range([innerH2, 0]);
+
+        var cDomain = ['Republican', 'Democratic', 'Independent'];
+        var cRange = ['Red', 'Blue', 'Grey'];
+        var c2 = d3.scaleOrdinal().domain(cDomain).range(cRange);
+
+        var xAxis2 = d3.axisBottom(x2).tickSize(0).tickPadding(5);
+        var yAxis2 = d3.axisRight(y2).tickSize(0).tickPadding(5);
+
+        var xAxisG2 = svg2.append('g')
+                          .attr('class', 'xAxis2')
+                          .attr('transform', 'translate(' + [0, innerH2 / 2] + ')')
+                          .call(xAxis2);
+
+        var yAxisG2 = svg2.append('g')
+                          .attr('class', 'yAxis2')
+                          .attr('transform', 'translate(' + [innerW2 / 2, 0] + ')')
+                          .call(yAxis2);
+        
+        var usefulData = [data[32], data[33], data[35], data[36], data[37], data[38], data[39], data[40], data[41], data[42], data[43], data[44], data[45]];
+
+        var plot = svg2.selectAll('.plot')
+                       .data(usefulData)
+                       .enter().append('g')
+                       .attr('class', 'plot');
+
+        var circle = plot.append('circle')
+                         .attr('cx', function(d) {return x2(d.b_score);})
+                         .attr('cy', function(d) {return y2(d.j_score);})
+                         .attr('r', 5)
+                         .style('fill', function(d) {return c2(d.b_party);})
+                         .style('stroke', function(d) {return c2(d.j_party);})
+                         .style('stroke-width', '3');
+
+        var text = plot.append('text')
+                       .attr('x', function(d) {return x2(d.b_score);})
+                       .attr('y', function(d) {return y2(d.j_score);})
+                       .attr('dx', function(d) {return '1em';})
+                       .attr('dy', function(d) {return '0.5em';})
+                       .attr('font-size', '10px')
+                       .text(function(d) {return d.boss + '→' + d.justice;});
+
+        var repubIndex = svg2.append('rect')
+                             .attr('x', 20)
+                             .attr('y', 20)
+                             .attr('width', 25)
+                             .attr('height', 10)
+                             .style('fill', 'Red')
+                             .style('stroke', 'none');
+
+        var democIndex = svg2.append('rect')
+                             .attr('x', 20)
+                             .attr('y', 40)
+                             .attr('width', 25)
+                             .attr('height', 10)
+                             .style('fill', 'Blue')
+                             .style('stroke', 'none');
+
+        var indepIndex = svg2.append('rect')
+                             .attr('x', 20)
+                             .attr('y', 60)
+                             .attr('width', 25)
+                             .attr('height', 10)
+                             .style('fill', 'Grey')
+                             .style('stroke', 'none');
+
+        var repubIndexText = svg2.append('text')
+                                 .attr('x', 55)
+                                 .attr('y', 28)
+                                 .attr('font-size', '10px')
+                                 .text('Republican');
+
+        var democIndexText = svg2.append('text')
+                                 .attr('x', 55)
+                                 .attr('y', 48)
+                                 .attr('font-size', '10px')
+                                 .text('Democratic');
+
+        var indepIndexText = svg2.append('text')
+                                 .attr('x', 55)
+                                 .attr('y', 68)
+                                 .attr('font-size', '10px')
+                                 .text('Independent');
+
+        var innerCircleIndex = svg2.append('circle')
+                                   .attr('cx', 32)
+                                   .attr('cy', 90)
+                                   .attr('r', 5)
+                                   .style('fill', 'none')
+                                   .style('stroke', 'black');
+
+        var outerCircleIndex = svg2.append('circle')
+                                   .attr('cx', 32)
+                                   .attr('cy', 90)
+                                   .attr('r', 10)
+                                   .style('fill', 'none')
+                                   .style('stroke', 'black');
+
+        var innerCircleIndexText = svg2.append('text')
+                                       .attr('x', 36)
+                                       .attr('y', 88)
+                                       .attr('font-size', '10px')
+                                       .text('←←← Inner Color: President Party');
+
+        var outerCircleIndexText = svg2.append('text')
+                                       .attr('x', 45)
+                                       .attr('y', 98)
+                                       .attr('font-size', '10px')
+                                       .text('←← outer Color: Justice Party');
+
+        var indexBound = svg2.append('rect')
+                             .attr('x', 10)
+                             .attr('y', 10)
+                             .attr('width', 210)
+                             .attr('height', 100)
+                             .style('fill', 'none')
+                             .style('stroke', 'black');
+
+        svg2.append('text')
+            .attr('x', 420)
+            .attr('y', 310)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Conservative President');
+
+        svg2.append('text')
+            .attr('x', 0)
+            .attr('y', 310)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Liberal President');
+
+        svg2.append('text')
+            .attr('x', 300)
+            .attr('y', 15)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Conservative Justice');
+
+        svg2.append('text')
+            .attr('x', 300)
+            .attr('y', 555)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Liberal Justice');
+
+
+        var xyData = [{x: -9, y: -9}, {x: 0, y: 0}, {x: 9, y: 9}];
+
+        var area2 = d3.area()
+                     .x(function(d) {return x2(d.x);})
+                     .y0(function(d) {return y2(d.y - 3);})
+                     .y1(function(d) {return y2(d.y + 3);});
+
+        var band2 = svg2.append('path')
+                        .datum(xyData)
+                        .attr('class', 'band2')
+                        .style('stroke', 'none')
+                        .style('fill', 'Yellow')
+                        .style('fill-opacity', 0.2)
+                        .attr('d', area2);
+
+
+        var nixon = [data[32]];
+        var ford = [data[33]];
+        var reagan = [data[35], data[36], data[37]]; 
+        var bush = [data[38], data[39]];
+        var clinton = [data[40], data[41]];
+        var bush2 = [data[42], data[43]];
+        var obama = [data[44], data[45]];
+
+        var xContent = ['score', 'indiv', 'domes', 'econo', 'defen'];
+
+        var x3 = d3.scalePoint().domain(xContent).range([0, innerW3]);
+        var y3 = d3.scaleLinear().domain([-10, 10]).range([innerH3, 20]);
+
+        var c3Domain = ['Nixon', 'Ford', 'Reagan', 'Bush', 'Clinton', 'Bush2', 'Obama'];
+        var c3 = d3.scaleOrdinal().domain(c3Domain).range(d3.schemeCategory10);
+
+        x3Scale = x3;
+        y3Scale = y3;
+
+        var xAxis3 = d3.axisBottom(x3).tickSize(0).tickPadding(5);
+        var yAxis3 = d3.axisLeft(y3).tickSize(0).tickPadding(5);
+
+        var xAxisG3 = svg3.append('g')
+                          .attr('class', 'xAxis3')
+                          .attr('transform', 'translate(' + [0, innerH3 / 2] + ')')
+                          .style('font-size', '0px')
+                          .call(xAxis3);
+
+        var yAxisG3 = svg3.selectAll('.yAxis3')
+                          .data(xContent)
+                          .enter().append('g')
+                          .attr('class', 'yAxis3')
+                          .attr('transform', function(d) {return 'translate(' + [x3(d), 0] + ')';})
+                          .each(function(d) {d3.select(this).call(yAxis3);});
+
+        svg3.append('text')
+            .attr('x', -20)
+            .attr('y', 5)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Score(Mean)');
+
+        svg3.append('text')
+            .attr('x', 85)
+            .attr('y', 5)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Individual Rights');
+
+        svg3.append('text')
+            .attr('x', 220)
+            .attr('y', 5)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Domestic Issues');
+
+        svg3.append('text')
+            .attr('x', 360)
+            .attr('y', 5)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Economic Issues');
+
+        svg3.append('text')
+            .attr('x', 480)
+            .attr('y', 5)
+            .attr('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text('Defense Issues');
+
+        svg3.append('text')
+            .attr('x', 430)
+            .attr('y', 50)
+            .attr('font-size', '15px')
+            .text('Thick: President');
+
+        svg3.append('text')
+            .attr('x', 430)
+            .attr('y', 70)
+            .attr('font-size', '15px')
+            .text('Thin: Justices');
+
+        var nixonPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var nixonJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var nixonPSeries = svg3.selectAll('.nixonPSeries')
+                               .data(nixon)
+                               .enter().append('g')
+                               .attr('class', 'nixonPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', nixonPLine);
+
+        var nixonJSeries = svg3.selectAll('.nixonJSeries')
+                               .data(nixon)
+                               .enter().append('g')
+                               .attr('class', 'nixonJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', nixonJLine);
+
+        nixonPubPSeries = nixonPSeries;
+        nixonPubJSeries = nixonJSeries;
+
+        var fordPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var fordJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var fordPSeries = svg3.selectAll('.fordPSeries')
+                               .data(ford)
+                               .enter().append('g')
+                               .attr('class', 'fordPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', fordPLine);
+
+        var fordJSeries = svg3.selectAll('.fordJSeries')
+                               .data(ford)
+                               .enter().append('g')
+                               .attr('class', 'fordJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', fordJLine);
+
+        fordPubPSeries = fordPSeries;
+        fordPubJSeries = fordJSeries;
+
+        var reaganPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var reaganJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var reaganPSeries = svg3.selectAll('.reaganPSeries')
+                               .data(reagan)
+                               .enter().append('g')
+                               .attr('class', 'reaganPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', reaganPLine);
+
+        var reaganJSeries = svg3.selectAll('.reaganJSeries')
+                               .data(reagan)
+                               .enter().append('g')
+                               .attr('class', 'reaganJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', reaganJLine);
+
+        reaganPubPSeries = reaganPSeries;
+        reaganPubJSeries = reaganJSeries;
+
+        var bushPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var bushJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var bushPSeries = svg3.selectAll('.bushPSeries')
+                               .data(bush)
+                               .enter().append('g')
+                               .attr('class', 'bushPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', bushPLine);
+
+        var bushJSeries = svg3.selectAll('.bushJSeries')
+                               .data(bush)
+                               .enter().append('g')
+                               .attr('class', 'bushJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', bushJLine);
+
+        bushPubPSeries = bushPSeries;
+        bushPubJSeries = bushJSeries;
+
+        var clintonPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var clintonJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var clintonPSeries = svg3.selectAll('.clintonPSeries')
+                               .data(clinton)
+                               .enter().append('g')
+                               .attr('class', 'clintonPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', clintonPLine);
+
+        var clintonJSeries = svg3.selectAll('.clintonJSeries')
+                               .data(clinton)
+                               .enter().append('g')
+                               .attr('class', 'clintonJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', clintonJLine);
+
+        clintonPubPSeries = clintonPSeries;
+        clintonPubJSeries = clintonJSeries;
+
+        var bush2PLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var bush2JLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var bush2PSeries = svg3.selectAll('.bush2PSeries')
+                               .data(bush2)
+                               .enter().append('g')
+                               .attr('class', 'bush2PSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', bush2PLine);
+
+        var bush2JSeries = svg3.selectAll('.bush2JSeries')
+                               .data(bush2)
+                               .enter().append('g')
+                               .attr('class', 'bush2JSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', bush2JLine);
+
+        bush2PubPSeries = bush2PSeries;
+        bush2PubJSeries = bush2JSeries;
+
+        var obamaPLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+        var obamaJLine = d3.line().x(function(d) {return d.x;}).y(function(d) {return d.y;});
+
+        var obamaPSeries = svg3.selectAll('.obamaPSeries')
+                               .data(obama)
+                               .enter().append('g')
+                               .attr('class', 'obamaPSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '4')
+                               .selectAll('path')
+                               .data(function(d) {return [pConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', obamaPLine);
+
+        var obamaJSeries = svg3.selectAll('.obamaJSeries')
+                               .data(obama)
+                               .enter().append('g')
+                               .attr('class', 'obamaJSeries')
+                               .style('fill', 'none')
+                               .style('stroke', function(d) {return c3(d.boss);})
+                               .style('stroke-width', '2')
+                               .selectAll('path')
+                               .data(function(d) {return [jConvert(d)];})
+                               .enter().append('path')
+                               .attr('d', obamaJLine);
+
+        obamaPubPSeries = obamaPSeries;
+        obamaPubJSeries = obamaJSeries;
+      }
+
+      function pConvert(d) {
+        var x = x3Scale;
+        var y = y3Scale;
+
+        var score = {x: x('score'), y: y(d.b_score)};
+        var indiv = {x: x('indiv'), y: y(d.b_indiv)};
+        var domes = {x: x('domes'), y: y(d.b_domes)};
+        var econo = {x: x('econo'), y: y(d.b_econo)};
+        var defen = {x: x('defen'), y: y(d.b_defen)};
+
+        return [score, indiv, domes, econo, defen];
+      }
+
+      function jConvert(d) {
+        var x = x3Scale;
+        var y = y3Scale;
+
+        var score = {x: x('score'), y: y(d.j_score)};
+        var indiv = {x: x('indiv'), y: y(d.j_indiv)};
+        var domes = {x: x('domes'), y: y(d.j_domes)};
+        var econo = {x: x('econo'), y: y(d.j_econo)};
+        var defen = {x: x('defen'), y: y(d.j_defen)};
+
+        return [score, indiv, domes, econo, defen];
+      }
+
+      function nixon() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 1);
+        nixonJSeries.attr('opacity', 1);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function ford() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 1);
+        fordJSeries.attr('opacity', 1);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function reagan() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 1);
+        reaganJSeries.attr('opacity', 1);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function bush() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 1);
+        bushJSeries.attr('opacity', 1);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function clinton() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 1);
+        clintonJSeries.attr('opacity', 1);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function bush2() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 1);
+        bush2JSeries.attr('opacity', 1);
+        obamaPSeries.attr('opacity', 0);
+        obamaJSeries.attr('opacity', 0);
+      }
+
+      function obama() {
+        var nixonPSeries = nixonPubPSeries;
+        var nixonJSeries = nixonPubJSeries;
+        var fordPSeries = fordPubPSeries;
+        var fordJSeries = fordPubJSeries;
+        var reaganPSeries = reaganPubPSeries;
+        var reaganJSeries = reaganPubJSeries;
+        var bushPSeries = bushPubPSeries;
+        var bushJSeries = bushPubJSeries;
+        var clintonPSeries = clintonPubPSeries;
+        var clintonJSeries = clintonPubJSeries;
+        var bush2PSeries = bush2PubPSeries;
+        var bush2JSeries = bush2PubJSeries;
+        var obamaPSeries = obamaPubPSeries;
+        var obamaJSeries = obamaPubJSeries;
+
+        nixonPSeries.attr('opacity', 0);
+        nixonJSeries.attr('opacity', 0);
+        fordPSeries.attr('opacity', 0);
+        fordJSeries.attr('opacity', 0);
+        reaganPSeries.attr('opacity', 0);
+        reaganJSeries.attr('opacity', 0);
+        bushPSeries.attr('opacity', 0);
+        bushJSeries.attr('opacity', 0);
+        clintonPSeries.attr('opacity', 0);
+        clintonJSeries.attr('opacity', 0);
+        bush2PSeries.attr('opacity', 0);
+        bush2JSeries.attr('opacity', 0);
+        obamaPSeries.attr('opacity', 1);
+        obamaJSeries.attr('opacity', 1);
+      }
+
+    </script> 
+  </body> 
+</html> 

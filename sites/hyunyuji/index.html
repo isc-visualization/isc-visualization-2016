@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Earth globe</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+</head>
+<style type="text/css">
+
+    .water {
+        fill: #FAFAFA;
+    }
+
+    .land {
+        fill: #2294BE;
+        stroke: #FFF;
+        stroke-width: 0.7px;
+    }
+
+    .notOECDLand {
+        fill: #CCCCCC;
+        stroke: #FFF;
+        stroke-width: 0.7px;
+    }
+
+    .land:hover {
+        fill:#338888;
+        stroke-width: 1px;
+    }
+
+    .OECDCountry {
+        fill:#444444;
+        stroke-width: 1px;
+    }
+
+    .focused {
+        fill: #375989;
+    }
+
+    select {
+        position: absolute;
+        top: 20px;
+        left: 580px;
+        border: solid #ccc 1px;
+        padding: 3px;
+        box-shadow: inset 1px 1px 2px #ddd8dc;
+    }
+
+    .countryTooltip {
+        position: absolute;
+        display: none;
+        pointer-events: none;
+        background: #fff;
+        padding: 5px;
+        text-align: left;
+        border: solid #ccc 1px;
+        color: #666;
+        font-size: 14px;
+        font-family: sans-serif;
+    }
+
+    body {
+        font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .bar {
+        fill: steelblue;
+    }
+
+    .x.axis path {
+        display: none;
+    }
+
+
+</style>
+<body>
+<h1>종교와 성평등지수와의 상관관계</h1>
+<script type="text/javascript">
+
+    var width = 1200,
+            height = 500,
+            sens = 0.25,
+            focused;
+
+    //Setting projection
+
+    var projection = d3.geo.orthographic()
+            .scale(245)
+            .rotate([0, 0])
+            .translate([width / 2, height / 2])
+            .clipAngle(90);
+
+    var path = d3.geo.path()
+            .projection(projection);
+
+    //SVG container
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    //Adding water
+
+    svg.append("path")
+            .datum({type: "Sphere"})
+            .attr("transform", "translate(" + -300 + "," + 0 + ")")
+            .attr("class", "water")
+            .attr("d", path)
+
+            //Drag event
+
+            .call(d3.behavior.drag()
+                    .origin(function() { var r = projection.rotate(); return {x: r[0] / sens, y: -r[1] / sens}; })
+                    .on("drag", function() {
+                        var rotate = projection.rotate();
+                        projection.rotate([d3.event.x * sens, -d3.event.y * sens, rotate[2]]);
+                        svg.selectAll("path.land").attr("d", path);
+                        svg.selectAll("path.notOECDLand").attr("d", path);
+                        svg.selectAll(".focused").classed("focused", focused = false);
+                    }));
+
+    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip"),
+            countryList = d3.select("body").append("select").attr("name", "countries").attr("id", "sel");
+
+    var chart = svg.append("g").attr("transform", "translate(" + 600 + "," + 20 + ")");
+    var barChart = svg.append("g").attr("transform", "translate(" + 600 + "," + 130 + ")");
+
+    //bar chart
+
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width2 = 300 - margin.left - margin.right,
+            height2 = 400 - margin.top - margin.bottom;
+
+    var x0 = d3.scale.ordinal()
+            .rangeRoundBands([0, width2], .1);
+
+    var x1 = d3.scale.ordinal();
+
+    var y = d3.scale.linear()
+            .range([height2, 0]);
+
+    var color = d3.scale.ordinal()
+            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    var xAxis = d3.svg.axis()
+            .scale(x0)
+            .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .tickFormat(d3.format(".2s"));
+
+    d3.csv("sexData.csv", function(error, data) {
+        if (error) throw error;
+
+        //parse religion csv
+
+        d3.csv("religionData.csv", function (error2, religionData) {
+            if (error2) throw error2;
+
+        var newData = new Array();
+        newData.push(data[0]);
+
+        var ageNames = d3.keys(data[0]).filter(function (key) {
+            return key !== "Name";
+        });
+
+        newData.forEach(function (d) {
+            d.ages = ageNames.map(function (name) {
+                return {name: name, value: +d[name]};
+            });
+        });
+
+        x0.domain(newData.map(function (d) {
+            return "";
+        }));
+        x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);
+        y.domain([0, 50]);
+
+        barChart.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height2 + ")")
+                .call(xAxis);
+
+        barChart.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("%");
+
+        function drawBarChart(i) {
+
+            newData.pop();
+            newData.push(data[i]);
+
+            newData.forEach(function (d) {
+                d.ages = ageNames.map(function (name) {
+                    return {name: name, value: +d[name]};
+                });
+            });
+
+            var state = barChart.selectAll(".state")
+                    .remove()
+                    .data(newData);
+
+            state
+                    .enter().append("g")
+                    .attr("class", "state")
+//                    .attr("transform", function (d) {
+//                        console.log(d.Name)
+//                        console.log(x0(d.Name))
+//                        return "translate(" + x0(d.Name) + ",0)";
+//                    });
+
+
+            var stateRect = state.selectAll("rect")
+                    .remove()
+                    .data(function (d) {
+                        return d.ages;
+                    });
+
+            stateRect
+                    .enter().append("rect")
+                    .attr("width", x1.rangeBand())
+                    .attr("x", function (d) {
+                        return x1(d.name);
+                    })
+                    .attr("y", function (d) {
+                        return y(d.value);
+                    })
+                    .attr("height", function (d) {
+                        return height2 - y(d.value);
+                    })
+                    .style("fill", function (d) {
+                        return color(d.name);
+                    });
+
+            var newAgeNames = new Array();
+            newAgeNames.push('Christian')
+            newAgeNames.push('Unaffiliated')
+            newAgeNames.push('Hindu')
+            newAgeNames.push('Buddhist')
+            newAgeNames.push('FolkReligion')
+            newAgeNames.push('OtherReligion')
+            newAgeNames.push('Jewish')
+            newAgeNames.push('Unemployment rate')
+            newAgeNames.push('Gender wage gap')
+            newAgeNames.push('Woman politician rate')
+            newAgeNames.push('Son preference')
+
+
+
+            var legend = barChart.selectAll(".legend")
+                    .data(newAgeNames)
+                    .enter().append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function (d, i) {
+                        if(i > 6) {
+                            return "translate(100," + (i * 20 + 120) + ")";
+                        } else {
+                            return "translate(100," + i * 20 + ")";
+
+                        }
+                    });
+
+            console.log(ageNames.slice().reverse())
+
+            legend.append("rect")
+                    .attr("x", width2 - 18)
+                    .attr("width", 18)
+                    .attr("height", 18)
+                    .style("fill", d3.scale.ordinal()
+                            .range(["#B17382", "E8A1B1", "589EA6", "89D5CA", "80BF9B", "6192D9", "1C3A58", "#98abc5", "#8a89a6", "#7b6888", "#6b486b"]));
+
+            legend.append("text")
+                    .attr("x", width2 - 24)
+                    .attr("y", 9)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "end")
+                    .text(function (d) {
+                        return d;
+                    });
+        }
+
+
+
+
+
+
+
+        queue()
+                .defer(d3.json, "world-110m.json")
+                .defer(d3.tsv, "world-country-names.tsv")
+                .await(ready);
+
+        //Main function
+
+        function ready(error, world, countryData) {
+
+            var countryById = {},
+                    countries = topojson.feature(world, world.objects.countries).features;
+
+            var OECDCountries = new Array();
+            var notOECDCountries = new Array();
+
+            countries.forEach(function (d) {
+                countryData.forEach(function (e) {
+                    if(d.id == e.id) {
+                        OECDCountries.push(d);
+                    } else {
+                        notOECDCountries.push(d);
+                    }
+                })
+            });
+
+            //Adding countries to select
+
+            countryData.forEach(function(d) {
+                countryById[d.id] = d.name;
+                option = countryList.append("option");
+                option.text(d.name);
+                option.property("value", d.id);
+            });
+
+            //Drawing countries on the globe
+
+            var world = svg.selectAll("path.land")
+                    .data(countries)
+                    .enter().append("path")
+                    .attr("class", function(d) {
+                        var ret = "notOECDLand";
+                        OECDCountries.forEach(function (e) {
+                            if(d.id == e.id) {
+                                ret = "land";
+                            }
+                        });
+                        return ret;
+                    })
+                    .attr("d", path)
+                    .attr("transform", "translate(" + -300 + "," + 0 + ")")
+
+                    //Drag event
+
+                    .call(d3.behavior.drag()
+                            .origin(function() { var r = projection.rotate(); return {x: r[0] / sens, y: -r[1] / sens}; })
+                            .on("drag", function() {
+                                var rotate = projection.rotate();
+                                projection.rotate([d3.event.x * sens, -d3.event.y * sens, rotate[2]]);
+                                svg.selectAll("path.land").attr("d", path);
+                                svg.selectAll("path.notOECDLand").attr("d", path);
+                                svg.selectAll(".focused").classed("focused", focused = false);
+                            }))
+
+                    //Mouse events
+
+                    .on("mouseover", function(d) {
+                        countryData.forEach(function (e) {
+                            if(d.id == e.id) {
+                                countryTooltip.text(countryById[d.id])
+                                        .style("left", (d3.event.pageX + 7) + "px")
+                                        .style("top", (d3.event.pageY - 15) + "px")
+                                        .style("display", "block")
+                                        .style("opacity", 1);
+                            }
+                        })
+                    })
+                    .on("mouseout", function(d) {
+                        countryData.forEach(function (e) {
+                            if(d.id == e.id) {
+                                countryTooltip.style("opacity", 0)
+                                        .style("display", "none");
+                            }
+                        })
+                    })
+                    .on("mousemove", function(d) {
+                        countryData.forEach(function (e) {
+                            if(d.id == e.id) {
+                                countryTooltip.style("left", (d3.event.pageX + 7) + "px")
+                                        .style("top", (d3.event.pageY - 15) + "px");
+                            }
+                        })
+                    })
+                    .on("click", function(d) {
+                        countryData.forEach(function(e) {
+                            if(d.id == e.id) {
+                                var rotate = projection.rotate(),
+                                        focusedCountry = d,
+                                        p = d3.geo.centroid(focusedCountry);
+
+                                svg.selectAll(".focused").classed("focused", focused = false);
+
+                                //var sel = d3.select("select");
+                                var sel = document.getElementById('sel');
+
+                                for(var i = 0, l = countryData.length; i < l; i++) {
+                                    if(countryData[i].id == d.id) {
+                                        sel.selectedIndex = i;
+                                        break;
+                                    }
+                                };
+
+                                function country(cnt, sel) {
+                                    for(var i = 0, l = cnt.length; i < l; i++) {
+                                        if(cnt[i].id == sel.value) {return cnt[i];}
+                                    }
+                                };
+
+                                //Globe rotating
+
+                                (function transition() {
+                                    d3.transition()
+                                            .duration(2500)
+                                            .tween("rotate", function() {
+                                                var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+                                                return function(t) {
+                                                    projection.rotate(r(t));
+                                                    svg.selectAll("path").attr("d", path)
+                                                            .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
+                                                };
+                                            })
+                                })();
+
+                                drawStackedChart(religionData[sel.selectedIndex]);
+                                drawBarChart(sel.selectedIndex);
+                            }
+                        })
+                    });
+
+            //Country focus on option select
+
+            d3.select("select").on("change", function() {
+                var rotate = projection.rotate(),
+                        focusedCountry = country(countries, this),
+                        p = d3.geo.centroid(focusedCountry);
+
+                svg.selectAll(".focused").classed("focused", focused = false);
+
+                var sel = document.getElementById('sel');
+
+                //Globe rotating
+
+                (function transition() {
+                    d3.transition()
+                            .duration(2500)
+                            .tween("rotate", function() {
+                                var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+                                return function(t) {
+                                    projection.rotate(r(t));
+                                    svg.selectAll("path").attr("d", path)
+                                            .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
+                                };
+                            })
+                })();
+
+                drawStackedChart(religionData[sel.selectedIndex]);
+                drawBarChart(sel.selectedIndex);
+            });
+
+            function country(cnt, sel) {
+                for(var i = 0, l = cnt.length; i < l; i++) {
+                    if(cnt[i].id == sel.value) {return cnt[i];}
+                }
+            };
+        };
+
+
+        function drawStackedChart(singleReligionData) {
+            var colours = ["#B17382", "E8A1B1", "589EA6", "89D5CA", "80BF9B", "6192D9", "1C3A58"]
+            var data = [];
+            var xOffset = 0.0;
+
+            //Process the data
+
+            for(var i = 0; i < colours.length; i++) {
+                var val;
+
+                switch (i) {
+                    case 0 :
+                        val = singleReligionData.Christian; break;
+                    case 1 :
+                        val = singleReligionData.Muslim; break;
+                    case 2 :
+                        val = singleReligionData.Unaffiliated; break;
+                    case 3 :
+                        val = singleReligionData.Hindu; break;
+                    case 4 :
+                        val = singleReligionData.Buddhist; break;
+                    case 5 :
+                        val = singleReligionData.Jewish; break;
+                    case 6 :
+                        val = singleReligionData.FolkReligion; break;
+                    case 7 :
+                        val = singleReligionData.OtherReligion; break;
+                    default :
+                        break;
+                };
+
+                val = Number(val) * 2;
+
+                var datum = {
+                    value : val,
+                    colour : colours[i],
+                    x: xOffset,
+                    y: 0
+                };
+
+                xOffset += val;
+                data.push(datum);
+            }
+
+            var bars = chart.selectAll(".bar")
+                    .remove()
+                    .data(data);
+
+            bars
+                    .enter()
+                    .append('rect')
+                    .attr("class", ".bar")
+                    .attr("width", function (d) {
+                        return d.value
+                    })
+                    .attr("height", 30);
+
+            //bars.exit().remove();
+
+            bars
+                    .attr("x", function (d) {
+                        return d.x
+                    })
+
+//                    .attr({
+//                        width : function (d) {
+//                            return d.value
+//                        },
+//                        height : 30,
+//                        x : function(d) {
+//                            return d.x
+//                        }
+//                    })
+                    .style({
+                        fill : function(d) {
+                            return d.colour
+                        }
+                    })
+
+        }
+
+    });
+    });
+
+
+</script>
+</body>
+</html>

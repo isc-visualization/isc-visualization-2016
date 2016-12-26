@@ -176,7 +176,7 @@
           &nbsp; &nbsp;3일 휴식후 등판 : 투구수×1.5<br/>
           &nbsp; &nbsp;4일 이상 휴식후 등판 : 투구수×1(=가중치 없음)<br/>
           일반적으로 이렇게 구해진 값을 시즌별로 누적하여 사용한다.</p>
-        <p><span style="color:blue;font-weight: bold;">WAR</span> : Wins Above Replacement, 대체 선수에 비해 몇 승을 더 기여했는지를 나타낸 것으로, 선수가 팀 승리에 얼마나 기여했는가를 표현하는 종합적인 성격의 스탯이다. <u>한 시즌에서의 선수의 기량을 보기 위해서 사용하였다.</u></p>
+        <p><span style="color:blue;font-weight: bold;">WAR</span> : Wins Above Replacement, 대체 선수에 비해 몇 승을 더 기여했는지를 나타낸 것으로, 선수가 팀 승리에 얼마나 기여했는가를 표현하는 종합적인 성격의 스탯이다. WAR의 경우 종합적인 정보가 들어가 있기 때문에, ERA(방어율)이나 FIP(수비무관투구)보다 해당시즌에서의 투수의 팀에 대한 기여도를 잘 보여준다.<u>한 시즌에서의 선수의 기량을 보기 위해서 사용하였다.</u> </p>
         <p><span style="color:green;font-weight: bold;">WHIP</span> : Walks Plus Hits Divided by Innings Pitched, 이닝당 안타 볼넷 허용률로, 한 이닝에 몇 명의 주자를 내보냈는지 나타낸다. <u>한 경기에서의 선수의 기량을 보기 위해서 사용하였다.</u></p>
         <p style="text-align:right">*자료는 모두 www.statiz.co.kr에서 제공되는 값을 사용하였다.<br>*선수는 2014,2015,2016년에 경기를 많이 나온 순서로 선별하였다.</p>
       </div>
@@ -207,13 +207,7 @@
         <div id= "divsel2015" class = "divYearSel"></div>
         <div id= "divsel2016" class = "divYearSel"></div>
       </div>
-<!--
-      <div style="width:1000px;text-align:center;font-size:20px;margin:auto;">
-        <span id="l-title">&lt;</span>
-        <span id="s-title" style=" " value = "0">2014 - 전유수</span>
-        <span id="g-title">&gt;</span>
-      </div>
--->
+
       <div style="width:1000px;height:15px;text-align:center;font-size:14px;margin:auto;position:relative;">
         <span style="position:absolute; right:50px;">
           <span style="color:red;"><span style="background:red;" class="lineSpan"></span>&nbsp;<span id="fatititle">혹사지수</span></span>
@@ -225,11 +219,12 @@
       <a id="anc3"></a>
       <div style="margin-top:80px;">
         <h2>혹사지수-다음시즌war 분포도</h2>
-        <div style="position:relative; left:170px;">
+        <div style="position:relative; width:300px; left:730px;">
           <span style="color:red;"><span style="background:red;" class="lineSpan"></span>&nbsp;혹사지수</span>
           <span style="color:blue;"><span style="background:blue" class="lineSpan"></span>&nbsp;WAR</span>
         </div>
       </div>
+
       <div id="rankdiv"></div>
       <a id="anc4"></a>
       <div class="divTable" style="text-align:left;margin:0 auto 20px auto;">

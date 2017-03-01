@@ -4,3 +4,4 @@ sample-codes/
 assignment/
 etc/
 node_modules/
+**/sample/

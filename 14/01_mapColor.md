@@ -25,6 +25,7 @@ Visual Analysis and Design, Ch.10 Map Color and Other Channels
 
 ### 색공간 Color Spaces
 (참고) https://en.wikipedia.org/wiki/Color_space
+https://en.wikipedia.org/wiki/List_of_color_spaces_and_their_uses
 
 ![](http://www.wed-pix.com/wp-content/uploads/2015/11/colorspace.jpg)
 
